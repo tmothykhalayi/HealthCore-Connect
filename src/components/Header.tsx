@@ -20,19 +20,19 @@ const Header = () => {
   // Navigation links array
   const navLinks = [
     { path: '/', label: 'Home' },
-    { path: '/dashboard', label: 'Dashboard' },
     { path: '/about', label: 'About' },
+    { path: '/dashboard', label: 'Dashboard' },
     { path: '/registration', label: 'Registration' },
   ]
 
-  const utilityLinks = [
-    { path: '/portal', label: 'Patient Portal' },
-    { path: '/contact', label: 'Contact Us' },
-  ]
+  // const utilityLinks = [
+  //   { path: '/portal', label: 'Patient Portal' },
+  //   { path: '/contact', label: 'Contact Us' },
+  // ]
 
   return (
     <header className="bg-white shadow-md">
-      {/* Top Bar */}
+      {/* Top Bar
       <div className="bg-blue-600 text-white py-2 px-4">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-4">
@@ -64,7 +64,7 @@ const Header = () => {
             ))}
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Main Header */}
       <div className="container mx-auto px-4 py-4">

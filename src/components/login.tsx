@@ -1,9 +1,11 @@
 import { useLoginHook } from '@/hooks/authHook'
+import { loginUserHelper } from '@/lib/authHelper'
 import { useForm } from '@tanstack/react-form'
+import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { FaEnvelope, FaLock, FaCheck, FaTimes, FaSpinner } from 'react-icons/fa'
 
-export function  LoginPage() {
+export function LoginPage() {
   const [loginStatus, setLoginStatus] = useState<{
     success: boolean
     message: string
@@ -12,6 +14,7 @@ export function  LoginPage() {
 
   // AUTH LOGIN HOOK
   const { mutate, data } = useLoginHook()
+  const navigate = useNavigate()
 
   // Manual validation functions
   const validateEmail = (email: string) => {
@@ -26,8 +29,13 @@ export function  LoginPage() {
     if (password.length < 6) return 'Password must be at least 6 characters'
     return null
   }
-  useEffect(()=>{
-    console.log("data in useEffect", data)
+  useEffect(() => {
+    if(data){
+    loginUserHelper(data.token, data.user)
+    navigate ({ to: '/dashboard', replace: true })
+    }
+    
+    console.log('data in useEffect', data)
   }, [data])
 
   const form = useForm({
@@ -40,7 +48,7 @@ export function  LoginPage() {
       try {
         // API call
         mutate(value)
-        console.log("myresponse", data)
+        console.log('myresponse', data)
 
         setLoginStatus({
           success: true,

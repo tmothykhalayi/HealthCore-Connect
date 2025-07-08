@@ -9,7 +9,8 @@ import {
   FaFileMedical,
   FaHospitalUser,
   FaPrescriptionBottleAlt,
-  FaUserInjured
+  FaUserInjured,
+  FaMoneyBill
 } from 'react-icons/fa'
 import { MdDashboard, MdLocalPharmacy } from 'react-icons/md'
 
@@ -25,18 +26,26 @@ export default function SideNav({ role }: SideNavProps) {
       label: 'Dashboard', 
       to: '/dashboard' 
     },
-    { 
-      icon: <FaCalendarAlt size={18} />, 
-      label: 'Appointments', 
-      to: '/dashboard/appointments' 
-    },
+    // { 
+    //   icon: <FaCalendarAlt size={18} />, 
+    //   label: 'Appointments', 
+    //   to: '/dashboard/appointments' 
+    // },
   ]
 
   // Role-specific navigation items
   const roleNavItems = {
     admin: [
-      { icon: <FaUserFriends size={18} />, label: 'Staff', to: '/dashboard/admin/staff' },
-      { icon: <FaChartLine size={18} />, label: 'Analytics', to: '/dashboard/admin/analytics' },
+      { icon: <FaUserFriends size={18} />, label: 'Users', to: '/dashboard/admin/users' },
+       { icon: <FaUserInjured size={18} />, label: 'Patients', to: '/dashboard/admin/patients' },
+        { icon: <FaUserMd size={18} />, label: 'Doctors', to: '/dashboard/admin/doctors' },
+        { icon: <FaCalendarAlt size={18} />, label: 'Appointments', to: '/dashboard/admin/appointments' },
+        { icon: <FaPrescriptionBottleAlt size={18} />, label: 'Prescriptions', to: '/dashboard/admin/prescriptions' },
+        { icon: <MdLocalPharmacy size={20} />, label: 'Pharmacy Orders', to: '/dashboard/admin/pharmacy_orders' },
+        { icon: <FaMoneyBill size={18} />, label: 'Payments', to: '/dashboard/admin/payments' },
+        { icon: <FaPills/>, label: 'Medicines', to: '/dashboard/admin/medicines' },
+        { icon: <FaFileMedical size={18} />, label: 'Records', to: '/dashboard/admin/records' },
+
     ],
     doctor: [
       { icon: <FaUserInjured size={18} />, label: 'Patients', to: '/dashboard/doctor/patients' },
@@ -45,11 +54,18 @@ export default function SideNav({ role }: SideNavProps) {
     ],
     patient: [
       { icon: <FaUserMd size={18} />, label: 'Doctors', to: '/dashboard/patient/doctors' },
-      { icon: <FaProcedures size={18} />, label: 'Treatments', to: '/dashboard/patient/treatments' },
+      { icon: <FaPills/>, label: 'Medicines', to: '/dashboard/patient/medicines' },
+      { icon: <FaCalendarAlt size={18} />, label: 'Appointments', to: '/dashboard/patient/appointments' },
+
+      
     ],
     pharmacist: [
-      { icon: <MdLocalPharmacy size={20} />, label: 'Inventory', to: '/dashboard/pharmacist/inventory' },
-      { icon: <FaPills size={18} />, label: 'Dispense', to: '/dashboard/pharmacist/dispense' },
+      { icon: <MdLocalPharmacy size={20} />, label: 'Pharmacy Orders', to: '/dashboard/pharmacist/pharmacy_orders' },
+      { icon: <FaPrescriptionBottleAlt size={18} />, label: 'Prescriptions', to: '/dashboard/pharmacist/prescriptions' },
+      { icon: <FaHospitalUser size={18} />, label: 'Patients', to: '/dashboard/pharmacist/patients' },
+      { icon: <FaChartLine size={18} />, label: 'Records', to: '/dashboard/pharmacist/records' },
+      { icon: <FaMoneyBill size={18} />, label: 'Payments', to: '/dashboard/pharmacist/payments' },
+
     ]
   }
 
@@ -57,17 +73,7 @@ export default function SideNav({ role }: SideNavProps) {
 
   return (
     <nav className="h-full bg-white border-r border-gray-200 flex flex-col">
-      <div className="p-4 border-b border-gray-200">
-        <div className="flex items-center">
-          <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-            <FaHospitalUser className="text-blue-600" size={20} />
-          </div>
-          <div className="ml-3">
-            <p className="text-sm font-medium text-gray-700">MediCare Hospital</p>
-            <p className="text-xs text-gray-500 capitalize">{role}</p>
-          </div>
-        </div>
-      </div>
+      
 
       <div className="flex-1 overflow-y-auto py-4">
         <ul className="space-y-1 px-2">
