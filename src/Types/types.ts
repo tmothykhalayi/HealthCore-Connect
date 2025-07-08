@@ -61,3 +61,27 @@ export type AuthActions = {
 };
 
 export type AuthStoreType = AuthState & AuthActions;
+
+
+export interface TDoctor {
+  doctor_id: number;
+  name: string;
+  email: string;
+  specialization: string;
+  license_number: string;
+  availability: string;
+  consultation_fee: number;
+}
+
+export interface TPatient {
+  patient_id: number;
+  name: string;
+  email: string;
+  dob: string;
+  gender: string;
+  phone: string;
+  address: string;
+
+}
+
+  

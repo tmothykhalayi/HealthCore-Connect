@@ -26,11 +26,7 @@ export default function SideNav({ role }: SideNavProps) {
       label: 'Dashboard', 
       to: '/dashboard' 
     },
-    // { 
-    //   icon: <FaCalendarAlt size={18} />, 
-    //   label: 'Appointments', 
-    //   to: '/dashboard/appointments' 
-    // },
+   
   ]
 
   // Role-specific navigation items

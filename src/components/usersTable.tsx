@@ -58,7 +58,7 @@ export const UsersTable = () => {
           <button
             onClick={() => deleteMutation.mutate(row.original.user_id)}
             className="bg-red-500 text-white px-3 py-1 rounded"
-            disabled={deleteMutation.isLoading}
+            disabled={deleteMutation.isPending}
           >
             Delete
           </button>

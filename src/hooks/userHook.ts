@@ -5,7 +5,7 @@ export const useGetUserQuery = (page: number, limit: number, search: string) => 
   return useQuery({
     queryKey: ['users', page, limit, search],
     queryFn: () => getUserFn(page, limit, search),
-    keepPreviousData: true,
+    
   });
 
 }
@@ -15,7 +15,7 @@ export const useDeleteUser = () => {
   return useMutation({
     mutationFn: deleteUserFn,
     onSuccess: () => {
-      queryClient.invalidateQueries(['users']);
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     },
   });
 }
