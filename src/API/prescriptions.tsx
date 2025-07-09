@@ -1,10 +1,10 @@
 // API/patients.ts
 import url from "@/constants/urls";
 import { getAccessTokenHelper } from "@/lib/authHelper";
-import type { TPatient } from "@/Types/types";
+import type { TPrescription } from "@/Types/types";
 
-export const getPatientsFn = async (page = 1, limit = 10, search = ''): Promise<{
-  data: TPatient[];
+export const getPrescriptionsFn = async (page = 1, limit = 10, search = ''): Promise<{
+  data: TPrescription[];
   total: number;
 }> => {
   const params = new URLSearchParams({
@@ -13,7 +13,7 @@ export const getPatientsFn = async (page = 1, limit = 10, search = ''): Promise<
     search: search
   });
 
-  const fullUrl = `${url}/patients?${params.toString()}`;
+  const fullUrl = `${url}/prescriptions?${params.toString()}`;
   const token = getAccessTokenHelper();
 
   const response = await fetch(fullUrl, {
@@ -31,8 +31,8 @@ export const getPatientsFn = async (page = 1, limit = 10, search = ''): Promise<
   return response.json();
 }
 
-export const deletePatientFn = async (patientId: number): Promise<void> => {
-  const fullUrl = `${url}/patients/${patientId}`;
+export const deletePrescriptionFn = async (prescriptionId: number): Promise<void> => {
+  const fullUrl = `${url}/prescriptions/${prescriptionId}`;
 
   const response = await fetch(fullUrl, {
     method: 'DELETE',
@@ -42,6 +42,6 @@ export const deletePatientFn = async (patientId: number): Promise<void> => {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to delete patient');
+    throw new Error('Failed to delete prescription');
   }
 }

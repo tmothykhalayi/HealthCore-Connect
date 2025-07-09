@@ -1,9 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/dashboard/admin/patients')({
-  component: RouteComponent,
+  component: PatientsPage,
 })
 
-function RouteComponent() {
-  return <div>Hello "/dashboard/admin/patients"!</div>
-}
+import { PatientsTable } from '@/components/patientsTable';
+
+export default function PatientsPage() {
+  return (
+    <div className="bg-gray-50 min-h-screen py-8">
+      <PatientsTable />
+    </div>
+  );
+} 
