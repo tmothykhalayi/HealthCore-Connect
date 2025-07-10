@@ -21,17 +21,19 @@ interface SideNavProps {
 export default function SideNav({ role }: SideNavProps) {
   // Common navigation items
   const commonNavItems = [
-    { 
-      icon: <MdDashboard size={20} />, 
-      label: 'Dashboard', 
-      to: '/dashboard' 
-    },
+   
    
   ]
 
   // Role-specific navigation items
   const roleNavItems = {
     admin: [
+
+      { 
+      icon: <MdDashboard size={20} />, 
+      label: 'Dashboard', 
+      to: '/dashboard/admin/dashboard' 
+    },
       { icon: <FaUserFriends size={18} />, label: 'Users', to: '/dashboard/admin/users' },
        { icon: <FaUserInjured size={18} />, label: 'Patients', to: '/dashboard/admin/patients' },
         { icon: <FaUserMd size={18} />, label: 'Doctors', to: '/dashboard/admin/doctors' },
@@ -42,9 +44,10 @@ export default function SideNav({ role }: SideNavProps) {
         { icon: <FaPills/>, label: 'Medicines', to: '/dashboard/admin/medicines' },
         { icon: <FaFileMedical size={18} />, label: 'Records', to: '/dashboard/admin/records' },
 
+
     ],
     doctor: [
-      { icon: <FaUserInjured size={18} />, label: 'Patients', to: '/dashboard/doctor/patients' },
+        { icon: <FaCalendarAlt size={18} />, label: 'Appointments', to: '/dashboard/doctor/appointments' },
       { icon: <FaFileMedical size={18} />, label: 'Records', to: '/dashboard/doctor/records' },
       { icon: <FaPrescriptionBottleAlt size={18} />, label: 'Prescriptions', to: '/dashboard/doctor/prescriptions' },
     ],

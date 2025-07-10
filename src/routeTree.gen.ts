@@ -35,6 +35,7 @@ import { Route as DashboardAdminPaymentsRouteImport } from './routes/dashboard/a
 import { Route as DashboardAdminPatientsRouteImport } from './routes/dashboard/admin/patients'
 import { Route as DashboardAdminMedicinesRouteImport } from './routes/dashboard/admin/medicines'
 import { Route as DashboardAdminDoctorsRouteImport } from './routes/dashboard/admin/doctors'
+import { Route as DashboardAdminDashboardRouteImport } from './routes/dashboard/admin/dashboard'
 import { Route as DashboardAdminAppointmentsRouteImport } from './routes/dashboard/admin/appointments'
 
 const RegistrationRoute = RegistrationRouteImport.update({
@@ -180,6 +181,11 @@ const DashboardAdminDoctorsRoute = DashboardAdminDoctorsRouteImport.update({
   path: '/admin/doctors',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardAdminDashboardRoute = DashboardAdminDashboardRouteImport.update({
+  id: '/admin/dashboard',
+  path: '/admin/dashboard',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardAdminAppointmentsRoute =
   DashboardAdminAppointmentsRouteImport.update({
     id: '/admin/appointments',
@@ -196,6 +202,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/registration': typeof RegistrationRoute
   '/dashboard/admin/appointments': typeof DashboardAdminAppointmentsRoute
+  '/dashboard/admin/dashboard': typeof DashboardAdminDashboardRoute
   '/dashboard/admin/doctors': typeof DashboardAdminDoctorsRoute
   '/dashboard/admin/medicines': typeof DashboardAdminMedicinesRoute
   '/dashboard/admin/patients': typeof DashboardAdminPatientsRoute
@@ -225,6 +232,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/registration': typeof RegistrationRoute
   '/dashboard/admin/appointments': typeof DashboardAdminAppointmentsRoute
+  '/dashboard/admin/dashboard': typeof DashboardAdminDashboardRoute
   '/dashboard/admin/doctors': typeof DashboardAdminDoctorsRoute
   '/dashboard/admin/medicines': typeof DashboardAdminMedicinesRoute
   '/dashboard/admin/patients': typeof DashboardAdminPatientsRoute
@@ -255,6 +263,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/registration': typeof RegistrationRoute
   '/dashboard/admin/appointments': typeof DashboardAdminAppointmentsRoute
+  '/dashboard/admin/dashboard': typeof DashboardAdminDashboardRoute
   '/dashboard/admin/doctors': typeof DashboardAdminDoctorsRoute
   '/dashboard/admin/medicines': typeof DashboardAdminMedicinesRoute
   '/dashboard/admin/patients': typeof DashboardAdminPatientsRoute
@@ -286,6 +295,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/registration'
     | '/dashboard/admin/appointments'
+    | '/dashboard/admin/dashboard'
     | '/dashboard/admin/doctors'
     | '/dashboard/admin/medicines'
     | '/dashboard/admin/patients'
@@ -315,6 +325,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/registration'
     | '/dashboard/admin/appointments'
+    | '/dashboard/admin/dashboard'
     | '/dashboard/admin/doctors'
     | '/dashboard/admin/medicines'
     | '/dashboard/admin/patients'
@@ -344,6 +355,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/registration'
     | '/dashboard/admin/appointments'
+    | '/dashboard/admin/dashboard'
     | '/dashboard/admin/doctors'
     | '/dashboard/admin/medicines'
     | '/dashboard/admin/patients'
@@ -559,6 +571,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAdminDoctorsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/admin/dashboard': {
+      id: '/dashboard/admin/dashboard'
+      path: '/admin/dashboard'
+      fullPath: '/dashboard/admin/dashboard'
+      preLoaderRoute: typeof DashboardAdminDashboardRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/admin/appointments': {
       id: '/dashboard/admin/appointments'
       path: '/admin/appointments'
@@ -571,6 +590,7 @@ declare module '@tanstack/react-router' {
 
 interface DashboardRouteChildren {
   DashboardAdminAppointmentsRoute: typeof DashboardAdminAppointmentsRoute
+  DashboardAdminDashboardRoute: typeof DashboardAdminDashboardRoute
   DashboardAdminDoctorsRoute: typeof DashboardAdminDoctorsRoute
   DashboardAdminMedicinesRoute: typeof DashboardAdminMedicinesRoute
   DashboardAdminPatientsRoute: typeof DashboardAdminPatientsRoute
@@ -594,6 +614,7 @@ interface DashboardRouteChildren {
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAdminAppointmentsRoute: DashboardAdminAppointmentsRoute,
+  DashboardAdminDashboardRoute: DashboardAdminDashboardRoute,
   DashboardAdminDoctorsRoute: DashboardAdminDoctorsRoute,
   DashboardAdminMedicinesRoute: DashboardAdminMedicinesRoute,
   DashboardAdminPatientsRoute: DashboardAdminPatientsRoute,

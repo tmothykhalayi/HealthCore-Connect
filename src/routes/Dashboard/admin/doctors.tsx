@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 export const Route = createFileRoute('/dashboard/admin/doctors')({
   component: DoctorsPage,
 })
+
 import { DoctorsTable } from '@/components/doctorsTable';
 
  function DoctorsPage() {

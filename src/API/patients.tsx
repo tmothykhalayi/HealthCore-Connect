@@ -31,6 +31,25 @@ export const getPatientsFn = async (page = 1, limit = 10, search = ''): Promise<
   return response.json();
 }
 
+export const createPatientFn = async (patientData: TPatient): Promise<TPatient> => {
+  const fullUrl = `${url}/patients`;
+
+  const response = await fetch(fullUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAccessTokenHelper()}`,
+    },
+    body: JSON.stringify(patientData),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to create patient');
+  }
+
+  return response.json();
+}
+
 export const deletePatientFn = async (patientId: number): Promise<void> => {
   const fullUrl = `${url}/patients/${patientId}`;
 
@@ -45,3 +64,13 @@ export const deletePatientFn = async (patientId: number): Promise<void> => {
     throw new Error('Failed to delete patient');
   }
 }
+
+// API/patients.ts
+export const getPatientsCount = async (): Promise<{ total: number }> => {
+  const response = await fetch(`${url}/patients/count`, {
+    headers: {
+      'Authorization': `Bearer ${getAccessTokenHelper()}`,
+    },
+  });
+  return response.json();
+};
