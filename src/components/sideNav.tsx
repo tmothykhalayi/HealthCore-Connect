@@ -48,6 +48,7 @@ export default function SideNav({ role }: SideNavProps) {
     ],
     doctor: [
         { icon: <FaCalendarAlt size={18} />, label: 'Appointments', to: '/dashboard/doctor/appointments' },
+       { icon: <FaUserInjured size={18} />, label: 'Patients', to: '/dashboard/doctor/patient' },
       { icon: <FaFileMedical size={18} />, label: 'Records', to: '/dashboard/doctor/records' },
       { icon: <FaPrescriptionBottleAlt size={18} />, label: 'Prescriptions', to: '/dashboard/doctor/prescriptions' },
     ],

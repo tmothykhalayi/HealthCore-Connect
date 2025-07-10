@@ -24,47 +24,10 @@ const Header = () => {
     { path: '/dashboard', label: 'Dashboard' },
     { path: '/registration', label: 'Registration' },
   ]
-
-  // const utilityLinks = [
-  //   { path: '/portal', label: 'Patient Portal' },
-  //   { path: '/contact', label: 'Contact Us' },
-  // ]
+  
 
   return (
     <header className="bg-white shadow-md">
-      {/* Top Bar
-      <div className="bg-blue-600 text-white py-2 px-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center">
-              <FaPhone className="mr-2" />
-              <span className="text-sm font-medium">
-                Emergency: (123) 456-7890
-              </span>
-            </div>
-            <div className="hidden md:flex items-center">
-              <FaUserMd className="mr-2" />
-              <Link
-                to="/doctors"
-                className="text-sm font-medium hover:underline"
-              >
-                Find a Doctor
-              </Link>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4">
-            {utilityLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className="text-sm font-medium hover:underline"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div> */}
 
       {/* Main Header */}
       <div className="container mx-auto px-4 py-4">

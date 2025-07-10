@@ -1,4 +1,4 @@
-// components/AppointmentsTable.tsx
+// components/DoctorsAppointmentsTable.tsx
 import { useMemo, useState } from 'react';
 import {
   useReactTable,
@@ -8,25 +8,24 @@ import {
   flexRender,
   type ColumnDef,
 } from '@tanstack/react-table';
-import { useGetAppointmentQuery, useDeleteAppointment } from '@/hooks/appointment';
-// import { useGetAppointmentQuery, useDeleteAppointment } from '@/hooks/doctors/appointment';
+import { useGetAppointmentsByIdQuery, useDeleteAppointment } from '@/hooks/doctor/appointment';
 import type { TAppointment } from '@/Types/types';
 
-export const AppointmentsTable = () => {
+export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => {
   const [search, setSearch] = useState('');
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
 
-  const { data, isLoading, isError } = useGetAppointmentQuery(
-    pagination.pageIndex + 1,
-    pagination.pageSize,
-    search
-  );
+
+  const { data: doctorData, isLoading, isError } = useGetAppointmentsByIdQuery(doctorId);
+  console.log("doctorData", doctorData);
+  const appointments = doctorData?.appointments || [];
+
+  console.log("appointments", appointments);
 
   const deleteMutation = useDeleteAppointment();
-
   // Format date to Kenyan format
   const formatDateTime = (dateTimeString: string) => {
     const date = new Date(dateTimeString);
@@ -50,11 +49,6 @@ export const AppointmentsTable = () => {
       {
         header: 'Patient ID',
         accessorKey: 'patient_id',
-        size: 100,
-      },
-      {
-        header: 'Doctor ID',
-        accessorKey: 'doctor_id',
         size: 100,
       },
       {
@@ -109,9 +103,9 @@ export const AppointmentsTable = () => {
   );
 
   const table = useReactTable({
-    data: data || [],
+    data: appointments,
     columns,
-    pageCount: Math.ceil((data?.total || 0) / pagination.pageSize),
+    pageCount: Math.ceil(appointments.length / pagination.pageSize),
     state: {
       pagination,
       globalFilter: search,
@@ -121,7 +115,7 @@ export const AppointmentsTable = () => {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    manualPagination: true,
+    manualPagination: false, // Client-side pagination since we have all data
   });
 
   if (isLoading) {
@@ -139,11 +133,17 @@ export const AppointmentsTable = () => {
       </div>
     );
   }
-
+    if (!appointments.length) {
+        return (
+        <div className="text-center text-gray-500 p-4">
+            No appointments found for this doctor.
+        </div>
+        );
+    }
   return (
     <div className="p-4 max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Appointment Management</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">Doctor's Appointments</h1>
         <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
           <div className="flex-1">
             <input
@@ -155,7 +155,7 @@ export const AppointmentsTable = () => {
             />
           </div>
           <div className="text-sm text-gray-600 whitespace-nowrap">
-            Showing {table.getRowModel().rows.length} of {data?.total} appointments
+            Showing {table.getRowModel().rows.length} of {appointments.length} appointments
           </div>
         </div>
       </div>

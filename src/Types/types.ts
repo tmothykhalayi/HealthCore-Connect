@@ -71,6 +71,7 @@ export interface TDoctor {
   license_number: string;
   availability: string;
   consultation_fee: number;
+  appointment_id: number;
 }
 
 export interface TPatient {
