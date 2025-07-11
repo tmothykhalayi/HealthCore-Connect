@@ -9,3 +9,5 @@ function RouteComponent() {
   const patientId = param.patientId
   return <div>Hello "{`/dashboard/doctor/patient/${patientId}`}!"</div>
 }
+
+

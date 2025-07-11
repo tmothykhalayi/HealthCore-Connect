@@ -30,11 +30,11 @@ export function LoginPage() {
     return null
   }
   useEffect(() => {
-    if(data){
-    loginUserHelper(data.token, data.user)
-    navigate ({ to: '/dashboard', replace: true })
+    if (data) {
+      loginUserHelper(data.token, data.user)
+      navigate({ to: '/dashboard', replace: true })
     }
-    
+
     console.log('data in useEffect', data)
   }, [data])
 

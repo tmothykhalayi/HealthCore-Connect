@@ -1,4 +1,3 @@
-import { useGetPatientDetailsQuery } from "@/hooks/doctor/patient/patientFDetailsHook";
 import { useMemo } from "react";
 import {
   createColumnHelper,
@@ -6,27 +5,19 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useGetPatientPrescriptionsQuery } from "@/hooks/doctor/patient/patientId";
 
-
-
-// Define types for your prescription data
 type Prescription = {
   prescription_id: number;
   patient_id: number;
   doctor_id: number;
   appointment_id: number;
   notes: string;
-  // Add any other fields that might be present in your actual data
+  created_at: string;
 };
 
 const PatientPrescriptionsTable = ({ patientId }: { patientId: number }) => {
-  const { data, isLoading, error } = useGetPatientDetailsQuery(patientId);
-
-  if (isLoading) return <div>Loading prescription details...</div>;
-  if (error) return <div>Error loading prescription details</div>;
-
-  // Since the API returns an array, we'll take the first item
-  const prescriptions: Prescription[] = data || [];
+  const { data: prescriptions = [], isLoading, isError } = useGetPatientPrescriptionsQuery(patientId);
 
   const columnHelper = createColumnHelper<Prescription>();
 
@@ -47,12 +38,15 @@ const PatientPrescriptionsTable = ({ patientId }: { patientId: number }) => {
       columnHelper.accessor("notes", {
         header: "Notes",
         cell: (info) => (
-          <div className="max-w-xs truncate hover:max-w-none">
+          <div className="max-w-xs truncate hover:max-w-none hover:whitespace-normal">
             {info.getValue()}
           </div>
         ),
       }),
-      // Add more columns as needed based on your actual data structure
+      columnHelper.accessor("created_at", {
+        header: "Date Created",
+        cell: (info) => new Date(info.getValue()).toLocaleDateString(),
+      }),
     ],
     [columnHelper]
   );
@@ -63,6 +57,9 @@ const PatientPrescriptionsTable = ({ patientId }: { patientId: number }) => {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  if (isLoading) return <div className="p-4">Loading prescriptions...</div>;
+  if (isError) return <div className="p-4 text-red-500">Error loading prescriptions</div>;
+
   return (
     <div className="p-4">
       <h2 className="text-xl font-semibold mb-4">Patient Prescriptions</h2>
@@ -70,8 +67,8 @@ const PatientPrescriptionsTable = ({ patientId }: { patientId: number }) => {
       {prescriptions.length === 0 ? (
         <div className="text-gray-500">No prescriptions found for this patient</div>
       ) : (
-        <div className="border rounded-lg overflow-hidden">
-          <table className="w-full">
+        <div className="border rounded-lg overflow-hidden shadow-sm">
+          <table className="w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
@@ -93,7 +90,10 @@ const PatientPrescriptionsTable = ({ patientId }: { patientId: number }) => {
               {table.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50">
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
+                    <td 
+                      key={cell.id} 
+                      className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}

@@ -37,7 +37,7 @@ const AdminDashboard = () => {
       title: 'Pharmacy Orders',
       icon: <FiShoppingCart className="h-8 w-8" />,
       color: 'bg-yellow-100 text-yellow-600',
-      route: '/pharmacy-orders',
+      route: '/dashboard/admin/pharmacy_orders',
       description: 'Process medication orders'
     },
     {

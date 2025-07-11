@@ -52,8 +52,8 @@ const columns: ColumnDef<Patient>[] = [
 
       return (
         <button
-          onClick={() => navigate({ to: `/dashboard/doctor/patient/${patient.patient_id}` })}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          onClick={() => navigate({ to: `/dashboard/doctor/patient/${patient.patient_id}`})}
+          className="px-4 py-2 bg-blue-950 text-white rounded hover:bg-blue-600"
         >
           View Details
         </button>
