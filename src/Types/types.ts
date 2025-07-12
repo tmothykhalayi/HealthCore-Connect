@@ -143,3 +143,12 @@ export interface TPayment {
   status: string;
 }
   
+export interface Doctor{
+     doctor_id: string | number;
+  name: string;
+  specialization: string;
+  email: string;
+  availability: string;
+  license_number: string;
+  consultation_fee?: number;
+};
