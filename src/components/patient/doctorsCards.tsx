@@ -1,18 +1,20 @@
 import { useGetDoctorQuery } from "@/hooks/patients/doctorHook";
-import { useQueryClient } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 
 type Doctor = {
-  doctor_id: string;
+  doctor_id: number;
   name: string;
   specialization: string;
   email: string;
   availability: string;
-  license_number: string;
   consultation_fee?: number;
+  img?: string | null;
 };
 
 const DoctorsList = () => {
-  const { data: doctors, isLoading, isError, error } = useGetDoctorQuery();
+  const { data: doctors, isLoading, isError } = useGetDoctorQuery();
+  
+  console.log("Doctors data:", doctors);
 
   if (isLoading) {
     return (
@@ -24,19 +26,27 @@ const DoctorsList = () => {
 
   if (isError) {
     return (
+      <div className="flex justify-center items-center h-64">
+        <p className="text-red-500">Error loading doctors data</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">Available Doctors</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {doctors?.map((doctor: Doctor) => (
           <DoctorCard key={doctor.doctor_id} doctor={doctor} />
         ))}
       </div>
-
-    );
-  }
+    </div>
+  );
 };
 
 const DoctorCard = ({ doctor }: { doctor: Doctor }) => {
-  // Construct image URL - assuming your API serves images at /images/doctors/{doctor_id}.jpg
-  const imageUrl = `${"https://i.pinimg.com/736x/8e/5b/6a/8e5b6a2191656c1ac5d4571577870170.jpg"}/images/doctors/${doctor.doctor_id}.jpg`;
+  // Use the image from the API if available, otherwise use placeholder
+  const imageUrl = doctor.img || "https://i.pinimg.com/736x/8e/5b/6a/8e5b6a2191656c1ac5d4571577870170.jpg";
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -46,8 +56,8 @@ const DoctorCard = ({ doctor }: { doctor: Doctor }) => {
           alt={doctor.name}
           className="w-full h-full object-cover"
           onError={(e) => {
-            // Fallback image if the doctor image doesn't exist
-            e.currentTarget.src = "/images/doctor-placeholder.jpg";
+            // Fallback to placeholder if image fails to load
+            e.currentTarget.src = "https://i.pinimg.com/736x/8e/5b/6a/8e5b6a2191656c1ac5d4571577870170.jpg";
           }}
         />
       </div>
@@ -74,22 +84,16 @@ const DoctorCard = ({ doctor }: { doctor: Doctor }) => {
             </svg>
             {doctor.availability}
           </p>
-          
-          <p className="flex items-center">
-            <svg className="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            License: {doctor.license_number}
-          </p>
         </div>
         
         <div className="mt-6 flex justify-between items-center">
           <span className="text-lg font-bold text-gray-900">
-            ₦{doctor.consultation_fee?.toLocaleString()}
+            Ksh {doctor.consultation_fee?.toLocaleString() ?? "Not specified"}
           </span>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+          
+          <Link to = "/dashboard/patient/doctors/appointmentsForm" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
             Book Appointment
-          </button>
+          </Link>
         </div>
       </div>
     </div>

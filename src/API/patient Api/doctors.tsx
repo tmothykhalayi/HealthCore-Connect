@@ -3,7 +3,7 @@ import { getAccessTokenHelper } from "@/lib/authHelper";
 
 
 export const getDoctorsFn = async () => {
-    const fullUrl = `${url}/doctors`;
+    const fullUrl = `${url}/patients/doctors`;
     const token = getAccessTokenHelper();
 
     const response = await fetch(fullUrl, {
@@ -19,5 +19,6 @@ export const getDoctorsFn = async () => {
     }
 
     const data = await response.json();
+    console.log("Fetched doctors data:", data);
     return data;
 }
