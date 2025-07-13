@@ -15,7 +15,6 @@ function AppointmentForm () {
     firstName: '',
     lastName: '',
     email: '',
-    dateOfBirth: '',
     appointmentDate: '',
     appointmentType: 'initial' // default to initial appointment
   });
@@ -97,20 +96,7 @@ function AppointmentForm () {
           />
         </div>
 
-        <div>
-          <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">
-            Date of Birth
-          </label>
-          <input
-            type="date"
-            id="dateOfBirth"
-            name="dateOfBirth"
-            value={formData.dateOfBirth}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
-          />
-        </div>
+        
 
         <div>
           <label htmlFor="appointmentDate" className="block text-sm font-medium text-gray-700">
