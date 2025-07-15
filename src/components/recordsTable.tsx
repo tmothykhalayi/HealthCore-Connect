@@ -8,7 +8,7 @@ import {
   flexRender,
   type ColumnDef,
 } from '@tanstack/react-table';
-import { useGetRecordsQuery, useDeleteRecord } from '@/hooks/recordHook';
+import { useGetRecordsQuery, useDeleteRecord, useCreateRecord } from '@/hooks/recordHook';
 import type { TRecord } from '@/Types/types';
 
 export const RecordsTable = () => {
@@ -16,6 +16,13 @@ export const RecordsTable = () => {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
+  });
+  const [isCreating, setIsCreating] = useState(false);
+  const [formData, setFormData] = useState({
+    patient_id: '',
+    doctor_id: '',
+    prescription_id: '',
+    description: '',
   });
 
   const { data, isLoading, isError } = useGetRecordsQuery(
@@ -25,6 +32,46 @@ export const RecordsTable = () => {
   );
 
   const deleteMutation = useDeleteRecord();
+  const createMutation = useCreateRecord();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleCreateClick = () => {
+    setIsCreating(true);
+    setFormData({
+      patient_id: '',
+      doctor_id: '',
+      prescription_id: '',
+      description: '',
+    });
+  };
+
+  const handleCancel = () => {
+    setIsCreating(false);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const submissionData = {
+        patient_id: parseInt(formData.patient_id),
+        doctor_id: parseInt(formData.doctor_id),
+        prescription_id: formData.prescription_id ? parseInt(formData.prescription_id) : null,
+        description: formData.description,
+      };
+      
+      await createMutation.mutateAsync(submissionData);
+      setIsCreating(false);
+    } catch (error) {
+      console.error('Error creating record:', error);
+    }
+  };
 
   // Format date to Kenyan format
   const formatDateTime = (dateTimeString: string) => {
@@ -151,7 +198,7 @@ export const RecordsTable = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+      <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200 mb-6">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -248,6 +295,105 @@ export const RecordsTable = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Add Record Form at the bottom */}
+      <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200 p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold text-gray-800">
+            {isCreating ? 'Create New Medical Record' : 'Record Form'}
+          </h2>
+          {!isCreating && (
+            <button
+              onClick={handleCreateClick}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            >
+              + Add New Record
+            </button>
+          )}
+        </div>
+
+        {isCreating && (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="patient_id" className="block text-sm font-medium text-gray-700 mb-1">
+                  Patient ID*
+                </label>
+                <input
+                  type="number"
+                  id="patient_id"
+                  name="patient_id"
+                  value={formData.patient_id}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="doctor_id" className="block text-sm font-medium text-gray-700 mb-1">
+                  Doctor ID*
+                </label>
+                <input
+                  type="number"
+                  id="doctor_id"
+                  name="doctor_id"
+                  value={formData.doctor_id}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="prescription_id" className="block text-sm font-medium text-gray-700 mb-1">
+                  Prescription ID
+                </label>
+                <input
+                  type="number"
+                  id="prescription_id"
+                  name="prescription_id"
+                  value={formData.prescription_id}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                Description*
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                required
+                rows={4}
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div className="flex justify-end space-x-3">
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={createMutation.isPending}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
+              >
+                {createMutation.isPending ? 'Creating...' : 'Create Record'}
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );

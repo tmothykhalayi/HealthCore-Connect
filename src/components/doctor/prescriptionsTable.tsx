@@ -7,8 +7,9 @@ import {
   type ColumnDef,
   type PaginationState
 } from '@tanstack/react-table';
-import { useGetPrescriptionQuery, useDeletePrescription } from '@/hooks/prescription';
+import { useGetPrescriptionQuery, useDeletePrescription,  } from '@/hooks/prescription';
 import type { TPrescription } from '@/Types/types';
+import { useCreatePrescription } from '@/hooks/doctor/prescriptions';
 
 const PrescriptionTable = () => {
   // State for pagination and search
@@ -17,6 +18,13 @@ const PrescriptionTable = () => {
     pageSize: 10,
   });
   const [search, setSearch] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({
+    patient_id: '',
+    doctor_id: '',
+    appointment_id: '',
+    notes: '',
+  });
 
   // Fetch data using the query hook
   const { data, isLoading, isError } = useGetPrescriptionQuery(
@@ -25,8 +33,39 @@ const PrescriptionTable = () => {
     search
   );
 
-  // Delete mutation
+  // Mutations
   const deletePrescription = useDeletePrescription();
+  const createPrescription = useCreatePrescription();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await createPrescription.mutateAsync({
+        patient_id: parseInt(formData.patient_id),
+        doctor_id: parseInt(formData.doctor_id),
+        appointment_id: formData.appointment_id ? parseInt(formData.appointment_id) : null,
+        notes: formData.notes,
+      });
+      // Reset form and hide it after successful submission
+      setFormData({
+        patient_id: '',
+        doctor_id: '',
+        appointment_id: '',
+        notes: '',
+      });
+      setShowForm(false);
+    } catch (error) {
+      console.error('Error creating prescription:', error);
+    }
+  };
 
   // Columns definition
   const columns = useMemo<ColumnDef<TPrescription>[]>(
@@ -203,6 +242,88 @@ const PrescriptionTable = () => {
             </option>
           ))}
         </select>
+      </div>
+
+      {/* Add Prescription Form */}
+      <div className="mt-8 border-t pt-6">
+        {!showForm ? (
+          <button
+            onClick={() => setShowForm(true)}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            + Add New Prescription
+          </button>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl">
+            <h2 className="text-xl font-semibold">Add New Prescription</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block mb-1 font-medium">Patient ID*</label>
+                <input
+                  type="number"
+                  name="patient_id"
+                  value={formData.patient_id}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              
+              <div>
+                <label className="block mb-1 font-medium">Doctor ID*</label>
+                <input
+                  type="number"
+                  name="doctor_id"
+                  value={formData.doctor_id}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              
+              <div>
+                <label className="block mb-1 font-medium">Appointment ID</label>
+                <input
+                  type="number"
+                  name="appointment_id"
+                  value={formData.appointment_id}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+            </div>
+            
+            <div>
+              <label className="block mb-1 font-medium">Notes*</label>
+              <textarea
+                name="notes"
+                value={formData.notes}
+                onChange={handleInputChange}
+                required
+                rows={4}
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={createPrescription.isPending}
+                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+              >
+                {createPrescription.isPending ? 'Saving...' : 'Save Prescription'}
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );

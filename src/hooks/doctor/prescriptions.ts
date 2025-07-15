@@ -1,5 +1,5 @@
-import { getPrescriptionFn } from "@/API/doctor API/prescriptions";
-import { createPrescriptionFn, deletePrescriptionFn } from "@/API/prescriptions";
+import { createPrescriptionFn, getPrescriptionFn } from "@/API/doctor API/prescriptions";
+import { deletePrescriptionFn } from "@/API/prescriptions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useGetPrescriptionQuery = (page: number, limit: number, search: string) => {

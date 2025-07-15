@@ -46,3 +46,22 @@ export const deleteRecordFn = async (recordId: number): Promise<void> => {
     throw new Error('Failed to delete record');
   }
 }
+
+export const createRecordFn = async (recordData: TRecord): Promise<TRecord> => {
+  const fullUrl = `${url}/records`;
+
+  const response = await fetch(fullUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAccessTokenHelper()}`,
+    },
+    body: JSON.stringify(recordData),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to create record');
+  }
+
+  return response.json();
+} 

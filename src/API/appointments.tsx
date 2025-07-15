@@ -3,30 +3,28 @@ import url from '@/constants/urls'
 import { getAccessTokenHelper } from '@/lib/authHelper'
 import type { TAppointment } from '@/Types/types'
 
-export const getAppointmentsFn = async (
-  appointmentId: number,
-): Promise<{
-  data: TAppointment[]
-  total: number
+export const getAppointmentsFn = async (patientId: number): Promise<{
+  data: TAppointment[];
+  total: number;
 }> => {
- 
 
-  const fullUrl = `${url}/appointments/${appointmentId}`
-  const token = getAccessTokenHelper()
+
+  const fullUrl = `${url}/patients/appointments/${patientId}`;
+  const token = getAccessTokenHelper();
 
   const response = await fetch(fullUrl, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      'Authorization': `Bearer ${token}`,
     },
-  })
+  });
 
   if (!response.ok) {
-    throw new Error('Network response was not ok')
+    throw new Error('Network response was not ok');
   }
 
-  return response.json()
+  return response.json();
 }
 
 export const deleteAppointmentFn = async (

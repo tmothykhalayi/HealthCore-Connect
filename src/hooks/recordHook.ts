@@ -1,4 +1,4 @@
-import { deleteRecordFn, getRecordFn } from "@/API/records";
+import { createRecordFn, deleteRecordFn, getRecordFn } from "@/API/records";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useGetRecordsQuery = (page: number, limit: number, search: string) => {
@@ -13,6 +13,17 @@ export const useDeleteRecord = () => {
 
   return useMutation({
     mutationFn: deleteRecordFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['records'] });
+    },
+  });
+}
+
+export const useCreateRecord = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (recordData: any) => createRecordFn(recordData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['records'] });
     },

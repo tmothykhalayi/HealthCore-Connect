@@ -234,20 +234,7 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
                     <option value="cancelled">Cancelled</option>
                   </select>
                 </div>
-                {/* <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Appointment Date
-                  </label>
-                  <input
-                    type="date"
-                    name="appointment_date"
-                    value={formData.appointment_date}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                    min={new Date().toISOString().split('T')[0]}
-                  />
-                </div> */}
+             
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Appointment Time
