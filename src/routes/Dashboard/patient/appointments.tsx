@@ -1,16 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/dashboard/patient/appointments')({
-  component: RouteComponent,
+  component: AppointmentCard,
 })
 
 import { PatientAppointments} from '@/components/patient/appointmentCards'
 
-function RouteComponent() {
+function AppointmentCard() {
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-6">Your Appointments</h1>
-      <PatientAppointments patientId={1} />
+    <div className="p-4">
+      <PatientAppointments patientId={3} />
     </div>
-  )
-}
+  );
+} 

@@ -58,7 +58,8 @@ export const getAppointmentsFn = async (patient_id: number) => {
     },
   });
 
+  const data = await response.json();
 
-
-  return response.json();
+  return Array.isArray(data) ? data : [data];
 }
+

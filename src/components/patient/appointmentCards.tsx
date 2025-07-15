@@ -58,7 +58,7 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
           {formatDate(appointment.appointment_time)}
         </p>
         <p className="text-gray-600">
-          <span className="font-medium">Doctor ID:</span> {appointment.doctor_id}
+          <span className="font-medium">Doctor :</span> {appointment.doctor_id}
         </p>
         <p className="text-gray-600">
           <span className="font-medium">Reason:</span> {appointment.reason}
@@ -81,11 +81,12 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
   } = useGetAppointmentsByIdQuery(patientId);
 
   console.log("Appointments Data:", appointments);
+
   if (isLoading) {
     return <div className="text-center py-8">Loading appointments...</div>;
   }
 
-  if (isError) {
+   if (isError) {
     return (
       <div className="text-center py-8 text-red-500">
         Error: {error.message}
@@ -93,7 +94,10 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
     );
   }
 
-  if (!appointments || appointments.length === 0) {
+  // Check if appointments exists and is an array
+  const appointmentsArray = Array.isArray(appointments) ? appointments : [appointments];
+
+  if (!appointmentsArray || appointmentsArray.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
         No appointments found for this patient.
@@ -108,8 +112,11 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
       </h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        { Array.isArray(appointments) && appointments.map((appointment) => (
-          <AppointmentCard key={appointment.appointment_id} appointment={appointment} />
+         {appointmentsArray.map((appointment) => (
+          <AppointmentCard 
+            key={appointment.appointment_id} 
+            appointment={appointment} 
+          />
         ))}
       </div>
     </div>

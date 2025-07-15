@@ -21,10 +21,10 @@ export const useCreateAppointment = () => {
   });
 } 
 
-export const useGetAppointmentsByIdQuery = (patient_id: number) => {
+export const useGetAppointmentsByIdQuery = (patientId: number) => {
   return useQuery({
-    queryKey: ['appointments', patient_id],
-    queryFn: () => getAppointmentsFn(patient_id),
+    queryKey: ['appointments', patientId],
+    queryFn: () => getAppointmentsFn(patientId),
   });
 
  
