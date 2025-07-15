@@ -31,23 +31,31 @@ export const getPatientsFn = async (page = 1, limit = 10, search = ''): Promise<
   return response.json();
 }
 
-export const createPatientFn = async (patientData: TPatient): Promise<TPatient> => {
+// API/patients.ts
+export const createPatientFn = async (patientData: Omit<TPatient, 'patient_id'>): Promise<TPatient> => {
   const fullUrl = `${url}/patients`;
+  const token = getAccessTokenHelper();
 
-  const response = await fetch(fullUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${getAccessTokenHelper()}`,
-    },
-    body: JSON.stringify(patientData),
-  });
+  try {
+    const response = await fetch(fullUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(patientData),
+    });
 
-  if (!response.ok) {
-    throw new Error('Failed to create patient');
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to create patient');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('API Error:', error);
+    throw error;
   }
-
-  return response.json();
 }
 
 export const deletePatientFn = async (patientId: number): Promise<void> => {
@@ -57,6 +65,7 @@ export const deletePatientFn = async (patientId: number): Promise<void> => {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAccessTokenHelper()}`,
     },
   });
 

@@ -38,6 +38,7 @@ export const deletePaymentsFn = async (paymentId: number): Promise<void> => {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAccessTokenHelper()}`,
     },
   });
 

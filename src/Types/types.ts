@@ -17,12 +17,11 @@ export interface loginType {
 }
 
 export interface TUser {
-  user_id: string
+  user_id: string | number
   name: string
   email: string
   phone: string
   role: string
-  created_at: string
 }
 
 export type UserRole = 'admin' | 'pharmacist' | 'patient' | 'doctor'

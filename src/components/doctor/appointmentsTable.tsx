@@ -8,7 +8,7 @@ import {
   flexRender,
   type ColumnDef,
 } from '@tanstack/react-table';
-import { useGetAppointmentsByIdQuery, useDeleteAppointment } from '@/hooks/doctor/appointment';
+import { useGetAppointmentsByIdQuery, useDeleteAppointment, useCreateAppointment } from '@/hooks/doctor/appointment';
 import type { TAppointment } from '@/Types/types';
 
 export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => {
@@ -17,15 +17,21 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
     pageIndex: 0,
     pageSize: 10,
   });
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({
+    patientId: '',
+    status: 'scheduled',
+    reason: '',
+    appointment_date: '',
+    appointment_time: '',
+  });
 
-
-  const { data: doctorData, isLoading, isError } = useGetAppointmentsByIdQuery(doctorId);
-  console.log("doctorData", doctorData);
+  const { data: doctorData, isLoading, isError, refetch } = useGetAppointmentsByIdQuery(doctorId);
   const appointments = doctorData?.appointments || [];
 
-  console.log("appointments", appointments);
-
   const deleteMutation = useDeleteAppointment();
+  const createMutation = useCreateAppointment();
+
   // Format date to Kenyan format
   const formatDateTime = (dateTimeString: string) => {
     const date = new Date(dateTimeString);
@@ -37,6 +43,39 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
       minute: '2-digit',
       hour12: true
     });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+       createMutation.mutate({
+        doctor_id: doctorId,
+        patient_id: Number(formData.patientId),
+        status: formData.status,
+        reason: formData.reason,
+        created_at: new Date(),
+        appointment_time: new Date () ,
+      });
+      setShowForm(false);
+      setFormData({
+        patientId: '',
+        status: 'scheduled',
+        reason: '',
+        appointment_date: '',
+        appointment_time: '',
+      });
+      refetch();
+    } catch (error) {
+      console.error('Error creating appointment:', error);
+    }
   };
 
   const columns = useMemo<ColumnDef<TAppointment>[]>(
@@ -115,7 +154,7 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    manualPagination: false, // Client-side pagination since we have all data
+    manualPagination: false,
   });
 
   if (isLoading) {
@@ -133,17 +172,129 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
       </div>
     );
   }
-    if (!appointments.length) {
-        return (
-        <div className="text-center text-gray-500 p-4">
-            No appointments found for this doctor.
-        </div>
-        );
-    }
+
+  if (!appointments.length && !showForm) {
+    return (
+      <div className="text-center p-4">
+        <div className="text-gray-500 mb-4">No appointments found for this doctor.</div>
+        <button
+          onClick={() => setShowForm(true)}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+        >
+          Add New Appointment
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="p-4 max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Doctor's Appointments</h1>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold text-gray-800">Doctor's Appointments</h1>
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          >
+            {showForm ? 'Hide Form' : 'Add New Appointment'}
+          </button>
+        </div>
+
+        {/* Add Appointment Form */}
+        {showForm && (
+          <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200 mb-6">
+            <h2 className="text-xl font-semibold mb-4">Schedule New Appointment</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Patient ID
+                  </label>
+                  <input
+                    type="number"
+                    name="patientId"
+                    value={formData.patientId}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Status
+                  </label>
+                  <select
+                    name="status"
+                    value={formData.status}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="scheduled">Scheduled</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </div>
+                {/* <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Appointment Date
+                  </label>
+                  <input
+                    type="date"
+                    name="appointment_date"
+                    value={formData.appointment_date}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                    min={new Date().toISOString().split('T')[0]}
+                  />
+                </div> */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Appointment Time
+                  </label>
+                  <input
+                    type="time"
+                    name="appointment_time"
+                    value={formData.appointment_time}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Reason
+                  </label>
+                  <textarea
+                    name="reason"
+                    value={formData.reason}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    rows={3}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={createMutation.isPending}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
+                >
+                  {createMutation.isPending ? 'Saving...' : 'Save Appointment'}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
         <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
           <div className="flex-1">
             <input

@@ -1,5 +1,5 @@
 import { getPrescriptionFn } from "@/API/doctor API/prescriptions";
-import { deletePrescriptionFn } from "@/API/prescriptions";
+import { createPrescriptionFn, deletePrescriptionFn } from "@/API/prescriptions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useGetPrescriptionQuery = (page: number, limit: number, search: string) => {
@@ -14,6 +14,17 @@ export const useDeletePrescription = () => {
 
   return useMutation({
     mutationFn: deletePrescriptionFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['prescriptions'] });
+    },
+  });
+}
+
+export const useCreatePrescription = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createPrescriptionFn,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['prescriptions'] });
     },

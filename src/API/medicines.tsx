@@ -38,10 +38,30 @@ export const deleteMedicinesFn = async (medicineId: number): Promise<void> => {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAccessTokenHelper()}`,
     },
   });
 
   if (!response.ok) {
     throw new Error('Failed to delete medicine');
   }
+}
+
+export const createMedicineFn = async (medicine: TMedicine): Promise<TMedicine> => {
+  const fullUrl = `${url}/medicines`;
+
+  const response = await fetch(fullUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAccessTokenHelper()}`,
+    },
+    body: JSON.stringify(medicine),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to create medicine');
+  }
+
+  return response.json();
 }

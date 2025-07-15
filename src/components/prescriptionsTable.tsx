@@ -8,7 +8,12 @@ import {
   flexRender,
   type ColumnDef,
 } from '@tanstack/react-table';
-import { useGetPrescriptionQuery, useDeletePrescription } from '@/hooks/prescription';
+import {
+  useGetPrescriptionQuery,
+  useDeletePrescription,
+  useCreatePrescription,
+  useUpdatePrescription,
+} from '@/hooks/prescription';
 import type { TPrescription } from '@/Types/types';
 
 export const PrescriptionsTable = () => {
@@ -17,16 +22,84 @@ export const PrescriptionsTable = () => {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingPrescription, setEditingPrescription] = useState<TPrescription | null>(null);
+  const [formData, setFormData] = useState({
+    patient_id: '',
+    doctor_id: '',
+    appointment_id: '',
+    notes: '',
+  });
 
   const { data, isLoading, isError } = useGetPrescriptionQuery(
     pagination.pageIndex + 1,
     pagination.pageSize,
-    search
+    search,
   );
 
   const deleteMutation = useDeletePrescription();
+  const createMutation = useCreatePrescription();
+  const updateMutation = useUpdatePrescription();
 
-  // Format date to Kenyan format
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleCreate = () => {
+    setIsEditing(true);
+    setEditingPrescription(null);
+    setFormData({
+      patient_id: '',
+      doctor_id: '',
+      appointment_id: '',
+      notes: '',
+    });
+  };
+
+  const handleEdit = (prescription: TPrescription) => {
+    setIsEditing(true);
+    setEditingPrescription(prescription);
+    setFormData({
+      patient_id: prescription.patient_id.toString(),
+      doctor_id: prescription.doctor_id.toString(),
+      appointment_id: prescription.appointment_id?.toString() || '',
+      notes: prescription.notes,
+    });
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditingPrescription(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const submissionData = {
+        patient_id: parseInt(formData.patient_id),
+        doctor_id: parseInt(formData.doctor_id),
+        appointment_id: formData.appointment_id ? parseInt(formData.appointment_id) : null,
+        notes: formData.notes,
+      };
+
+      if (editingPrescription) {
+        await updateMutation.mutateAsync({
+          prescriptionId: editingPrescription.prescription_id,
+          prescriptionData: submissionData,
+        });
+      } else {
+        await createMutation.mutateAsync(submissionData);
+      }
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error saving prescription:', error);
+    }
+  };
+
   const formatDateTime = (dateTimeString: string) => {
     const date = new Date(dateTimeString);
     return date.toLocaleString('en-KE', {
@@ -35,7 +108,7 @@ export const PrescriptionsTable = () => {
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true
+      hour12: true,
     });
   };
 
@@ -77,22 +150,30 @@ export const PrescriptionsTable = () => {
       {
         header: 'Actions',
         cell: ({ row }) => (
-          <button
-            onClick={() => {
-              if (confirm(`Are you sure you want to delete this prescription?`)) {
-                deleteMutation.mutate(row.original.prescription_id);
-              }
-            }}
-            className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
-            disabled={deleteMutation.isPending}
-          >
-            {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
-          </button>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => handleEdit(row.original)}
+              className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
+            >
+              Edit
+            </button>
+            <button
+              onClick={()  => {
+                if (confirm(`Are you sure you want to delete this prescription? ${row.original.prescription_id}`)) {
+                  deleteMutation.mutate(row.original.prescription_id);
+                }
+              }}
+              className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+            </button>
+          </div>
         ),
-        size: 100,
+        size: 180,
       },
     ],
-    [deleteMutation]
+    [deleteMutation],
   );
 
   const table = useReactTable({
@@ -147,7 +228,7 @@ export const PrescriptionsTable = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+      <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200 mb-6">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -161,7 +242,7 @@ export const PrescriptionsTable = () => {
                     >
                       {flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                     </th>
                   ))}
@@ -172,11 +253,14 @@ export const PrescriptionsTable = () => {
               {table.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50">
                   {row.getVisibleCells().map((cell) => (
-                    <td 
-                      key={cell.id} 
+                    <td
+                      key={cell.id}
                       className="px-6 py-4 whitespace-nowrap text-sm text-gray-600"
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </td>
                   ))}
                 </tr>
@@ -207,7 +291,7 @@ export const PrescriptionsTable = () => {
               ))}
             </select>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-700">
               Page {pagination.pageIndex + 1} of {table.getPageCount()}
@@ -244,6 +328,107 @@ export const PrescriptionsTable = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Add/Edit Form at the bottom */}
+      <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200 p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold text-gray-800">
+            {isEditing ? (editingPrescription ? 'Edit Prescription' : 'Create New Prescription') : 'Prescription Form'}
+          </h2>
+          {!isEditing && (
+            <button
+              onClick={handleCreate}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            >
+              + Add New Prescription
+            </button>
+          )}
+        </div>
+
+        {isEditing && (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="patient_id" className="block text-sm font-medium text-gray-700 mb-1">
+                  Patient ID*
+                </label>
+                <input
+                  type="number"
+                  id="patient_id"
+                  name="patient_id"
+                  value={formData.patient_id}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="doctor_id" className="block text-sm font-medium text-gray-700 mb-1">
+                  Doctor ID*
+                </label>
+                <input
+                  type="number"
+                  id="doctor_id"
+                  name="doctor_id"
+                  value={formData.doctor_id}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="appointment_id" className="block text-sm font-medium text-gray-700 mb-1">
+                  Appointment ID
+                </label>
+                <input
+                  type="number"
+                  id="appointment_id"
+                  name="appointment_id"
+                  value={formData.appointment_id}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
+                Notes*
+              </label>
+              <textarea
+                id="notes"
+                name="notes"
+                value={formData.notes}
+                onChange={handleInputChange}
+                required
+                rows={4}
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div className="flex justify-end space-x-3">
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={createMutation.isPending || updateMutation.isPending}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
+              >
+                {(createMutation.isPending || updateMutation.isPending)
+                  ? 'Saving...'
+                  : (editingPrescription ? 'Update Prescription' : 'Create Prescription')}
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );

@@ -1,9 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/dashboard/doctor/prescriptions')({
-  component: RouteComponent,
+  component: PrescriptionsPage,
 })
+import PrescriptionTable from '@/components/doctor/prescriptionsTable';
 
-function RouteComponent() {
-  return <div>Hello "/dashboard/doctors/prescriptions"!</div>
+function PrescriptionsPage() {
+  return (
+    <div>
+      <PrescriptionTable />
+    </div>
+  );
 }
+
+export default PrescriptionsPage;

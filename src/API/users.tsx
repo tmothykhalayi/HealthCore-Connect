@@ -38,6 +38,7 @@ export const deleteUserFn = async (userId: number): Promise<void> => {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAccessTokenHelper()}`,
     },
   });
 
@@ -45,3 +46,47 @@ export const deleteUserFn = async (userId: number): Promise<void> => {
     throw new Error('Failed to delete user');
   }
 }
+
+export const createUserFn = async (userData : {
+  name: string;
+  email: string;
+  role: string;
+  phone?: string; // Optional field, adjust as necessary
+}) => {
+  const fullUrl = `${url}/users`;
+console.log("userData", userData);
+  const response = await fetch(fullUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAccessTokenHelper()}`,
+    },
+    body: JSON.stringify(userData),
+  });
+
+  // if (!response.ok) {
+  //   throw new Error('Failed to create user');
+  // }
+  const data = await response.json();
+  console.log("Created user:", data);
+  return data;
+}
+
+export const updateUserFn = async (userId: number, userData: Partial<TUser>): Promise<TUser> => {
+  const fullUrl = `${url}/users/${userId}`;
+
+  const response = await fetch(fullUrl, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAccessTokenHelper()}`,
+    },
+    body: JSON.stringify(userData),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to update user');
+  }
+
+  return response.json();
+} 

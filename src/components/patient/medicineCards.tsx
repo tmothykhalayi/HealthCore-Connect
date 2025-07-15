@@ -192,7 +192,7 @@ const MedicineCard = ({ medicine, index }: { medicine: Medicine; index: number }
           transition={{ delay: index * 0.1 + 0.5 }}
         >
           <span className="text-lg font-bold text-blue-600">
-            ${medicine.price.toFixed(2)}
+            Ksh {medicine.price.toFixed(2)}
           </span>
 
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>

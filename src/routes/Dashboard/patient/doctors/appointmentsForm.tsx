@@ -6,10 +6,9 @@ export const Route = createFileRoute(
   component: AppointmentForm,
 })
 import { useState } from 'react';
-import { usePostAppointmentFormHook } from '@/hooks/patients/appointmentFormHook'; // Update the import path
-
+import { useCreateAppointment } from '@/hooks/patients/appointmentHook';
 function AppointmentForm () {
-  const { mutate: submitAppointment, isPending, isError, isSuccess } = usePostAppointmentFormHook();
+  const { mutate: submitAppointment, isPending, isError, isSuccess } = useCreateAppointment();
 
   const [formData, setFormData] = useState({
     firstName: '',

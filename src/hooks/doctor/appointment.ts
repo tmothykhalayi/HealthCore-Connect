@@ -1,4 +1,4 @@
-import { deleteAppointmentFn, getAppointmentsFn } from "@/API/doctor API/appointments";
+import { createAppointmentFn, deleteAppointmentFn, getAppointmentsFn } from "@/API/doctor API/appointments";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useGetAppointmentsQuery = (page: number, limit: number, search: string) => {
@@ -20,6 +20,24 @@ export const useDeleteAppointment = () => {
 
   return useMutation({
     mutationFn: deleteAppointmentFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['appointments'] });
+    },
+  });
+}
+
+export const useCreateAppointment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (appointmentData: {
+      doctor_id: number;
+      patient_id: number;
+      status: string;
+      reason: string;
+      appointment_time: Date;
+      created_at: Date;
+    }) => createAppointmentFn(appointmentData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] });
     },

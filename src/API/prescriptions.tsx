@@ -37,11 +37,63 @@ export const deletePrescriptionFn = async (prescriptionId: number): Promise<void
   const response = await fetch(fullUrl, {
     method: 'DELETE',
     headers: {
+
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAccessTokenHelper()}`
     },
   });
 
   if (!response.ok) {
     throw new Error('Failed to delete prescription');
   }
+}
+
+// CREATE new prescription
+export const createPrescriptionFn = async (prescriptionData: TPrescription): Promise<TPrescription> => {
+  const fullUrl = `${url}/prescriptions`;
+  const token = getAccessTokenHelper();
+
+  const response = await fetch(fullUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify(prescriptionData),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to create prescription');
+  }
+
+  return response.json();
+}
+
+// UPDATE prescription (existing)
+export const updatePrescriptionFn = async ({
+  prescriptionId,
+  prescriptionData,
+}: {
+  prescriptionId: number;
+  prescriptionData: TPrescription;
+}): Promise<TPrescription> => {
+  const fullUrl = `${url}/prescriptions/${prescriptionId}`;
+  const token = getAccessTokenHelper();
+
+  const response = await fetch(fullUrl, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify(prescriptionData),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to update prescription');
+  }
+
+  return response.json();
 }

@@ -38,10 +38,31 @@ export const deletePrescriptionFn = async (prescriptionId: number): Promise<void
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAccessTokenHelper()}`,
     },
   });
 
   if (!response.ok) {
     throw new Error('Failed to delete prescription');
   }
+}
+
+export const createPrescriptionFn = async (prescriptionData: TPrescription): Promise<TPrescription> => {
+  const fullUrl = `${url}/prescriptions`;
+  const token = getAccessTokenHelper();
+
+  const response = await fetch(fullUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify(prescriptionData),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to create prescription');
+  }
+
+  return response.json();
 }
