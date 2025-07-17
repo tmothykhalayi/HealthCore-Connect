@@ -9,8 +9,9 @@ export const getAppointmentsFn = async (patientId: number): Promise<{
 }> => {
 
 
-  const fullUrl = `${url}/appointments`;
+  const fullUrl = `${url}/patients/appointments/ ${patientId}`;
   const token = getAccessTokenHelper();
+
 
   const response = await fetch(fullUrl, {
     method: 'GET',

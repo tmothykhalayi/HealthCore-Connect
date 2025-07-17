@@ -24,6 +24,7 @@ export const AppointmentsTable = () => {
     pagination.pageSize,
     search
   );
+  console.log(" my Appointments data:", data);
 
   const deleteMutation = useDeleteAppointment();
 
