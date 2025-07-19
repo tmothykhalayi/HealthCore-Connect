@@ -2,9 +2,9 @@ import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { FaEnvelope, FaLock, FaCheck, FaTimes, FaSpinner, FaUser, FaPhone } from 'react-icons/fa'
-import type { CreateUserDto } from '@/Types/interface'
-import { UserRole } from '@/Types/interface'
-import api from '@/lib/axios'
+import type { CreateUserDto  } from '@/types/alltypes'
+import { UserRole } from '@/types/alltypes'
+//import api from '@/lib/axios'
 
 export function Register() {
   const [registerStatus, setRegisterStatus] = useState<{
