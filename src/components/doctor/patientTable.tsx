@@ -1,4 +1,3 @@
-import { useGetPatientsQuery } from '@/hooks/doctor/patient'
 import { useNavigate } from '@tanstack/react-router'
 import {
   flexRender,
@@ -6,6 +5,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import type { ColumnDef } from '@tanstack/react-table'
+import { useGetPatientsQuery } from '@/hooks/doctor/patient'
 
 export function PatientsTable() {
   // Define the patient type
@@ -20,7 +20,7 @@ export function PatientsTable() {
   }
 
   // Define table columns
-  const columns: ColumnDef<Patient>[] = [
+  const columns: Array<ColumnDef<Patient>> = [
     {
       accessorKey: 'patient_id',
       header: 'ID',

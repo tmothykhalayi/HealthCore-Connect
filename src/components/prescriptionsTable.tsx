@@ -1,18 +1,19 @@
 // components/PrescriptionsTable.tsx
 import { useMemo, useState } from 'react'
 import {
-  useReactTable,
+  
+  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  flexRender,
-  type ColumnDef,
+  useReactTable
 } from '@tanstack/react-table'
-import {
-  useGetPrescriptionQuery,
-  useDeletePrescription,
-} from '@/hooks/prescription'
+import type {ColumnDef} from '@tanstack/react-table';
 import type { TPrescription } from '@/types/alltypes'
+import {
+  useDeletePrescription,
+  useGetPrescriptionQuery,
+} from '@/hooks/prescription'
 
 export const PrescriptionsTable = () => {
   const [search, setSearch] = useState('')
@@ -42,7 +43,7 @@ export const PrescriptionsTable = () => {
     })
   }
 
-  const columns = useMemo<ColumnDef<TPrescription>[]>(
+  const columns = useMemo<Array<ColumnDef<TPrescription>>>(
     () => [
       {
         header: 'Prescription ID',

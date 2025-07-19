@@ -1,12 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 
+import { PatientAppointments } from '@/components/patient/appointmentCards'
+import { getUserIdHelper } from '@/lib/auth'
+
 export const Route = createFileRoute('/Dashboard/patient/appointments')({
   component: AppointmentCard,
 })
-
-import { PatientAppointments } from '@/components/patient/appointmentCards'
-import { getUserIdHelper } from '@/lib/auth'
 
 function AppointmentCard() {
   const userId = Number(getUserIdHelper())

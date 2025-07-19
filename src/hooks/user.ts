@@ -1,5 +1,5 @@
-import { createUserFn, deleteUserFn, getUserFn } from '@/api/user'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { createUserFn, deleteUserFn, getUserFn, getCurrentUserProfileFn } from '@/api/user'
 
 export const useGetUserQuery = (
   page: number,
@@ -19,6 +19,14 @@ export const useDeleteUser = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })
     },
+  })
+}
+
+// Hook to get current user profile with role-specific data
+export const useGetCurrentUserProfile = () => {
+  return useQuery({
+    queryKey: ['currentUserProfile'],
+    queryFn: getCurrentUserProfileFn,
   })
 }
 

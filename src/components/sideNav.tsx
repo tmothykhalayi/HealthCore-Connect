@@ -1,16 +1,16 @@
 import { Link } from '@tanstack/react-router'
 import {
-  FaUserMd,
-  FaProcedures,
   FaCalendarAlt,
-  FaUserFriends,
   FaChartLine,
-  FaPills,
   FaFileMedical,
   FaHospitalUser,
-  FaPrescriptionBottleAlt,
-  FaUserInjured,
   FaMoneyBill,
+  FaPills,
+  FaPrescriptionBottleAlt,
+  FaProcedures,
+  FaUserFriends,
+  FaUserInjured,
+  FaUserMd,
 } from 'react-icons/fa'
 import { MdDashboard, MdLocalPharmacy } from 'react-icons/md'
 
@@ -97,9 +97,14 @@ export default function SideNav({ role }: SideNavProps) {
     ],
     patient: [
       {
-        icon: <FaUserMd size={18} />,
-        label: 'Doctors',
-        to: '/Dashboard/patient/doctors',
+        icon: <FaCalendarAlt size={18} />,
+        label: 'Appointments',
+        to: '/Dashboard/patient/appointments',
+      },
+      {
+        icon: <FaFileMedical size={18} />,
+        label: 'Medical Records',
+        to: '/Dashboard/patient/medical-records',
       },
       {
         icon: <FaPills />,
@@ -107,14 +112,24 @@ export default function SideNav({ role }: SideNavProps) {
         to: '/Dashboard/patient/medicines',
       },
       {
-        icon: <FaCalendarAlt size={18} />,
-        label: 'Appointments',
-        to: '/Dashboard/patient/appointments',
+        icon: <FaPrescriptionBottleAlt size={18} />,
+        label: 'Prescriptions',
+        to: '/Dashboard/patient/prescriptions',
       },
       {
         icon: <MdLocalPharmacy size={20} />,
-        label: 'Pharmacy Orders',
-        to: '/Dashboard/patient/pharmacy_orders',
+        label: 'Orders',
+        to: '/Dashboard/patient/orders',
+      },
+      {
+        icon: <FaUserMd size={18} />,
+        label: 'Doctors',
+        to: '/Dashboard/patient/doctors',
+      },
+      {
+        icon: <FaProcedures size={18} />,
+        label: 'General Settings',
+        to: '/Dashboard/patient/settings',
       },
     ],
     pharmacist: [

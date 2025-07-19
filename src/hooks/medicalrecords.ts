@@ -1,9 +1,9 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   createRecordFn,
   deleteRecordFn,
   getRecordFn,
 } from '@/api/medicalrecords'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 export const useGetRecordsQuery = (
   page: number,

@@ -1,8 +1,8 @@
 import { Outlet } from '@tanstack/react-router'
-import { FaBars, FaTimes, FaBell, FaUserCircle } from 'react-icons/fa'
+import { FaBars, FaBell, FaTimes, FaUserCircle } from 'react-icons/fa'
 import { useState } from 'react'
-import SideNav from '@/components/sideNav'
 import type { Role } from '@/types/alltypes'
+import SideNav from '@/components/sideNav'
 import { getUserRoleHelper } from '@/lib/auth'
 
 interface DashboardLayoutProps {
@@ -11,7 +11,7 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const role: Role = getUserRoleHelper() as Role
+  const role: Role = getUserRoleHelper()
 
   return (
     <div className="flex h-screen bg-gray-50">

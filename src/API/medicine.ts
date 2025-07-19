@@ -1,4 +1,9 @@
-//inteface medicine.ts
+// inteface medicine.ts
+
+// API/patients.ts
+import { API_BASE_URL } from './BaseUrl'
+import type { TMedicine } from '@/types/alltypes'
+import { getAccessTokenHelper } from '@/lib/auth'
 
 export interface Medicine {
   userId: number
@@ -16,17 +21,12 @@ export interface Medicine {
   minimumStockLevel?: number
 }
 
-// API/patients.ts
-import { API_BASE_URL } from './BaseUrl'
-import { getAccessTokenHelper } from '@/lib/auth'
-import type { TMedicine } from '@/types/alltypes'
-
 export const getMedicinesFn = async (
   page = 1,
   limit = 10,
   search = '',
 ): Promise<{
-  data: TMedicine[]
+  data: Array<TMedicine>
   total: number
 }> => {
   const params = new URLSearchParams({

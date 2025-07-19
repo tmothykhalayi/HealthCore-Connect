@@ -1,8 +1,8 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   createPharmacyOrderFn,
   getPharmacyOrdersFn,
 } from '@/api/patient/orders'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 export const useGetPharmacyOrders = (patient_id: number) => {
   return useQuery({

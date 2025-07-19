@@ -1,19 +1,20 @@
 // components/DoctorsAppointmentsTable.tsx
 import { useMemo, useState } from 'react'
 import {
-  useReactTable,
+  
+  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  flexRender,
-  type ColumnDef,
+  useReactTable
 } from '@tanstack/react-table'
-import {
-  useGetAppointmentsByIdQuery,
-  useDeleteAppointment,
-  useCreateAppointment,
-} from '@/hooks/doctor/appointment'
+import type {ColumnDef} from '@tanstack/react-table';
 import type { TAppointment } from '@/Types/types'
+import {
+  useCreateAppointment,
+  useDeleteAppointment,
+  useGetAppointmentsByIdQuery,
+} from '@/hooks/doctor/appointment'
 
 export const DoctorsAppointmentsTable = ({
   doctorId,
@@ -95,7 +96,7 @@ export const DoctorsAppointmentsTable = ({
     }
   }
 
-  const columns = useMemo<ColumnDef<TAppointment>[]>(
+  const columns = useMemo<Array<ColumnDef<TAppointment>>>(
     () => [
       {
         header: 'Appointment ID',

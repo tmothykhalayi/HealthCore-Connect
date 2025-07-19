@@ -1,13 +1,14 @@
 import { useMemo, useState } from 'react'
 import {
-  useReactTable,
+  
+  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  flexRender,
-  type ColumnDef,
+  useReactTable
 } from '@tanstack/react-table'
-import { useGetRecordsQuery } from '@/hooks/doctor/recordHook'
+import type {ColumnDef} from '@tanstack/react-table';
 import type { TRecord } from '@/Types/types'
+import { useGetRecordsQuery } from '@/hooks/doctor/recordHook'
 
 export const MedicalRecordsTable = () => {
   const [search, setSearch] = useState('')
@@ -26,7 +27,7 @@ export const MedicalRecordsTable = () => {
     })
   }
 
-  const columns = useMemo<ColumnDef<TRecord>[]>(
+  const columns = useMemo<Array<ColumnDef<TRecord>>>(
     () => [
       {
         header: 'Record ID',

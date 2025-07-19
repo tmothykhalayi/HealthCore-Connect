@@ -1,12 +1,12 @@
 // API/patients.ts
 import { API_BASE_URL } from './BaseUrl'
-import { getAccessTokenHelper } from '@/lib/auth'
 import type { TAppointment } from '@/types/alltypes'
+import { getAccessTokenHelper } from '@/lib/auth'
 
 export const getAppointmentsFn = async (
   patientId: number,
 ): Promise<{
-  data: TAppointment[]
+  data: Array<TAppointment>
   total: number
 }> => {
   const fullUrl = `${API_BASE_URL}/appointments`

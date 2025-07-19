@@ -1,5 +1,7 @@
 import { API_BASE_URL } from './BaseUrl'
 
+import { getAccessTokenHelper } from '@/lib/auth'
+
 export enum PaymentStatus {
   PENDING = 'pending',
   COMPLETED = 'completed',
@@ -18,14 +20,12 @@ export interface Payment {
   relatedEntityId: number
 }
 
-import { getAccessTokenHelper } from '@/lib/auth'
-
 export const getPaymentsFn = async (
   page = 1,
   limit = 10,
   search = '',
 ): Promise<{
-  data: Payment[]
+  data: Array<Payment>
   total: number
 }> => {
   const params = new URLSearchParams({

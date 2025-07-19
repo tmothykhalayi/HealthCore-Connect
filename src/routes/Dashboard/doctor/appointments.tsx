@@ -1,13 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 
-export const Route = createFileRoute('/Dashboard/doctor/appointments')({
-  component: AppointmentsPage,
-})
-
 // pages/appointments.tsx
 import { DoctorsAppointmentsTable } from '@/components/doctor/appointmentsTable'
 import { getUserIdHelper } from '@/lib/auth'
+
+export const Route = createFileRoute('/Dashboard/doctor/appointments')({
+  component: AppointmentsPage,
+})
 function AppointmentsPage() {
   const doctorIdString = getUserIdHelper()
   const doctorId = doctorIdString !== null ? Number(doctorIdString) : undefined

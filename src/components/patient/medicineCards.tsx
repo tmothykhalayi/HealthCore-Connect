@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useGetMedicineQuery } from '@/hooks/patients/medicine'
 import { motion } from 'framer-motion'
 import OrderMedicineModal from './ordersForm'
+import { useGetMedicineQuery } from '@/hooks/patients/medicine'
 
 type Medicine = {
   medicine_id: number

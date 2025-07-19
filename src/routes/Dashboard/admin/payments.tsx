@@ -1,11 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+// pages/payments.tsx
+import { PaymentsTable } from '@/components/paymentsTable'
+
 export const Route = createFileRoute('/Dashboard/admin/payments')({
   component: PaymentsPage,
 })
-
-// pages/payments.tsx
-import { PaymentsTable } from '@/components/paymentsTable'
 
 export default function PaymentsPage() {
   return (

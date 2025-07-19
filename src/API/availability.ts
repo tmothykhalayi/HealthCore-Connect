@@ -1,4 +1,4 @@
-//interface Availability
+// interface Availability
 export enum FrontendAvailabilityType {
   STANDARD = 'standard',
   EMERGENCY = 'emergency',

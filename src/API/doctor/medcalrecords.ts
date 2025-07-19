@@ -1,9 +1,9 @@
 import { API_BASE_URL } from '../BaseUrl'
-import { getAccessTokenHelper } from '@/lib/auth'
 import type { TRecord } from '@/types/alltypes'
+import { getAccessTokenHelper } from '@/lib/auth'
 
 export const getRecordsFn = async (): Promise<{
-  data: TRecord[]
+  data: Array<TRecord>
 }> => {
   const fullUrl = `${API_BASE_URL}/records`
   const token = getAccessTokenHelper()

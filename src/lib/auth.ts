@@ -1,7 +1,8 @@
 // authHelpers.ts
 
+import type {Tokens, UserAuthType} from '@/types/alltypes';
 import useAuthStore from '@/store/auth'
-import { Role, type Tokens, type UserAuthType } from '@/types/alltypes'
+import { Role   } from '@/types/alltypes'
 
 // === READ HELPERS ===
 

@@ -1,19 +1,20 @@
 // components/PatientsTable.tsx
 import { useMemo, useState } from 'react'
 import {
-  useReactTable,
+  
+  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  flexRender,
-  type ColumnDef,
+  useReactTable
 } from '@tanstack/react-table'
-import {
-  useGetPatientQuery,
-  useDeletePatient,
-  useCreatePatient,
-} from '@/hooks/patient'
+import type {ColumnDef} from '@tanstack/react-table';
 import type { TPatient } from '@/types/alltypes'
+import {
+  useCreatePatient,
+  useDeletePatient,
+  useGetPatientQuery,
+} from '@/hooks/patient'
 
 export const PatientsTable = () => {
   const [search, setSearch] = useState('')
@@ -75,7 +76,7 @@ export const PatientsTable = () => {
     })
   }
 
-  const columns = useMemo<ColumnDef<TPatient>[]>(
+  const columns = useMemo<Array<ColumnDef<TPatient>>>(
     () => [
       {
         header: 'ID',

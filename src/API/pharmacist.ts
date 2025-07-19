@@ -1,4 +1,4 @@
-//interface pharmacist.ts
+// interface pharmacist.ts
 export interface Pharmacist {
   userId: number
 

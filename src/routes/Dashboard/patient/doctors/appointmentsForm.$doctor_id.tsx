@@ -1,7 +1,7 @@
 import { useState } from 'react'
+import { createFileRoute, useParams } from '@tanstack/react-router'
 import { useCreateAppointment } from '@/hooks/patient/appointment'
 import useAuthStore from '@/store/auth'
-import { createFileRoute, useParams } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
   '/Dashboard/patient/doctors/appointmentsForm/$doctor_id',

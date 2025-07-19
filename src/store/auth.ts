@@ -1,7 +1,7 @@
 // authStore.ts
-import type { AuthState, AuthStoreType } from '@/types/alltypes'
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { createJSONStorage, persist } from 'zustand/middleware'
+import type { AuthState, AuthStoreType } from '@/types/alltypes'
 
 const STORAGE_KEY = 'auth-storage'
 

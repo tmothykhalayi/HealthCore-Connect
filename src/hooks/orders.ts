@@ -1,5 +1,5 @@
-import { deletePharmacyOrderFn, getPharmacyOrdersFn } from '@/api/orders'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { deletePharmacyOrderFn, getPharmacyOrdersFn } from '@/api/orders'
 
 export const useGetPharmacyOrdersQuery = (
   page: number,

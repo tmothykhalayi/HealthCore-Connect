@@ -1,5 +1,5 @@
-import { deletePaymentsFn, getPaymentsFn } from '@/api/payment'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { deletePaymentsFn, getPaymentsFn } from '@/api/payment'
 
 export const useGetPaymentQuery = (
   page: number,

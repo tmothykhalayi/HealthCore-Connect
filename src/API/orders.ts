@@ -1,7 +1,9 @@
 import { API_BASE_URL } from './BaseUrl'
+import type { TPharmacyOrder } from '@/types/alltypes'
 import { getAccessTokenHelper } from '@/lib/auth'
 
-//inteface for Order
+
+// inteface for Order
 export interface Order {
   patientId: number
   orderDate: string
@@ -11,14 +13,12 @@ export interface Order {
   pharmacyId: string
 }
 
-import type { TPharmacyOrder } from '@/types/alltypes'
-
 export const getPharmacyOrdersFn = async (
   page = 1,
   limit = 10,
   search = '',
 ): Promise<{
-  data: TPharmacyOrder[]
+  data: Array<TPharmacyOrder>
   total: number
 }> => {
   const params = new URLSearchParams({

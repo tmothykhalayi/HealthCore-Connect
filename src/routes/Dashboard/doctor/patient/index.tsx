@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { PatientsTable } from '@/components/doctor/patientTable'
+
 export const Route = createFileRoute('/Dashboard/doctor/patient/')({
   component: RouteComponent,
 })
-
-import { PatientsTable } from '@/components/doctor/patientTable'
 
 function RouteComponent() {
   return (

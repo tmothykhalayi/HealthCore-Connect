@@ -18,12 +18,12 @@ export interface PharmacyOrder {
   id?: string
   patientId: string
   patientName: string
-  items: {
+  items: Array<{
     medicationId: string
     medicationName: string
     quantity: number
     price: number
-  }[]
+  }>
   totalAmount: number
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
   orderDate: string
@@ -33,7 +33,7 @@ export interface PharmacyOrder {
 }
 
 // GET all medications
-export const getMedications = async (): Promise<Medication[]> => {
+export const getMedications = async (): Promise<Array<Medication>> => {
   const response = await axios.get(`${API_BASE_URL}/pharmacy/medications`)
   return response.data
 }
@@ -85,7 +85,7 @@ export const updateMedicationStock = async (
 }
 
 // GET all orders
-export const getOrders = async (): Promise<PharmacyOrder[]> => {
+export const getOrders = async (): Promise<Array<PharmacyOrder>> => {
   const response = await axios.get(`${API_BASE_URL}/pharmacy/orders`)
   return response.data
 }
@@ -93,7 +93,7 @@ export const getOrders = async (): Promise<PharmacyOrder[]> => {
 // GET orders by patient ID
 export const getOrdersByPatient = async (
   patientId: string,
-): Promise<PharmacyOrder[]> => {
+): Promise<Array<PharmacyOrder>> => {
   const response = await axios.get(
     `${API_BASE_URL}/pharmacy/orders/patient/${patientId}`,
   )

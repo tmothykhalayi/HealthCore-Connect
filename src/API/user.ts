@@ -1,14 +1,14 @@
 import { API_BASE_URL } from './BaseUrl'
 
-import { getAccessTokenHelper } from '@/lib/auth'
 import type { TUser } from '@/types/alltypes'
+import { getAccessTokenHelper } from '@/lib/auth'
 
 export const getUserFn = async (
   page = 1,
   limit = 10,
   search = '',
 ): Promise<{
-  data: TUser[]
+  data: Array<TUser>
   total: number
 }> => {
   const params = new URLSearchParams({
@@ -96,4 +96,30 @@ export const updateUserFn = async (
   }
 
   return response.json()
+}
+
+// Get current user profile with role-specific data
+export const getCurrentUserProfileFn = async () => {
+  const fullUrl = `${API_BASE_URL}/users/profile`
+  const token = getAccessTokenHelper()
+
+  try {
+    const response = await fetch(fullUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.message || 'Failed to fetch user profile')
+    }
+
+    return response.json()
+  } catch (error) {
+    console.error('API Error:', error)
+    throw error
+  }
 }

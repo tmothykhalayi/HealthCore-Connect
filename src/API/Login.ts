@@ -1,15 +1,16 @@
-import { useMutation, type UseMutationResult } from '@tanstack/react-query'
+import {  useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import axios from 'axios'
 import { API_BASE_URL } from './BaseUrl'
+import type {UseMutationResult} from '@tanstack/react-query';
 import type {
+  GlobalDataType,
   LoginPayload,
   LoginResponse,
-  GlobalDataType,
 } from '@/types/alltypes'
 import { UserRole } from '@/types/alltypes'
 import {
-  //authStore
+  // authStore
   authActions,
 } from '@/app/store'
 

@@ -1,18 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/Dashboard/patient/pharmacy_orders')({
-  component: pharmacyOrdersCard,
+  beforeLoad: () => {
+    throw redirect({
+      to: '/Dashboard/patient/orders',
+    })
+  },
+  component: () => null,
 })
-
-import PharmacyOrdersList from '@/components/patient/pharmacy_orderCard'
-import { getUserIdHelper } from '@/lib/auth'
-
-function pharmacyOrdersCard() {
-  const patientId = Number(getUserIdHelper())
-  return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-6">Pharmacy Orders Management</h1>
-      <PharmacyOrdersList patientId={patientId ?? 0} />
-    </div>
-  )
-}

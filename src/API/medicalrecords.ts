@@ -1,14 +1,14 @@
 // API/records.ts
 import { API_BASE_URL } from './BaseUrl'
-import { getAccessTokenHelper } from '@/lib/auth'
 import type { TRecord } from '@/types/alltypes'
+import { getAccessTokenHelper } from '@/lib/auth'
 
 export const getRecordFn = async (
   page = 1,
   limit = 10,
   search = '',
 ): Promise<{
-  data: TRecord[]
+  data: Array<TRecord>
   total: number
 }> => {
   const params = new URLSearchParams({

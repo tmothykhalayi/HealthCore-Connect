@@ -1,15 +1,16 @@
 // components/MedicinesTable.tsx
 import { useMemo, useState } from 'react'
 import {
-  useReactTable,
+  
+  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  flexRender,
-  type ColumnDef,
+  useReactTable
 } from '@tanstack/react-table'
-import { useGetMedicineQuery, useDeleteMedicine } from '@/hooks/medicine'
+import type {ColumnDef} from '@tanstack/react-table';
 import type { TMedicine } from '@/Types/types'
+import { useDeleteMedicine, useGetMedicineQuery } from '@/hooks/medicine'
 
 export const MedicinesTable = () => {
   const [search, setSearch] = useState('')
@@ -44,7 +45,7 @@ export const MedicinesTable = () => {
     })
   }
 
-  const columns = useMemo<ColumnDef<TMedicine>[]>(
+  const columns = useMemo<Array<ColumnDef<TMedicine>>>(
     () => [
       {
         header: 'ID',

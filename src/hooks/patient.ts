@@ -1,5 +1,6 @@
-import { createPatientFn, deletePatientFn, getPatientsFn } from '@/api/patient'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { createPatientFn, deletePatientFn, getPatientsFn, updatePatientFn, getPatientByIdFn, getPatientByUserIdFn } from '@/api/patient'
+import type { patient } from '@/api/patient'
 
 export const useGetPatientQuery = (
   page: number,
@@ -56,12 +57,29 @@ export const useUpdatePatient = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: createPatientFn, // Assuming createPatientFn can also handle updates
+    mutationFn: ({ patientId, patientData }: { patientId: number; patientData: Partial<patient> }) =>
+      updatePatientFn(patientId, patientData),
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['patients'] })
       queryClient.invalidateQueries({
         queryKey: ['patient', variables.patientId],
       })
     },
+  })
+}
+
+export const useGetPatientById = (patientId: number) => {
+  return useQuery({
+    queryKey: ['patient', patientId],
+    queryFn: () => getPatientByIdFn(patientId),
+    enabled: !!patientId,
+  })
+}
+
+export const useGetPatientByUserId = (userId: number) => {
+  return useQuery({
+    queryKey: ['patientByUserId', userId],
+    queryFn: () => getPatientByUserIdFn(userId),
+    enabled: !!userId,
   })
 }

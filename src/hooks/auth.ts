@@ -1,6 +1,6 @@
-import { loginFn } from '@/api/auth'
-import type { loginType } from '@/types/alltypes'
 import { useMutation } from '@tanstack/react-query'
+import type { loginType } from '@/types/alltypes'
+import { loginFn } from '@/api/auth'
 import useAuthStore from '@/store/auth'
 import { loginUser } from '@/lib/auth'
 

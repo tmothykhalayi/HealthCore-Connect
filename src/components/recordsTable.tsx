@@ -1,19 +1,20 @@
 // components/RecordsTable.tsx
 import { useMemo, useState } from 'react'
 import {
-  useReactTable,
+  
+  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  flexRender,
-  type ColumnDef,
+  useReactTable
 } from '@tanstack/react-table'
-import {
-  useGetRecordsQuery,
-  useDeleteRecord,
-  useCreateRecord,
-} from '@/hooks/medicalrecords'
+import type {ColumnDef} from '@tanstack/react-table';
 import type { TRecord } from '@/types/alltypes'
+import {
+  useCreateRecord,
+  useDeleteRecord,
+  useGetRecordsQuery,
+} from '@/hooks/medicalrecords'
 
 export const RecordsTable = () => {
   const [search, setSearch] = useState('')
@@ -94,7 +95,7 @@ export const RecordsTable = () => {
     })
   }
 
-  const columns = useMemo<ColumnDef<TRecord>[]>(
+  const columns = useMemo<Array<ColumnDef<TRecord>>>(
     () => [
       {
         header: 'Record ID',

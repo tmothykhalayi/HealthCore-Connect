@@ -1,4 +1,9 @@
 // Interface for Doctor Profile
+// API/users.ts
+import { API_BASE_URL } from './BaseUrl'
+import type { TDoctor } from '@/types/alltypes'
+import { getAccessTokenHelper } from '@/lib/auth'
+
 export interface doctor {
   userId: number
   specialization: string
@@ -8,21 +13,17 @@ export interface doctor {
   education?: string
   officeAddress: string
   consultationFee?: number
-  availableDays?: string[]
+  availableDays?: Array<string>
   availableHours?: string
   status?: string
 }
-// API/users.ts
-import { API_BASE_URL } from './BaseUrl'
-import { getAccessTokenHelper } from '@/lib/auth'
-import type { TDoctor } from '@/types/alltypes'
 
 export const getDoctorFn = async (
   page = 1,
   limit = 10,
   search = '',
 ): Promise<{
-  data: TDoctor[]
+  data: Array<TDoctor>
   total: number
 }> => {
   const params = new URLSearchParams({

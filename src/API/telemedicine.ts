@@ -31,7 +31,7 @@ export interface ChatMessage {
 
 // GET all telemedicine sessions
 export const getTelemedicineSessions = async (): Promise<
-  TelemedicineSession[]
+  Array<TelemedicineSession>
 > => {
   const response = await axios.get(`${API_BASE_URL}/telemedicine/sessions`)
   return response.data
@@ -40,7 +40,7 @@ export const getTelemedicineSessions = async (): Promise<
 // GET sessions by doctor ID
 export const getSessionsByDoctor = async (
   doctorId: string,
-): Promise<TelemedicineSession[]> => {
+): Promise<Array<TelemedicineSession>> => {
   const response = await axios.get(
     `${API_BASE_URL}/telemedicine/sessions/doctor/${doctorId}`,
   )
@@ -50,7 +50,7 @@ export const getSessionsByDoctor = async (
 // GET sessions by patient ID
 export const getSessionsByPatient = async (
   patientId: string,
-): Promise<TelemedicineSession[]> => {
+): Promise<Array<TelemedicineSession>> => {
   const response = await axios.get(
     `${API_BASE_URL}/telemedicine/sessions/patient/${patientId}`,
   )
@@ -116,7 +116,7 @@ export const endSession = async (id: string): Promise<TelemedicineSession> => {
 // GET chat messages for a session
 export const getChatMessages = async (
   sessionId: string,
-): Promise<ChatMessage[]> => {
+): Promise<Array<ChatMessage>> => {
   const response = await axios.get(
     `${API_BASE_URL}/telemedicine/sessions/${sessionId}/messages`,
   )

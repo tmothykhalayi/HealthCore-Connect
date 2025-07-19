@@ -1,15 +1,16 @@
 // components/DoctorsTable.tsx
 import { useMemo, useState } from 'react'
 import {
-  useReactTable,
+  
+  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  flexRender,
-  type ColumnDef,
+  useReactTable
 } from '@tanstack/react-table'
-import { useGetDoctorQuery, useDeleteDoctor } from '@/hooks/doctor'
+import type {ColumnDef} from '@tanstack/react-table';
 import type { TDoctor } from '@/types/alltypes'
+import { useDeleteDoctor, useGetDoctorQuery } from '@/hooks/doctor'
 
 export const DoctorsTable = () => {
   const [search, setSearch] = useState('')
@@ -35,7 +36,7 @@ export const DoctorsTable = () => {
     }).format(amount)
   }
 
-  const columns = useMemo<ColumnDef<TDoctor>[]>(
+  const columns = useMemo<Array<ColumnDef<TDoctor>>>(
     () => [
       {
         header: 'ID',

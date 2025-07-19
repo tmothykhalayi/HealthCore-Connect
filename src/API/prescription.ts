@@ -1,13 +1,13 @@
 import { API_BASE_URL } from './BaseUrl'
-import { getAccessTokenHelper } from '@/lib/auth'
 import type { TPrescription } from '@/types/alltypes'
+import { getAccessTokenHelper } from '@/lib/auth'
 
 export const getPrescriptionsFn = async (
   page = 1,
   limit = 10,
   search = '',
 ): Promise<{
-  data: TPrescription[]
+  data: Array<TPrescription>
   total: number
 }> => {
   const params = new URLSearchParams({

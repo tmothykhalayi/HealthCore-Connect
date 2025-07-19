@@ -1,15 +1,15 @@
 import {
-  FiUsers,
-  FiCalendar,
-  FiFileText,
-  FiDollarSign,
-  FiPieChart,
   FiActivity,
-  FiUser,
-  FiShoppingCart,
+  FiCalendar,
+  FiDollarSign,
+  FiFileText,
+  FiPieChart,
   FiPieChart as FiPieChartAlt,
+  FiShoppingCart,
+  FiUser,
+  FiUsers,
 } from 'react-icons/fi'
-import { FaUserMd, FaPills } from 'react-icons/fa'
+import { FaPills, FaUserMd } from 'react-icons/fa'
 import { Link } from '@tanstack/react-router'
 
 const AdminDashboard = () => {

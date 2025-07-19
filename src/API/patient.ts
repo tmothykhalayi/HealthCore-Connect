@@ -1,7 +1,9 @@
 import { API_BASE_URL } from './BaseUrl'
+import type { TPatient } from '@/types/alltypes'
 import { getAccessTokenHelper } from '@/lib/auth'
 
-//enum for gender
+
+// enum for gender
 
 export enum Gender {
   MALE = 'male',
@@ -10,6 +12,7 @@ export enum Gender {
 }
 // Interface for Patient Profile
 export interface patient {
+  id?: number
   userId: number
   dateOfBirth: string
   gender: Gender
@@ -17,7 +20,7 @@ export interface patient {
   address: string
   emergencyContact?: string
   medicalHistory?: string
-  allergies?: string[]
+  allergies?: Array<string>
   assignedDoctorId?: number
   bloodType?: string
   weight?: number
@@ -25,14 +28,12 @@ export interface patient {
   status?: string
 }
 
-import type { TPatient } from '@/types/alltypes'
-
 export const getPatientsFn = async (
   page = 1,
   limit = 10,
   search = '',
 ): Promise<{
-  data: TPatient[]
+  data: Array<TPatient>
   total: number
 }> => {
   const params = new URLSearchParams({
@@ -101,6 +102,89 @@ export const deletePatientFn = async (patientId: number): Promise<void> => {
 
   if (!response.ok) {
     throw new Error('Failed to delete patient')
+  }
+}
+
+// Update patient profile
+export const updatePatientFn = async (
+  patientId: number,
+  patientData: Partial<patient>,
+): Promise<{ message: string }> => {
+  const fullUrl = `${API_BASE_URL}/patients/${patientId}`
+  const token = getAccessTokenHelper()
+
+  try {
+    const response = await fetch(fullUrl, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(patientData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.message || 'Failed to update patient')
+    }
+
+    return response.json()
+  } catch (error) {
+    console.error('API Error:', error)
+    throw error
+  }
+}
+
+// Get single patient by ID
+export const getPatientByIdFn = async (patientId: number): Promise<patient> => {
+  const fullUrl = `${API_BASE_URL}/patients/${patientId}`
+  const token = getAccessTokenHelper()
+
+  try {
+    const response = await fetch(fullUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.message || 'Failed to fetch patient')
+    }
+
+    return response.json()
+  } catch (error) {
+    console.error('API Error:', error)
+    throw error
+  }
+}
+
+// Get patient by user ID (fallback method)
+export const getPatientByUserIdFn = async (userId: number): Promise<patient> => {
+  const fullUrl = `${API_BASE_URL}/patients/user/${userId}`
+  const token = getAccessTokenHelper()
+
+  try {
+    const response = await fetch(fullUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.message || `Failed to fetch patient for user ID ${userId}`)
+    }
+
+    const result = await response.json()
+    return result.data || result
+  } catch (error) {
+    console.error('API Error:', error)
+    throw error
   }
 }
 

@@ -1,18 +1,19 @@
 // components/PharmacyOrdersTable.tsx
 import { useMemo, useState } from 'react'
 import {
-  useReactTable,
+  
+  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  flexRender,
-  type ColumnDef,
+  useReactTable
 } from '@tanstack/react-table'
-import {
-  useGetPharmacyOrdersQuery,
-  useDeletePharmacyOrder,
-} from '@/hooks/orders'
+import type {ColumnDef} from '@tanstack/react-table';
 import type { TPharmacyOrder } from '@/types/alltypes'
+import {
+  useDeletePharmacyOrder,
+  useGetPharmacyOrdersQuery,
+} from '@/hooks/orders'
 
 export const PharmacyOrdersTable = () => {
   const [search, setSearch] = useState('')
@@ -42,7 +43,7 @@ export const PharmacyOrdersTable = () => {
     })
   }
 
-  const columns = useMemo<ColumnDef<TPharmacyOrder>[]>(
+  const columns = useMemo<Array<ColumnDef<TPharmacyOrder>>>(
     () => [
       {
         header: 'Order ID',

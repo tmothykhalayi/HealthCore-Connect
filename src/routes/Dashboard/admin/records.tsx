@@ -1,11 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+// pages/records.tsx
+import { RecordsTable } from '@/components/recordsTable'
+
 export const Route = createFileRoute('/Dashboard/admin/records')({
   component: RecordsPage,
 })
-
-// pages/records.tsx
-import { RecordsTable } from '@/components/recordsTable'
 
 export default function RecordsPage() {
   return (

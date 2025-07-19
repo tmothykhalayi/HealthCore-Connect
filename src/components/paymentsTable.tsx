@@ -1,15 +1,16 @@
 // components/PaymentsTable.tsx
 import { useMemo, useState } from 'react'
 import {
-  useReactTable,
+  
+  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  flexRender,
-  type ColumnDef,
+  useReactTable
 } from '@tanstack/react-table'
-import { useGetPaymentQuery, useDeletePayment } from '@/hooks/payment'
+import type {ColumnDef} from '@tanstack/react-table';
 import type { TPayment } from '@/types/alltypes'
+import { useDeletePayment, useGetPaymentQuery } from '@/hooks/payment'
 
 export const PaymentsTable = () => {
   const [search, setSearch] = useState('')
@@ -48,7 +49,7 @@ export const PaymentsTable = () => {
     })
   }
 
-  const columns = useMemo<ColumnDef<TPayment>[]>(
+  const columns = useMemo<Array<ColumnDef<TPayment>>>(
     () => [
       {
         header: 'Payment ID',

@@ -1,5 +1,5 @@
-import { deleteMedicinesFn, getMedicinesFn } from '@/api/medicine'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { deleteMedicinesFn, getMedicinesFn } from '@/api/medicine'
 
 export const useGetMedicineQuery = (
   page: number,

@@ -1,14 +1,15 @@
 // components/UsersTable.tsx
 import { useMemo, useState } from 'react'
 import {
-  useReactTable,
+  
+  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  flexRender,
-  type ColumnDef,
+  useReactTable
 } from '@tanstack/react-table'
-import { useGetUserQuery, useDeleteUser, useCreateUser } from '@/hooks/user'
+import type {ColumnDef} from '@tanstack/react-table';
+import { useCreateUser, useDeleteUser, useGetUserQuery } from '@/hooks/user'
 
 interface TUser {
   user_id: number
@@ -66,7 +67,7 @@ export const UsersTable = () => {
     }
   }
 
-  const columns = useMemo<ColumnDef<TUser>[]>(
+  const columns = useMemo<Array<ColumnDef<TUser>>>(
     () => [
       {
         header: 'ID',

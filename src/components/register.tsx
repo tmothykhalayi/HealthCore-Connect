@@ -2,13 +2,13 @@ import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import {
+  FaCheck,
   FaEnvelope,
   FaLock,
-  FaCheck,
-  FaTimes,
-  FaSpinner,
-  FaUser,
   FaPhone,
+  FaSpinner,
+  FaTimes,
+  FaUser,
 } from 'react-icons/fa'
 import type { CreateUserDto } from '@/types/alltypes'
 import { Role } from '@/types/alltypes'

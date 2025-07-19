@@ -1,8 +1,8 @@
 import { Outlet, createFileRoute } from '@tanstack/react-router'
-import { FaBars, FaTimes, FaBell, FaUserCircle } from 'react-icons/fa'
+import { FaBars, FaBell, FaTimes, FaUserCircle } from 'react-icons/fa'
 import { useState } from 'react'
-import SideNav from '@/components/sideNav'
 import type { Role } from '@/types/alltypes'
+import SideNav from '@/components/sideNav'
 import { getUserRoleHelper } from '@/lib/auth'
 
 export const Route = createFileRoute('/dashboard')({
@@ -14,7 +14,7 @@ function DashboardLayout() {
   // const role = 'admin' // This should be dynamically set based on user role
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  const role: Role = getUserRoleHelper() as Role
+  const role: Role = getUserRoleHelper()
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Mobile sidebar toggle */}

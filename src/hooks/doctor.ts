@@ -1,5 +1,5 @@
-import { deleteDoctorFn, getDoctorFn } from '@/api/doctor'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { deleteDoctorFn, getDoctorFn } from '@/api/doctor'
 
 export const useGetDoctorQuery = (
   page: number,

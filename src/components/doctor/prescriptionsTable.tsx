@@ -1,17 +1,18 @@
 import { useMemo, useState } from 'react'
 import {
+  
+  
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
-  useReactTable,
-  type ColumnDef,
-  type PaginationState,
+  useReactTable
 } from '@tanstack/react-table'
-import {
-  useGetPrescriptionQuery,
-  useDeletePrescription,
-} from '@/hooks/prescription'
+import type {ColumnDef, PaginationState} from '@tanstack/react-table';
 import type { TPrescription } from '@/types/alltypes'
+import {
+  useDeletePrescription,
+  useGetPrescriptionQuery,
+} from '@/hooks/prescription'
 import { useCreatePrescription } from '@/hooks/doctor/prescription'
 
 const PrescriptionTable = () => {
@@ -75,7 +76,7 @@ const PrescriptionTable = () => {
   }
 
   // Columns definition
-  const columns = useMemo<ColumnDef<TPrescription>[]>(
+  const columns = useMemo<Array<ColumnDef<TPrescription>>>(
     () => [
       {
         header: 'Prescription ID',

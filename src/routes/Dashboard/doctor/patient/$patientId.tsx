@@ -1,5 +1,5 @@
-import { useGetPatientPrescriptionsQuery } from '@/hooks/doctor/patient/patient'
 import { createFileRoute, useParams } from '@tanstack/react-router'
+import { useGetPatientPrescriptionsQuery } from '@/hooks/doctor/patient/patient'
 
 export const Route = createFileRoute('/Dashboard/doctor/patient/$patientId')({
   component: RouteComponent,

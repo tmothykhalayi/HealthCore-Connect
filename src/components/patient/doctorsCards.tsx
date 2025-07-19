@@ -1,6 +1,6 @@
-import { useGetDoctorQuery } from '@/hooks/patient/doctor'
 import { Link } from '@tanstack/react-router'
 import { motion } from 'framer-motion' // Import framer-motion for animations
+import { useGetDoctorQuery } from '@/hooks/patient/doctor'
 
 type Doctor = {
   doctor_id: number

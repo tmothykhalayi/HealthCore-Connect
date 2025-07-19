@@ -1,11 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+// pages/appointments.tsx
+import { AppointmentsTable } from '@/components/appointmentsTable'
+
 export const Route = createFileRoute('/Dashboard/admin/appointments')({
   component: AppointmentsPage,
 })
-
-// pages/appointments.tsx
-import { AppointmentsTable } from '@/components/appointmentsTable'
 
 export default function AppointmentsPage() {
   return (

@@ -47,13 +47,13 @@ export interface UserTypes extends GenericsType {
   adminProfile?: AdminProfile
 
   // Relations
-  appointments: Appointment[]
-  prescriptions: Prescription[]
-  medicalRecords: MedicalRecord[]
-  transactions: Transaction[]
-  notifications: Notification[]
-  supportTickets: SupportTicket[]
-  devices: Device[]
+  appointments: Array<Appointment>
+  prescriptions: Array<Prescription>
+  medicalRecords: Array<MedicalRecord>
+  transactions: Array<Transaction>
+  notifications: Array<Notification>
+  supportTickets: Array<SupportTicket>
+  devices: Array<Device>
 }
 
 // Doctor profile
@@ -62,7 +62,7 @@ export interface DoctorProfile extends GenericsType {
   licenseNumber: string
   yearsOfExperience: number
   bio: string
-  availableSlots: TimeSlot[]
+  availableSlots: Array<TimeSlot>
 }
 
 // Patient profile
@@ -99,7 +99,7 @@ export interface Prescription extends GenericsType {
   doctorId: string
   patientId: string
   issuedAt: Date
-  medications: Medication[]
+  medications: Array<Medication>
   notes: string
 }
 
@@ -115,7 +115,7 @@ export interface Medication {
 export interface MedicalRecord extends GenericsType {
   patientId: string
   description: string
-  documents: string[] // URLs or IDs of attached files
+  documents: Array<string> // URLs or IDs of attached files
   recordedAt: Date
 }
 
@@ -261,7 +261,7 @@ export interface TDoctor {
   appointment_id: number
 }
 
-//create user DTO
+// create user DTO
 export interface CreateUserDto {
   firstName: string
   lastName: string
@@ -420,7 +420,7 @@ export interface TPatientProfile {
   id?: string
   dateOfBirth: string
   bloodType: string
-  medicalDocuments: File[]
+  medicalDocuments: Array<File>
   user?: User
 }
 
@@ -429,13 +429,13 @@ export interface TDoctorProfile {
   licenseNumber: string
   yearsOfExperience: number
   hospitalAffiliation: string
-  specializations: string[]
+  specializations: Array<string>
   consultationFee: number
-  availableDays: string[]
+  availableDays: Array<string>
   workingHours: string
   professionalBio: string
   availabilityStatus: boolean
-  certifications: File[]
+  certifications: Array<File>
   user?: User
 }
 
