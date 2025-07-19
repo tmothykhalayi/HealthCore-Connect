@@ -1,30 +1,30 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react'
 import {
   useReactTable,
   getCoreRowModel,
   getFilteredRowModel,
   flexRender,
   type ColumnDef,
-} from '@tanstack/react-table';
-import { useGetRecordsQuery } from '@/hooks/doctor/recordHook';
-import type { TRecord } from '@/Types/types';
+} from '@tanstack/react-table'
+import { useGetRecordsQuery } from '@/hooks/doctor/recordHook'
+import type { TRecord } from '@/Types/types'
 
 export const MedicalRecordsTable = () => {
-  const [search, setSearch] = useState('');
-  const { data, isLoading, isError } = useGetRecordsQuery();
-  const records = data || [];
+  const [search, setSearch] = useState('')
+  const { data, isLoading, isError } = useGetRecordsQuery()
+  const records = data || []
 
   // Format date to a readable format
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+    const date = new Date(dateString)
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+      minute: '2-digit',
+    })
+  }
 
   const columns = useMemo<ColumnDef<TRecord>[]>(
     () => [
@@ -66,8 +66,8 @@ export const MedicalRecordsTable = () => {
         cell: ({ row }) => formatDate(row.original.updated_at),
       },
     ],
-    []
-  );
+    [],
+  )
 
   const table = useReactTable({
     data: data || [],
@@ -78,14 +78,14 @@ export const MedicalRecordsTable = () => {
     onGlobalFilterChange: setSearch,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-  });
+  })
 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
-    );
+    )
   }
 
   if (isError) {
@@ -93,13 +93,15 @@ export const MedicalRecordsTable = () => {
       <div className="bg-red-50 text-red-700 p-4 rounded-md">
         Error loading medical records. Please try again.
       </div>
-    );
+    )
   }
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Medical Records</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">
+          Medical Records
+        </h1>
         <div className="mb-4">
           <input
             type="text"
@@ -125,7 +127,7 @@ export const MedicalRecordsTable = () => {
                     >
                       {flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                     </th>
                   ))}
@@ -136,11 +138,14 @@ export const MedicalRecordsTable = () => {
               {table.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50">
                   {row.getVisibleCells().map((cell) => (
-                    <td 
-                      key={cell.id} 
+                    <td
+                      key={cell.id}
                       className="px-6 py-4 text-sm text-gray-600"
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </td>
                   ))}
                 </tr>
@@ -156,5 +161,5 @@ export const MedicalRecordsTable = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}

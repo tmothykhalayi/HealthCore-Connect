@@ -1,6 +1,3 @@
-
-
-
 //interface Availability
 export enum FrontendAvailabilityType {
   STANDARD = 'standard',
@@ -8,10 +5,9 @@ export enum FrontendAvailabilityType {
   CONSULTATION = 'consultation',
 }
 export interface Availability {
-  
-  startTime: string;
-  endTime: string;
-  type: FrontendAvailabilityType;
-  status?: 'available' | 'unavailable';
-    notes?: string;
+  startTime: string
+  endTime: string
+  type: FrontendAvailabilityType
+  status?: 'available' | 'unavailable'
+  notes?: string
 }

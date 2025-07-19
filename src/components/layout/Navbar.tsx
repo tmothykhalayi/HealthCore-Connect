@@ -21,38 +21,23 @@ const Navbar = () => {
       </Link>
 
       <div className="hidden sm:flex gap-x-4 text-lg font-medium text-purple-950 [&>*]:ease-in [&>*]:duration-75">
-        <Link
-          to="/about"
-          className="hover:text-teal-400"
-        >
+        <Link to="/about" className="hover:text-teal-400">
           About
         </Link>
 
-        <Link
-          to="/services"
-          className="hover:text-teal-400"
-        >
+        <Link to="/services" className="hover:text-teal-400">
           Services
         </Link>
 
-        <Link
-          to="/doctors"
-          className="hover:text-teal-400"
-        >
+        <Link to="/doctors" className="hover:text-teal-400">
           Doctors
         </Link>
 
-        <Link
-          to="/blog"
-          className="hover:text-teal-400"
-        >
+        <Link to="/blog" className="hover:text-teal-400">
           Blog
         </Link>
 
-        <Link
-          to="/contact"
-          className="hover:text-teal-400"
-        >
+        <Link to="/contact" className="hover:text-teal-400">
           Contact
         </Link>
       </div>
@@ -84,8 +69,12 @@ const Navbar = () => {
           <Link to="/doctors">Doctors</Link>
           <Link to="/blog">Blog</Link>
           <Link to="/contact">Contact</Link>
-          <Link to="/login" className="border-t pt-4">Login</Link>
-          <Link to="/registration" className="pb-4">Register</Link>
+          <Link to="/login" className="border-t pt-4">
+            Login
+          </Link>
+          <Link to="/registration" className="pb-4">
+            Register
+          </Link>
         </div>
       )}
     </nav>

@@ -1,5 +1,5 @@
 // components/DoctorsTable.tsx
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react'
 import {
   useReactTable,
   getCoreRowModel,
@@ -7,33 +7,33 @@ import {
   getPaginationRowModel,
   flexRender,
   type ColumnDef,
-} from '@tanstack/react-table';
-import { useGetDoctorQuery, useDeleteDoctor } from '@/hooks/doctor';
-import type { TDoctor } from '@/types/alltypes';
+} from '@tanstack/react-table'
+import { useGetDoctorQuery, useDeleteDoctor } from '@/hooks/doctor'
+import type { TDoctor } from '@/types/alltypes'
 
 export const DoctorsTable = () => {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState('')
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
-  });
+  })
 
   const { data, isLoading } = useGetDoctorQuery(
     pagination.pageIndex + 1,
     pagination.pageSize,
-    search
-  );
+    search,
+  )
 
-  const deleteMutation = useDeleteDoctor();
+  const deleteMutation = useDeleteDoctor()
 
   // Format currency to Kenyan Shillings
   const formatToKES = (amount: number) => {
     return new Intl.NumberFormat('en-KE', {
       style: 'currency',
       currency: 'KES',
-      minimumFractionDigits: 2
-    }).format(amount);
-  };
+      minimumFractionDigits: 2,
+    }).format(amount)
+  }
 
   const columns = useMemo<ColumnDef<TDoctor>[]>(
     () => [
@@ -70,8 +70,10 @@ export const DoctorsTable = () => {
         cell: ({ row }) => (
           <button
             onClick={() => {
-              if (confirm(`Are you sure you want to delete ${row.original.name}?`)) {
-                deleteMutation.mutate(row.original.doctor_id);
+              if (
+                confirm(`Are you sure you want to delete ${row.original.name}?`)
+              ) {
+                deleteMutation.mutate(row.original.doctor_id)
               }
             }}
             className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
@@ -82,11 +84,11 @@ export const DoctorsTable = () => {
         ),
       },
     ],
-    [deleteMutation]
-  );
+    [deleteMutation],
+  )
 
   const table = useReactTable({
-    data:data || [],
+    data: data || [],
     columns,
     pageCount: Math.ceil((data?.total || 0) / pagination.pageSize),
     state: {
@@ -99,14 +101,17 @@ export const DoctorsTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
-  });
+  })
 
-  if (isLoading) return <div className="text-center py-8">Loading doctors...</div>;
+  if (isLoading)
+    return <div className="text-center py-8">Loading doctors...</div>
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Doctors Management</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">
+          Doctors Management
+        </h1>
         <div className="flex justify-between items-center">
           <input
             type="text"
@@ -134,7 +139,7 @@ export const DoctorsTable = () => {
                     >
                       {flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                     </th>
                   ))}
@@ -146,7 +151,10 @@ export const DoctorsTable = () => {
                 <tr key={row.id} className="hover:bg-gray-50">
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </td>
                   ))}
                 </tr>
@@ -175,14 +183,19 @@ export const DoctorsTable = () => {
           <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
             <div>
               <p className="text-sm text-gray-700">
-                Showing <span className="font-medium">{pagination.pageIndex * pagination.pageSize + 1}</span> to{' '}
+                Showing{' '}
+                <span className="font-medium">
+                  {pagination.pageIndex * pagination.pageSize + 1}
+                </span>{' '}
+                to{' '}
                 <span className="font-medium">
                   {Math.min(
                     (pagination.pageIndex + 1) * pagination.pageSize,
-                    data?.total || 0
+                    data?.total || 0,
                   )}
                 </span>{' '}
-                of <span className="font-medium">{data?.total || 0}</span> doctors
+                of <span className="font-medium">{data?.total || 0}</span>{' '}
+                doctors
               </p>
             </div>
             <div className="flex items-center space-x-4">
@@ -195,7 +208,7 @@ export const DoctorsTable = () => {
                       ...pagination,
                       pageSize: Number(e.target.value),
                       pageIndex: 0,
-                    });
+                    })
                   }}
                   className="border rounded p-1 text-sm"
                 >
@@ -241,5 +254,5 @@ export const DoctorsTable = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

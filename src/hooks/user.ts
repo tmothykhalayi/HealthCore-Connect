@@ -1,8 +1,4 @@
-import {
-  createUserFn,
-  deleteUserFn,
-  getUserFn,
-} from '@/api/user'
+import { createUserFn, deleteUserFn, getUserFn } from '@/api/user'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 export const useGetUserQuery = (

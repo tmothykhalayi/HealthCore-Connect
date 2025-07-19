@@ -1,31 +1,30 @@
-
 // API/patients.ts
-import {API_BASE_URL} from './BaseUrl';
+import { API_BASE_URL } from './BaseUrl'
 import { getAccessTokenHelper } from '@/lib/auth'
 import type { TAppointment } from '@/types/alltypes'
 
-export const getAppointmentsFn = async (patientId: number): Promise<{
-  data: TAppointment[];
-  total: number;
+export const getAppointmentsFn = async (
+  patientId: number,
+): Promise<{
+  data: TAppointment[]
+  total: number
 }> => {
-
-
-  const fullUrl = `${API_BASE_URL}/appointments`;
-  const token = getAccessTokenHelper();
+  const fullUrl = `${API_BASE_URL}/appointments`
+  const token = getAccessTokenHelper()
 
   const response = await fetch(fullUrl, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
-  });
+  })
 
   if (!response.ok) {
-    throw new Error('Network response was not ok');
+    throw new Error('Network response was not ok')
   }
 
-  return response.json();
+  return response.json()
 }
 
 export const deleteAppointmentFn = async (

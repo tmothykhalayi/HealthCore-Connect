@@ -1,9 +1,7 @@
-
-
 //interface pharmacist.ts
 export interface Pharmacist {
-    userId: number;
+  userId: number
 
-    pharmacyName?: string;
-    licenseNumber?: string;
-    }
+  pharmacyName?: string
+  licenseNumber?: string
+}

@@ -48,7 +48,7 @@ function AppointmentForm() {
       appointment_time: new Date(formData.appointment_time), // Convert to Date object
       created_at: new Date(), // Add current timestamp
     }
-    
+
     submitAppointment(finalData)
   }
 

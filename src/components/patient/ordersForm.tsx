@@ -1,36 +1,36 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useCreatePharmacyOrder } from '@/hooks/patients/pharmacy_ordersHook';
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { useCreatePharmacyOrder } from '@/hooks/patients/pharmacy_ordersHook'
 
 type Medicine = {
-  medicine_id: number;
-  name: string;
-  price: number;
-};
+  medicine_id: number
+  name: string
+  price: number
+}
 
 type OrderMedicineModalProps = {
-  medicine: Medicine;
-  patientId: number;
-  onClose: () => void;
-  onSuccess: (orderData: any) => void;
-};
+  medicine: Medicine
+  patientId: number
+  onClose: () => void
+  onSuccess: (orderData: any) => void
+}
 
-const OrderMedicineModal = ({ 
-  medicine, 
-  patientId, 
+const OrderMedicineModal = ({
+  medicine,
+  patientId,
   onClose,
-  onSuccess
+  onSuccess,
 }: OrderMedicineModalProps) => {
-  const [quantity, setQuantity] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
-  
-  const createOrderMutation = useCreatePharmacyOrder();
+  const [quantity, setQuantity] = useState(1)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState('')
+
+  const createOrderMutation = useCreatePharmacyOrder()
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError('');
+    e.preventDefault()
+    setIsSubmitting(true)
+    setError('')
 
     try {
       const orderData = {
@@ -38,28 +38,28 @@ const OrderMedicineModal = ({
         medicine_id: medicine.medicine_id,
         quantity,
         status: 'pending',
-        created_at: new Date().toISOString()
-      };
+        created_at: new Date().toISOString(),
+      }
 
-      const result = await createOrderMutation.mutateAsync(orderData);
-      onSuccess(result); // Pass the created order data back
-      onClose();
+      const result = await createOrderMutation.mutateAsync(orderData)
+      onSuccess(result) // Pass the created order data back
+      onClose()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to place order');
+      setError(err instanceof Error ? err.message : 'Failed to place order')
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   const overlayVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1 }
-  };
+    visible: { opacity: 1 },
+  }
 
   const modalVariants = {
     hidden: { opacity: 0, y: -50 },
-    visible: { opacity: 1, y: 0 }
-  };
+    visible: { opacity: 1, y: 0 },
+  }
 
   return (
     <motion.div
@@ -76,14 +76,26 @@ const OrderMedicineModal = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-800">Order {medicine.name}</h2>
+          <h2 className="text-xl font-bold text-gray-800">
+            Order {medicine.name}
+          </h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
             disabled={isSubmitting}
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -122,11 +134,7 @@ const OrderMedicineModal = ({
               </p>
             </div>
 
-            {error && (
-              <div className="text-red-500 text-sm mt-2">
-                {error}
-              </div>
-            )}
+            {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
           </div>
 
           <div className="mt-6 flex justify-end space-x-3">
@@ -145,19 +153,37 @@ const OrderMedicineModal = ({
             >
               {isSubmitting ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Processing...
                 </>
-              ) : 'Place Order'}
+              ) : (
+                'Place Order'
+              )}
             </button>
           </div>
         </form>
       </motion.div>
     </motion.div>
-  );
-};
+  )
+}
 
-export default OrderMedicineModal;
+export default OrderMedicineModal

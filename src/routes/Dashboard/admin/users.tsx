@@ -5,13 +5,13 @@ export const Route = createFileRoute('/Dashboard/admin/users')({
 })
 
 // pages/users.tsx
-import { UsersTable } from '@/components/usersTable';
+import { UsersTable } from '@/components/usersTable'
 
- function UsersPage() {
+function UsersPage() {
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-2xl font-bold mb-6">Users Management</h1>
       <UsersTable />
     </div>
-  );
+  )
 }

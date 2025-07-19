@@ -1,5 +1,5 @@
 // components/PharmacyOrdersTable.tsx
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react'
 import {
   useReactTable,
   getCoreRowModel,
@@ -7,37 +7,40 @@ import {
   getPaginationRowModel,
   flexRender,
   type ColumnDef,
-} from '@tanstack/react-table';
-import { useGetPharmacyOrdersQuery, useDeletePharmacyOrder } from '@/hooks/orders';
-import type { TPharmacyOrder } from '@/types/alltypes';
+} from '@tanstack/react-table'
+import {
+  useGetPharmacyOrdersQuery,
+  useDeletePharmacyOrder,
+} from '@/hooks/orders'
+import type { TPharmacyOrder } from '@/types/alltypes'
 
 export const PharmacyOrdersTable = () => {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState('')
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
-  });
+  })
 
   const { data, isLoading, isError } = useGetPharmacyOrdersQuery(
     pagination.pageIndex + 1,
     pagination.pageSize,
-    search
-  );
+    search,
+  )
 
-  const deleteMutation = useDeletePharmacyOrder();
+  const deleteMutation = useDeletePharmacyOrder()
 
   // Format date to Kenyan format
   const formatDateTime = (dateTimeString: string) => {
-    const date = new Date(dateTimeString);
+    const date = new Date(dateTimeString)
     return date.toLocaleString('en-KE', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true
-    });
-  };
+      hour12: true,
+    })
+  }
 
   const columns = useMemo<ColumnDef<TPharmacyOrder>[]>(
     () => [
@@ -67,11 +70,15 @@ export const PharmacyOrdersTable = () => {
         header: 'Status',
         accessorKey: 'status',
         cell: ({ row }) => (
-          <span className={`px-2 py-1 rounded-full text-xs ${
-            row.original.status === 'completed' ? 'bg-green-100 text-green-800' :
-            row.original.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-            'bg-yellow-100 text-yellow-800'
-          }`}>
+          <span
+            className={`px-2 py-1 rounded-full text-xs ${
+              row.original.status === 'completed'
+                ? 'bg-green-100 text-green-800'
+                : row.original.status === 'cancelled'
+                  ? 'bg-red-100 text-red-800'
+                  : 'bg-yellow-100 text-yellow-800'
+            }`}
+          >
             {row.original.status}
           </span>
         ),
@@ -85,8 +92,12 @@ export const PharmacyOrdersTable = () => {
         cell: ({ row }) => (
           <button
             onClick={() => {
-              if (confirm(`Are you sure you want to delete order #${row.original.pharmacy_order_id}?`)) {
-                deleteMutation.mutate(row.original.pharmacy_order_id);
+              if (
+                confirm(
+                  `Are you sure you want to delete order #${row.original.pharmacy_order_id}?`,
+                )
+              ) {
+                deleteMutation.mutate(row.original.pharmacy_order_id)
               }
             }}
             className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
@@ -98,8 +109,8 @@ export const PharmacyOrdersTable = () => {
         size: 100,
       },
     ],
-    [deleteMutation]
-  );
+    [deleteMutation],
+  )
 
   const table = useReactTable({
     data: data || [],
@@ -115,14 +126,14 @@ export const PharmacyOrdersTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
-  });
+  })
 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
-    );
+    )
   }
 
   if (isError) {
@@ -130,13 +141,15 @@ export const PharmacyOrdersTable = () => {
       <div className="bg-red-50 text-red-700 p-4 rounded-md">
         Error loading pharmacy orders. Please try again.
       </div>
-    );
+    )
   }
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Pharmacy Orders</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">
+          Pharmacy Orders
+        </h1>
         <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
           <div className="flex-1">
             <input
@@ -167,7 +180,7 @@ export const PharmacyOrdersTable = () => {
                     >
                       {flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                     </th>
                   ))}
@@ -178,11 +191,14 @@ export const PharmacyOrdersTable = () => {
               {table.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50">
                   {row.getVisibleCells().map((cell) => (
-                    <td 
-                      key={cell.id} 
+                    <td
+                      key={cell.id}
                       className="px-6 py-4 whitespace-nowrap text-sm text-gray-600"
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </td>
                   ))}
                 </tr>
@@ -202,7 +218,7 @@ export const PharmacyOrdersTable = () => {
                   ...pagination,
                   pageSize: Number(e.target.value),
                   pageIndex: 0,
-                });
+                })
               }}
               className="border rounded-md p-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
@@ -213,7 +229,7 @@ export const PharmacyOrdersTable = () => {
               ))}
             </select>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-700">
               Page {pagination.pageIndex + 1} of {table.getPageCount()}
@@ -252,5 +268,5 @@ export const PharmacyOrdersTable = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

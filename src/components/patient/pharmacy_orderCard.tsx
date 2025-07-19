@@ -35,7 +35,7 @@ export const PharmacyOrdersList = ({ patientId }: { patientId: number }) => {
   console.log('Pharmacy Orders:', orders)
 
   if (isLoading) {
-    return <div className="text-center py-8">Loading pharmacy orders...</div>;
+    return <div className="text-center py-8">Loading pharmacy orders...</div>
   }
 
   if (isError) {
@@ -43,10 +43,10 @@ export const PharmacyOrdersList = ({ patientId }: { patientId: number }) => {
       <div className="text-center py-8 text-red-500">
         Error: {error.message}
       </div>
-    );
+    )
   }
 
-  const arrayOrders = Array.isArray(orders) ? orders : [];
+  const arrayOrders = Array.isArray(orders) ? orders : []
   // Animation variants for the container
   const container = {
     hidden: { opacity: 0 },

@@ -5,12 +5,12 @@ export const Route = createFileRoute('/Dashboard/admin/pharmacy_orders')({
 })
 
 // pages/pharmacy-orders.tsx
-import { PharmacyOrdersTable } from '@/components/orders';
+import { PharmacyOrdersTable } from '@/components/orders'
 
 export default function PharmacyOrdersPage() {
   return (
     <div className="bg-gray-50 min-h-screen py-8">
       <PharmacyOrdersTable />
     </div>
-  );
+  )
 }

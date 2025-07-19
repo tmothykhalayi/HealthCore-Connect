@@ -1,5 +1,5 @@
 // components/PrescriptionsTable.tsx
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react'
 import {
   useReactTable,
   getCoreRowModel,
@@ -7,37 +7,40 @@ import {
   getPaginationRowModel,
   flexRender,
   type ColumnDef,
-} from '@tanstack/react-table';
-import { useGetPrescriptionQuery, useDeletePrescription } from '@/hooks/prescription';
-import type { TPrescription } from '@/types/alltypes';
+} from '@tanstack/react-table'
+import {
+  useGetPrescriptionQuery,
+  useDeletePrescription,
+} from '@/hooks/prescription'
+import type { TPrescription } from '@/types/alltypes'
 
 export const PrescriptionsTable = () => {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState('')
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
-  });
+  })
 
   const { data, isLoading, isError } = useGetPrescriptionQuery(
     pagination.pageIndex + 1,
     pagination.pageSize,
-    search
-  );
+    search,
+  )
 
-  const deleteMutation = useDeletePrescription();
+  const deleteMutation = useDeletePrescription()
 
   // Format date to Kenyan format
   const formatDateTime = (dateTimeString: string) => {
-    const date = new Date(dateTimeString);
+    const date = new Date(dateTimeString)
     return date.toLocaleString('en-KE', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true
-    });
-  };
+      hour12: true,
+    })
+  }
 
   const columns = useMemo<ColumnDef<TPrescription>[]>(
     () => [
@@ -79,8 +82,10 @@ export const PrescriptionsTable = () => {
         cell: ({ row }) => (
           <button
             onClick={() => {
-              if (confirm(`Are you sure you want to delete this prescription?`)) {
-                deleteMutation.mutate(row.original.prescription_id);
+              if (
+                confirm(`Are you sure you want to delete this prescription?`)
+              ) {
+                deleteMutation.mutate(row.original.prescription_id)
               }
             }}
             className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
@@ -92,8 +97,8 @@ export const PrescriptionsTable = () => {
         size: 100,
       },
     ],
-    [deleteMutation]
-  );
+    [deleteMutation],
+  )
 
   const table = useReactTable({
     data: data || [],
@@ -109,14 +114,14 @@ export const PrescriptionsTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
-  });
+  })
 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
-    );
+    )
   }
 
   if (isError) {
@@ -124,13 +129,15 @@ export const PrescriptionsTable = () => {
       <div className="bg-red-50 text-red-700 p-4 rounded-md">
         Error loading prescriptions. Please try again.
       </div>
-    );
+    )
   }
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Prescription Management</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">
+          Prescription Management
+        </h1>
         <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
           <div className="flex-1">
             <input
@@ -142,7 +149,8 @@ export const PrescriptionsTable = () => {
             />
           </div>
           <div className="text-sm text-gray-600 whitespace-nowrap">
-            Showing {table.getRowModel().rows.length} of {data?.total} prescriptions
+            Showing {table.getRowModel().rows.length} of {data?.total}{' '}
+            prescriptions
           </div>
         </div>
       </div>
@@ -161,7 +169,7 @@ export const PrescriptionsTable = () => {
                     >
                       {flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                     </th>
                   ))}
@@ -172,11 +180,14 @@ export const PrescriptionsTable = () => {
               {table.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50">
                   {row.getVisibleCells().map((cell) => (
-                    <td 
-                      key={cell.id} 
+                    <td
+                      key={cell.id}
                       className="px-6 py-4 whitespace-nowrap text-sm text-gray-600"
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </td>
                   ))}
                 </tr>
@@ -196,7 +207,7 @@ export const PrescriptionsTable = () => {
                   ...pagination,
                   pageSize: Number(e.target.value),
                   pageIndex: 0,
-                });
+                })
               }}
               className="border rounded-md p-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
@@ -207,7 +218,7 @@ export const PrescriptionsTable = () => {
               ))}
             </select>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-700">
               Page {pagination.pageIndex + 1} of {table.getPageCount()}
@@ -246,5 +257,5 @@ export const PrescriptionsTable = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

@@ -1,12 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/Dashboard/patient/medicines/')({
-  component:  MedicinesCard,
+  component: MedicinesCard,
 })
 
-import MedicinesList from '@/components/patient/medicineCards';
+import MedicinesList from '@/components/patient/medicineCards'
 function MedicinesCard() {
-  return(
+  return (
     <div className="container mx-auto py-8">
       <h1 className="text-2xl font-bold mb-6">Medicines Management</h1>
       <MedicinesList />

@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 
 export const Route = createFileRoute('/Dashboard/doctor/appointments')({
   component: AppointmentsPage,
@@ -12,13 +13,15 @@ function AppointmentsPage() {
   const doctorId = doctorIdString !== null ? Number(doctorIdString) : undefined
 
   return (
-    <div className="container mx-auto py-10">
-      {doctorId !== undefined ? (
-        <DoctorsAppointmentsTable doctorId={doctorId} />
-      ) : (
-        <div>Doctor ID not found.</div>
-      )}
-    </div>
+    <DashboardLayout>
+      <div className="container mx-auto py-10">
+        {doctorId !== undefined ? (
+          <DoctorsAppointmentsTable doctorId={doctorId} />
+        ) : (
+          <div>Doctor ID not found.</div>
+        )}
+      </div>
+    </DashboardLayout>
   )
 }
 

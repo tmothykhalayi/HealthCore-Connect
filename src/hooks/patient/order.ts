@@ -1,4 +1,7 @@
-import { createPharmacyOrderFn, getPharmacyOrdersFn } from '@/api/patient/orders'
+import {
+  createPharmacyOrderFn,
+  getPharmacyOrdersFn,
+} from '@/api/patient/orders'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 export const useGetPharmacyOrders = (patient_id: number) => {
@@ -11,7 +14,7 @@ export const useGetPharmacyOrders = (patient_id: number) => {
 
 export const useCreatePharmacyOrder = () => {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: (orderData: {
       patient_id: number
@@ -23,9 +26,9 @@ export const useCreatePharmacyOrder = () => {
     }) => createPharmacyOrderFn(orderData),
     onSuccess: () => {
       // Invalidate and refetch
-      queryClient.invalidateQueries({ 
-        queryKey: ['pharmacyOrders'] 
+      queryClient.invalidateQueries({
+        queryKey: ['pharmacyOrders'],
       })
-    }
+    },
   })
 }

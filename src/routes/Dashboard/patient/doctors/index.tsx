@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 export const Route = createFileRoute('/Dashboard/patient/doctors/')({
   component: DoctorsPage,
 })
-import DoctorsList from '@/components/patient/doctorsCards';
+import DoctorsList from '@/components/patient/doctorsCards'
 
 function DoctorsPage() {
   return (
@@ -11,5 +11,5 @@ function DoctorsPage() {
       <h1 className="text-2xl font-bold mb-6">Doctors Management</h1>
       <DoctorsList />
     </div>
-  );
+  )
 }

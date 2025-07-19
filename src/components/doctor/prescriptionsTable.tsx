@@ -1,71 +1,78 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react'
 import {
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
   type ColumnDef,
-  type PaginationState
-} from '@tanstack/react-table';
-import { useGetPrescriptionQuery, useDeletePrescription,  } from '@/hooks/prescription';
-import type { TPrescription } from '@/types/alltypes';
-import { useCreatePrescription } from '@/hooks/doctor/prescription';
+  type PaginationState,
+} from '@tanstack/react-table'
+import {
+  useGetPrescriptionQuery,
+  useDeletePrescription,
+} from '@/hooks/prescription'
+import type { TPrescription } from '@/types/alltypes'
+import { useCreatePrescription } from '@/hooks/doctor/prescription'
 
 const PrescriptionTable = () => {
   // State for pagination and search
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
-  });
-  const [search, setSearch] = useState('');
-  const [showForm, setShowForm] = useState(false);
+  })
+  const [search, setSearch] = useState('')
+  const [showForm, setShowForm] = useState(false)
   const [formData, setFormData] = useState({
     patient_id: '',
     doctor_id: '',
     appointment_id: '',
     notes: '',
-  });
+  })
 
   // Fetch data using the query hook
   const { data, isLoading, isError } = useGetPrescriptionQuery(
     pageIndex + 1, // API expects 1-based index
     pageSize,
-    search
-  );
+    search,
+  )
 
   // Mutations
-  const deletePrescription = useDeletePrescription();
-  const createPrescription = useCreatePrescription();
+  const deletePrescription = useDeletePrescription()
+  const createPrescription = useCreatePrescription()
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
       await createPrescription.mutateAsync({
         patient_id: parseInt(formData.patient_id),
         doctor_id: parseInt(formData.doctor_id),
-        appointment_id: formData.appointment_id ? parseInt(formData.appointment_id) : null,
+        appointment_id: formData.appointment_id
+          ? parseInt(formData.appointment_id)
+          : null,
         notes: formData.notes,
-      });
+      })
       // Reset form and hide it after successful submission
       setFormData({
         patient_id: '',
         doctor_id: '',
         appointment_id: '',
         notes: '',
-      });
-      setShowForm(false);
+      })
+      setShowForm(false)
     } catch (error) {
-      console.error('Error creating prescription:', error);
+      console.error('Error creating prescription:', error)
     }
-  };
+  }
 
   // Columns definition
   const columns = useMemo<ColumnDef<TPrescription>[]>(
@@ -90,16 +97,16 @@ const PrescriptionTable = () => {
         header: 'Notes',
         accessorKey: 'notes',
         cell: ({ getValue }) => {
-          const notes = getValue() as string;
-          return notes.length > 50 ? `${notes.substring(0, 50)}...` : notes;
+          const notes = getValue() as string
+          return notes.length > 50 ? `${notes.substring(0, 50)}...` : notes
         },
       },
       {
         header: 'Created At',
         accessorKey: 'created_at',
         cell: ({ getValue }) => {
-          const date = new Date(getValue() as string);
-          return date.toLocaleDateString();
+          const date = new Date(getValue() as string)
+          return date.toLocaleDateString()
         },
       },
       {
@@ -107,8 +114,10 @@ const PrescriptionTable = () => {
         cell: ({ row }) => (
           <button
             onClick={() => {
-              if (confirm('Are you sure you want to delete this prescription?')) {
-                deletePrescription.mutate(row.original.prescription_id);
+              if (
+                confirm('Are you sure you want to delete this prescription?')
+              ) {
+                deletePrescription.mutate(row.original.prescription_id)
               }
             }}
             className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
@@ -119,8 +128,8 @@ const PrescriptionTable = () => {
         ),
       },
     ],
-    [deletePrescription]
-  );
+    [deletePrescription],
+  )
 
   // Table instance
   const table = useReactTable({
@@ -134,15 +143,15 @@ const PrescriptionTable = () => {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
-  });
+  })
 
-  if (isLoading) return <div>Loading prescriptions...</div>;
-  if (isError) return <div>Error loading prescriptions</div>;
+  if (isLoading) return <div>Loading prescriptions...</div>
+  if (isError) return <div>Error loading prescriptions</div>
 
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Prescriptions</h1>
-      
+
       {/* Search input */}
       <div className="mb-4">
         <input
@@ -150,8 +159,8 @@ const PrescriptionTable = () => {
           placeholder="Search prescriptions..."
           value={search}
           onChange={(e) => {
-            setSearch(e.target.value);
-            setPagination({ pageIndex: 0, pageSize });
+            setSearch(e.target.value)
+            setPagination({ pageIndex: 0, pageSize })
           }}
           className="p-2 border rounded w-full max-w-md"
         />
@@ -167,7 +176,7 @@ const PrescriptionTable = () => {
                   <th key={header.id} className="p-2 text-left border">
                     {flexRender(
                       header.column.columnDef.header,
-                      header.getContext()
+                      header.getContext(),
                     )}
                   </th>
                 ))}
@@ -232,7 +241,7 @@ const PrescriptionTable = () => {
         <select
           value={table.getState().pagination.pageSize}
           onChange={(e) => {
-            table.setPageSize(Number(e.target.value));
+            table.setPageSize(Number(e.target.value))
           }}
           className="p-1 border rounded"
         >
@@ -256,7 +265,7 @@ const PrescriptionTable = () => {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl">
             <h2 className="text-xl font-semibold">Add New Prescription</h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block mb-1 font-medium">Patient ID*</label>
@@ -269,7 +278,7 @@ const PrescriptionTable = () => {
                   className="w-full p-2 border rounded"
                 />
               </div>
-              
+
               <div>
                 <label className="block mb-1 font-medium">Doctor ID*</label>
                 <input
@@ -281,7 +290,7 @@ const PrescriptionTable = () => {
                   className="w-full p-2 border rounded"
                 />
               </div>
-              
+
               <div>
                 <label className="block mb-1 font-medium">Appointment ID</label>
                 <input
@@ -293,7 +302,7 @@ const PrescriptionTable = () => {
                 />
               </div>
             </div>
-            
+
             <div>
               <label className="block mb-1 font-medium">Notes*</label>
               <textarea
@@ -305,7 +314,7 @@ const PrescriptionTable = () => {
                 className="w-full p-2 border rounded"
               />
             </div>
-            
+
             <div className="flex gap-3">
               <button
                 type="button"
@@ -319,14 +328,16 @@ const PrescriptionTable = () => {
                 disabled={createPrescription.isPending}
                 className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
               >
-                {createPrescription.isPending ? 'Saving...' : 'Save Prescription'}
+                {createPrescription.isPending
+                  ? 'Saving...'
+                  : 'Save Prescription'}
               </button>
             </div>
           </form>
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PrescriptionTable;
+export default PrescriptionTable

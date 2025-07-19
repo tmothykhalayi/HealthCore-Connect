@@ -20,7 +20,7 @@ export enum UserRole {
   DOCTOR = 'doctor',
   PATIENT = 'patient',
   PHARMACIST = 'pharmacist',
-  ADMIN = 'admin'
+  ADMIN = 'admin',
 }
 
 // User entity for the health system
@@ -190,16 +190,15 @@ export interface GlobalDataType {
 }
 
 export interface loginResponse {
- token: {
-   accessToken: string
-   refreshToken: string
- }
- user:{
-   email: string
-  role: Role,
-  user_id: string
- }
- 
+  token: {
+    accessToken: string
+    refreshToken: string
+  }
+  user: {
+    email: string
+    role: Role
+    user_id: string
+  }
 }
 
 export interface loginType {
@@ -230,7 +229,6 @@ export enum Role {
   doctor = 'doctor',
 }
 
-
 export interface UserAuthType {
   user_id: string
   email: string
@@ -242,116 +240,114 @@ export type Tokens = {
   refreshToken: string
 }
 export type AuthActions = {
-  login: (token: Tokens, userData: UserAuthType) => void;
-  logout: () => void;
-  updateAccessToken: (newAccessToken: string) => void;
-  updateUser: (updatedUser: Partial<UserAuthType>) => void;
-  verifyUser: () => void;
-  reinitialize: () => void;
-};
+  login: (token: Tokens, userData: UserAuthType) => void
+  logout: () => void
+  updateAccessToken: (newAccessToken: string) => void
+  updateUser: (updatedUser: Partial<UserAuthType>) => void
+  verifyUser: () => void
+  reinitialize: () => void
+}
 
-export type AuthStoreType = AuthState & AuthActions;
-
+export type AuthStoreType = AuthState & AuthActions
 
 export interface TDoctor {
-  doctor_id: number;
-  name: string;
-  email: string;
-  specialization: string;
-  license_number: string;
-  availability: string;
-  consultation_fee: number;
-  appointment_id: number;
+  doctor_id: number
+  name: string
+  email: string
+  specialization: string
+  license_number: string
+  availability: string
+  consultation_fee: number
+  appointment_id: number
 }
 
 //create user DTO
 export interface CreateUserDto {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  phoneNumber: string;
-  role: UserRole;
+  firstName: string
+  lastName: string
+  email: string
+  password: string
+  phoneNumber: string
+  role: UserRole
 }
 
 export interface TPatient {
-  patient_id: number;
-  name: string;
-  email: string;
-  dob: string;
-  gender: string;
-  phone: string;
-  address: string;
-
+  patient_id: number
+  name: string
+  email: string
+  dob: string
+  gender: string
+  phone: string
+  address: string
 }
 
 export interface TAppointment {
-  appointment_id: number;
-  patient_id: number;
-  doctor_id: number;
-  appointment_time: string;
-  status: string;
-  reason: string;
-  created_at: string;
+  appointment_id: number
+  patient_id: number
+  doctor_id: number
+  appointment_time: string
+  status: string
+  reason: string
+  created_at: string
 }
 
 export interface TPrescription {
-  prescription_id: number;
-  patient_id: number;
-  doctor_id: number;
-  appointment_id: number;
-  notes: string;
-  created_at: string;
+  prescription_id: number
+  patient_id: number
+  doctor_id: number
+  appointment_id: number
+  notes: string
+  created_at: string
 }
 
 export interface TPharmacyOrder {
-  pharmacy_order_id: number;
-  patient_id: number;
-  doctor_id: number;
-  quantity: number;
-  status: string;
-  created_at: string;
+  pharmacy_order_id: number
+  patient_id: number
+  doctor_id: number
+  quantity: number
+  status: string
+  created_at: string
 }
 
 export interface TMedicine {
-  medicine_id: number;
-  name: string;
-  description: string;
-  stock_quantity: number;
-  price: number;
-  expiry_date: string;
+  medicine_id: number
+  name: string
+  description: string
+  stock_quantity: number
+  price: number
+  expiry_date: string
 }
 
-export interface TRecord{
-  record_id: number;
-  patient_id: number;
-  doctor_id: number;
-  prescription_id: number;
-  description: string;
-  created_at: string;
-  updated_at: string;
+export interface TRecord {
+  record_id: number
+  patient_id: number
+  doctor_id: number
+  prescription_id: number
+  description: string
+  created_at: string
+  updated_at: string
 }
 
 export interface TPayment {
-  payment_id: number; 
-  appointment_id: number;
-  patient_id: number; 
-  payment_method: string;
-  pharmacy_order_id: number;
-  created_at: string;
-  amount: number; 
-  status: string;
+  payment_id: number
+  appointment_id: number
+  patient_id: number
+  payment_method: string
+  pharmacy_order_id: number
+  created_at: string
+  amount: number
+  status: string
 }
-  
-export interface Doctor{
-     doctor_id: string | number;
-  name: string;
-  specialization: string;
-  email: string;
-  availability: string;
-  license_number: string;
-  consultation_fee?: number;
-};
+
+export interface Doctor {
+  doctor_id: string | number
+  name: string
+  specialization: string
+  email: string
+  availability: string
+  license_number: string
+  consultation_fee?: number
+}
 
 export interface TSignIn {
   email: string
@@ -406,61 +402,55 @@ interface User {
   userRole: string
 }
 
-
 export interface TSignIn {
-    email: string;
-    password: string;
+  email: string
+  password: string
 }
 
 export interface TSignUp {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    phoneNumber: string;
-    role: string;
+  firstName: string
+  lastName: string
+  email: string
+  password: string
+  phoneNumber: string
+  role: string
 }
 
 export interface TPatientProfile {
-    id?: string;
-    dateOfBirth: string;
-    bloodType: string;
-    medicalDocuments: File[];
-    user?: User;
-
+  id?: string
+  dateOfBirth: string
+  bloodType: string
+  medicalDocuments: File[]
+  user?: User
 }
 
 export interface TDoctorProfile {
-    id?: string;
-    licenseNumber: string;
-    yearsOfExperience: number;
-    hospitalAffiliation: string;
-    specializations: string[];
-    consultationFee: number;
-    availableDays: string[];
-    workingHours: string;
-    professionalBio: string;
-    availabilityStatus: boolean;
-    certifications: File[];
-    user?: User;
-
-
+  id?: string
+  licenseNumber: string
+  yearsOfExperience: number
+  hospitalAffiliation: string
+  specializations: string[]
+  consultationFee: number
+  availableDays: string[]
+  workingHours: string
+  professionalBio: string
+  availabilityStatus: boolean
+  certifications: File[]
+  user?: User
 }
 
 export interface TPharmacistProfile {
-    id?: string;
-    pharmacyName: string;
-    licenceNumber: string;
-    user?: User;
-
-
+  id?: string
+  pharmacyName: string
+  licenceNumber: string
+  user?: User
 }
 
 interface User {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    phoneNumber?: string;
-    userRole: string;
+  id: string
+  email: string
+  firstName: string
+  lastName: string
+  phoneNumber?: string
+  userRole: string
 }

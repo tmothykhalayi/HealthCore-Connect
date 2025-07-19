@@ -1,64 +1,70 @@
-import {API_BASE_URL} from "../../BaseUrl";
-import {   getAccessTokenHelper } from "@/lib/auth";
-
+import { API_BASE_URL } from '../../BaseUrl'
+import { getAccessTokenHelper } from '@/lib/auth'
 
 export const createAppointmentFn = async (appointmentData: {
-  doctor_id: number;                                        
-    patient_id: number;
-    status: string;
-    reason: string;
-    created_at: Date;
-    appointment_time: Date;
+  doctor_id: number
+  patient_id: number
+  status: string
+  reason: string
+  created_at: Date
+  appointment_time: Date
 }) => {
-    const fullUrl = `${API_BASE_URL}/appointments`;
+  const fullUrl = `${API_BASE_URL}/appointments`
 
-    const response = await fetch(fullUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${getAccessTokenHelper()}`,
-        },
-        body: JSON.stringify(appointmentData),
-    });
+  const response = await fetch(fullUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAccessTokenHelper()}`,
+    },
+    body: JSON.stringify(appointmentData),
+  })
 
-    if (!response.ok) {
-        throw new Error('Failed to create appointment');
-    }
+  if (!response.ok) {
+    throw new Error('Failed to create appointment')
+  }
 
-    return response.json();
-};
+  return response.json()
+}
 
 export const postAppointmentFn = async () => {
-    const fullUrl = `${API_BASE_URL}/appointments`;
-    
-    const response = await fetch(fullUrl, {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getAccessTokenHelper()}`,
-        },
-    });
-    
-    if (!response.ok) {
-        throw new Error('Failed to post appointment');
-    }
-    
-    return response.json();
+  const fullUrl = `${API_BASE_URL}/appointments`
+
+  const response = await fetch(fullUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAccessTokenHelper()}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to post appointment')
+  }
+
+  return response.json()
 }
 
 export const getAppointmentsFn = async (patient_id: number) => {
-  const fullUrl = `${API_BASE_URL}/patients/appointments/${patient_id}`;
-  const token = getAccessTokenHelper();
+  const fullUrl = `${API_BASE_URL}/appointments/patient/${patient_id}`
+  const token = getAccessTokenHelper()
 
   const response = await fetch(fullUrl, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
-  });
+  })
 
-  const data = await response.json();
+  if (!response.ok) {
+    throw new Error('Failed to fetch appointments')
+  }
 
-  return Array.isArray(data) ? data : [data];
+  const responseData = await response.json()
+
+  // Extract the data array from the response
+  const appointments = responseData.data || responseData
+
+  return Array.isArray(appointments) ? appointments : [appointments]
 }

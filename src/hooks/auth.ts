@@ -2,6 +2,7 @@ import { loginFn } from '@/api/auth'
 import type { loginType } from '@/types/alltypes'
 import { useMutation } from '@tanstack/react-query'
 import useAuthStore from '@/store/auth'
+import { loginUser } from '@/lib/auth'
 
 export const useLoginHook = () => {
   return useMutation<any, Error, loginType>({
@@ -14,7 +15,26 @@ export const useLoginHook = () => {
 export const useLogin = () => {
   return useMutation<any, Error, loginType>({
     mutationKey: ['login'],
-    mutationFn: (data: loginType) => loginFn(data.email, data.password),
+    mutationFn: async (data: loginType) => {
+      const response = await loginFn(data.email, data.password)
+
+      // Transform the response to match the expected format
+      const tokens = {
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+      }
+
+      const userData = {
+        user_id: response.user.id.toString(),
+        email: response.user.email,
+        role: response.user.role,
+      }
+
+      // Store the data in the auth store
+      loginUser(tokens, userData)
+
+      return response
+    },
   })
 }
 
@@ -22,11 +42,11 @@ export const useLogin = () => {
 export const useCurrentUser = () => {
   const user = useAuthStore((state: any) => state.user)
   const isAuthenticated = useAuthStore((state: any) => state.isAuthenticated)
-  
+
   return {
     data: user,
     isLoading: false, // Since this is from local store, it's always loaded
-    isAuthenticated
+    isAuthenticated,
   }
 }
 

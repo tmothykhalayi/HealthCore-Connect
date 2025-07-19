@@ -2,11 +2,16 @@ import { useMutation, type UseMutationResult } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import axios from 'axios'
 import { API_BASE_URL } from './BaseUrl'
-import type { LoginPayload, LoginResponse, GlobalDataType } from '@/types/alltypes'
+import type {
+  LoginPayload,
+  LoginResponse,
+  GlobalDataType,
+} from '@/types/alltypes'
 import { UserRole } from '@/types/alltypes'
-import { 
+import {
   //authStore
-   authActions } from '@/app/store'
+  authActions,
+} from '@/app/store'
 
 const loginFn = async (payload: LoginPayload): Promise<LoginResponse> => {
   const response = await axios.post<LoginResponse>(
@@ -29,7 +34,7 @@ export const useLogin = (): UseMutationResult<
     onSuccess: (data) => {
       console.log('Login response:', data)
       toast.success(`Welcome, ${data.user?.email || 'User'}!`)
-      
+
       // Transform backend response to frontend format
       const authData: GlobalDataType = {
         isVerified: true,
@@ -44,7 +49,7 @@ export const useLogin = (): UseMutationResult<
         },
       }
       authActions.saveUser(authData)
-      
+
       // Also save to localStorage for backward compatibility
       localStorage.setItem('auth', JSON.stringify(authData.tokens))
       localStorage.setItem('accesstoken', authData.tokens.accessToken)

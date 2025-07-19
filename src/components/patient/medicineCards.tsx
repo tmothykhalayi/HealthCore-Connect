@@ -1,27 +1,27 @@
-import { useState } from 'react';
-import { useGetMedicineQuery } from '@/hooks/patients/medicine';
-import { motion } from 'framer-motion';
-import OrderMedicineModal from './ordersForm';
+import { useState } from 'react'
+import { useGetMedicineQuery } from '@/hooks/patients/medicine'
+import { motion } from 'framer-motion'
+import OrderMedicineModal from './ordersForm'
 
 type Medicine = {
-  medicine_id: number;
-  name: string;
-  description: string;
-  stock_quantity: number;
-  price: number;
-  expiry_date: string;
-  img: string | null;
-};
+  medicine_id: number
+  name: string
+  description: string
+  stock_quantity: number
+  price: number
+  expiry_date: string
+  img: string | null
+}
 
 const MedicinesList = () => {
-  const { data: medicines, isLoading, isError, error } = useGetMedicineQuery();
+  const { data: medicines, isLoading, isError, error } = useGetMedicineQuery()
 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
-    );
+    )
   }
 
   if (isError) {
@@ -29,7 +29,7 @@ const MedicinesList = () => {
       <div className="flex justify-center items-center h-64">
         <p className="text-red-500">Error loading medicines: {error.message}</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -50,21 +50,31 @@ const MedicinesList = () => {
         }}
       >
         {medicines?.map((medicine: Medicine, index: number) => (
-          <MedicineCard key={medicine.medicine_id} medicine={medicine} index={index} />
+          <MedicineCard
+            key={medicine.medicine_id}
+            medicine={medicine}
+            index={index}
+          />
         ))}
       </motion.div>
     </div>
-  );
-};
+  )
+}
 
-const MedicineCard = ({ medicine, index }: { medicine: Medicine; index: number }) => {
-  const [showOrderModal, setShowOrderModal] = useState(false);
-  const patientId = 1; // Replace with actual patient ID from auth context
+const MedicineCard = ({
+  medicine,
+  index,
+}: {
+  medicine: Medicine
+  index: number
+}) => {
+  const [showOrderModal, setShowOrderModal] = useState(false)
+  const patientId = 1 // Replace with actual patient ID from auth context
 
   const handleOrderSuccess = (orderData: any) => {
-    console.log('Order created:', orderData);
+    console.log('Order created:', orderData)
     // Handle successful order creation (e.g., show toast notification)
-  };
+  }
 
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -78,18 +88,23 @@ const MedicineCard = ({ medicine, index }: { medicine: Medicine; index: number }
     },
     hover: {
       y: -5,
-      boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+      boxShadow:
+        '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
       transition: { duration: 0.2 },
     },
-  };
+  }
 
-  const formattedExpiryDate = new Date(medicine.expiry_date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
+  const formattedExpiryDate = new Date(medicine.expiry_date).toLocaleDateString(
+    'en-US',
+    {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    },
+  )
 
-  const imageUrl = medicine.img || 'https://via.placeholder.com/300x200?text=Medicine';
+  const imageUrl =
+    medicine.img || 'https://via.placeholder.com/300x200?text=Medicine'
 
   return (
     <>
@@ -107,7 +122,8 @@ const MedicineCard = ({ medicine, index }: { medicine: Medicine; index: number }
             alt={medicine.name}
             className="w-full h-full object-cover"
             onError={(e) => {
-              e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Medicine';
+              e.currentTarget.src =
+                'https://via.placeholder.com/300x200?text=Medicine'
             }}
           />
         </div>
@@ -138,8 +154,18 @@ const MedicineCard = ({ medicine, index }: { medicine: Medicine; index: number }
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: index * 0.1 + 0.4 }}
             >
-              <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              <svg
+                className="w-4 h-4 mr-2 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                />
               </svg>
               {medicine.stock_quantity} in stock
             </motion.div>
@@ -150,8 +176,18 @@ const MedicineCard = ({ medicine, index }: { medicine: Medicine; index: number }
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: index * 0.1 + 0.45 }}
             >
-              <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              <svg
+                className="w-4 h-4 mr-2 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
               </svg>
               Expires: {formattedExpiryDate}
             </motion.div>
@@ -189,7 +225,7 @@ const MedicineCard = ({ medicine, index }: { medicine: Medicine; index: number }
           medicine={{
             medicine_id: medicine.medicine_id,
             name: medicine.name,
-            price: medicine.price
+            price: medicine.price,
           }}
           patientId={patientId}
           onClose={() => setShowOrderModal(false)}
@@ -197,7 +233,7 @@ const MedicineCard = ({ medicine, index }: { medicine: Medicine; index: number }
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default MedicinesList;
+export default MedicinesList

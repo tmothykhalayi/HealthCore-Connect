@@ -1,10 +1,18 @@
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import { FaEnvelope, FaLock, FaCheck, FaTimes, FaSpinner, FaUser, FaPhone } from 'react-icons/fa'
-import type { CreateUserDto  } from '@/types/alltypes'
-import { UserRole } from '@/types/alltypes'
-//import api from '@/lib/axios'
+import {
+  FaEnvelope,
+  FaLock,
+  FaCheck,
+  FaTimes,
+  FaSpinner,
+  FaUser,
+  FaPhone,
+} from 'react-icons/fa'
+import type { CreateUserDto } from '@/types/alltypes'
+import { Role } from '@/types/alltypes'
+import { registerFn } from '@/api/auth'
 
 export function Register() {
   const [registerStatus, setRegisterStatus] = useState<{
@@ -43,7 +51,8 @@ export function Register() {
   const validatePhoneNumber = (phoneNumber: string) => {
     if (!phoneNumber) return null // Optional field
     const re = /^[\+]?[1-9][\d]{0,15}$/
-    if (!re.test(phoneNumber.replace(/\s/g, ''))) return 'Please enter a valid phone number'
+    if (!re.test(phoneNumber.replace(/\s/g, '')))
+      return 'Please enter a valid phone number'
     return null
   }
 
@@ -54,24 +63,32 @@ export function Register() {
       firstName: '',
       lastName: '',
       phoneNumber: '',
-      role: UserRole.PATIENT,
+      role: Role.patient,
     },
     onSubmit: async ({ value }) => {
       setIsSubmitting(true)
       setRegisterStatus(null)
-      
+
       try {
-        const registrationData: CreateUserDto = {
+        const registrationData = {
           email: value.email,
           password: value.password,
           firstName: value.firstName,
           lastName: value.lastName,
-          phoneNumber: value.phoneNumber || undefined,
+          phoneNumber: value.phoneNumber || '',
           role: value.role,
         }
 
-        const response = await api.post('/users', registrationData)
-        
+        console.log('Attempting registration with data:', registrationData)
+        console.log(
+          'API URL:',
+          `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'}/auth/register`,
+        )
+
+        const response = await registerFn(registrationData)
+
+        console.log('Registration successful:', response)
+
         setRegisterStatus({
           success: true,
           message: 'Registration successful! Redirecting to login...',
@@ -81,10 +98,16 @@ export function Register() {
         setTimeout(() => {
           navigate({ to: '/login' })
         }, 2000)
-
       } catch (error: any) {
         console.error('Registration failed:', error)
-        const errorMessage = error.response?.data?.message || 'Registration failed. Please try again.'
+        console.error('Error details:', {
+          message: error.message,
+          stack: error.stack,
+          response: error.response,
+        })
+
+        const errorMessage =
+          error.message || 'Registration failed. Please try again.'
         setRegisterStatus({
           success: false,
           message: errorMessage,
@@ -99,10 +122,10 @@ export function Register() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
       {/* Welcome Header */}
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-blue-600 mb-2">Create Account</h1>
-        <p className="text-lg text-gray-600">
-          Join HealthCore Connect today!
-        </p>
+        <h1 className="text-4xl font-bold text-blue-600 mb-2">
+          Create Account
+        </h1>
+        <p className="text-lg text-gray-600">Join HealthCore Connect today!</p>
       </div>
 
       {/* Registration Form Container */}
@@ -448,14 +471,14 @@ export function Register() {
                   id="role"
                   value={field.state.value}
                   onChange={(e) => {
-                    field.handleChange(e.target.value as UserRole)
+                    field.handleChange(e.target.value as Role)
                     setRegisterStatus(null)
                   }}
                   className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <option value={UserRole.PATIENT}>Patient</option>
-                  <option value={UserRole.DOCTOR}>Doctor</option>
-                  <option value={UserRole.PHARMACIST}>Pharmacist</option>
+                  <option value={Role.patient}>Patient</option>
+                  <option value={Role.doctor}>Doctor</option>
+                  <option value={Role.pharmacist}>Pharmacist</option>
                 </select>
               </div>
             )}
@@ -489,7 +512,10 @@ export function Register() {
 
         <div className="mt-4 text-center text-sm text-gray-600">
           Already have an account?{' '}
-          <a href="/login" className="font-medium text-blue-600 hover:text-blue-500">
+          <a
+            href="/login"
+            className="font-medium text-blue-600 hover:text-blue-500"
+          >
             Sign in
           </a>
         </div>
@@ -498,4 +524,4 @@ export function Register() {
   )
 }
 
-export default Register 
+export default Register

@@ -1,15 +1,15 @@
 // authStore.ts
-import type { AuthState, AuthStoreType } from '@/types/alltypes';
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import type { AuthState, AuthStoreType } from '@/types/alltypes'
+import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
 
-const STORAGE_KEY = 'auth-storage';
+const STORAGE_KEY = 'auth-storage'
 
 const initialState: AuthState = {
   tokens: null,
   user: null,
   isAuthenticated: false,
-};
+}
 
 const useAuthStore = create<AuthStoreType>()(
   persist(
@@ -26,8 +26,8 @@ const useAuthStore = create<AuthStoreType>()(
 
       // Clear all authentication data
       logout: () => {
-        set(initialState);
-        localStorage.removeItem(STORAGE_KEY); // Optional: explicitly remove from localStorage
+        set(initialState)
+        localStorage.removeItem(STORAGE_KEY) // Optional: explicitly remove from localStorage
       },
 
       // Update just the access token
@@ -43,9 +43,9 @@ const useAuthStore = create<AuthStoreType>()(
         set((state) => ({
           user: state.user
             ? {
-              ...state.user,
-              user: { ...state.user, ...updatedUser },
-            }
+                ...state.user,
+                user: { ...state.user, ...updatedUser },
+              }
             : null,
         })),
 
@@ -54,23 +54,23 @@ const useAuthStore = create<AuthStoreType>()(
         set((state) => ({
           user: state.user
             ? {
-              ...state.user,
-              user: { ...state.user, isVerified: true },
-            }
+                ...state.user,
+                user: { ...state.user, isVerified: true },
+              }
             : null,
         })),
 
       // Reinitialize from localStorage
       reinitialize: () => {
-        const storedState = localStorage.getItem(STORAGE_KEY);
+        const storedState = localStorage.getItem(STORAGE_KEY)
         if (storedState) {
           try {
-            const parsedState = JSON.parse(storedState);
+            const parsedState = JSON.parse(storedState)
             if (parsedState.state) {
-              set({ ...parsedState.state });
+              set({ ...parsedState.state })
             }
           } catch (error) {
-            console.error('Failed to parse stored auth state', error);
+            console.error('Failed to parse stored auth state', error)
           }
         }
       },
@@ -80,8 +80,8 @@ const useAuthStore = create<AuthStoreType>()(
       storage: createJSONStorage(() => localStorage),
       // Optional: you can whitelist or blacklist specific fields
       // partialize: (state) => ({ tokens: state.tokens, user: state.user }),
-    }
-  )
-);
+    },
+  ),
+)
 
-export default useAuthStore;
+export default useAuthStore

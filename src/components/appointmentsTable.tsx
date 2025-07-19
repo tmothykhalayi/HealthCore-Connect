@@ -1,5 +1,5 @@
 // components/AppointmentsTable.tsx
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react'
 import {
   useReactTable,
   getCoreRowModel,
@@ -7,39 +7,42 @@ import {
   getPaginationRowModel,
   flexRender,
   type ColumnDef,
-} from '@tanstack/react-table';
-import { useGetAppointmentQuery, useDeleteAppointment } from '@/hooks/appointment';
+} from '@tanstack/react-table'
+import {
+  useGetAppointmentQuery,
+  useDeleteAppointment,
+} from '@/hooks/appointment'
 // import { useGetAppointmentQuery, useDeleteAppointment } from '@/hooks/doctors/appointment';
-import type { TAppointment } from '@/types/alltypes';
+import type { TAppointment } from '@/types/alltypes'
 
 export const AppointmentsTable = () => {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState('')
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
-  });
+  })
 
   const { data, isLoading, isError } = useGetAppointmentQuery(
     pagination.pageIndex + 1,
     pagination.pageSize,
-    search
-  );
-  console.log(" my Appointments data:", data);
+    search,
+  )
+  console.log(' my Appointments data:', data)
 
-  const deleteMutation = useDeleteAppointment();
+  const deleteMutation = useDeleteAppointment()
 
   // Format date to Kenyan format
   const formatDateTime = (dateTimeString: string) => {
-    const date = new Date(dateTimeString);
+    const date = new Date(dateTimeString)
     return date.toLocaleString('en-KE', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true
-    });
-  };
+      hour12: true,
+    })
+  }
 
   const columns = useMemo<ColumnDef<TAppointment>[]>(
     () => [
@@ -66,11 +69,15 @@ export const AppointmentsTable = () => {
         header: 'Status',
         accessorKey: 'status',
         cell: ({ row }) => (
-          <span className={`px-2 py-1 rounded-full text-xs ${
-            row.original.status === 'scheduled' ? 'bg-blue-100 text-blue-800' :
-            row.original.status === 'completed' ? 'bg-green-100 text-green-800' :
-            'bg-gray-100 text-gray-800'
-          }`}>
+          <span
+            className={`px-2 py-1 rounded-full text-xs ${
+              row.original.status === 'scheduled'
+                ? 'bg-blue-100 text-blue-800'
+                : row.original.status === 'completed'
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-gray-100 text-gray-800'
+            }`}
+          >
             {row.original.status}
           </span>
         ),
@@ -93,8 +100,10 @@ export const AppointmentsTable = () => {
         cell: ({ row }) => (
           <button
             onClick={() => {
-              if (confirm(`Are you sure you want to delete this appointment?`)) {
-                deleteMutation.mutate(row.original.appointment_id);
+              if (
+                confirm(`Are you sure you want to delete this appointment?`)
+              ) {
+                deleteMutation.mutate(row.original.appointment_id)
               }
             }}
             className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
@@ -106,8 +115,8 @@ export const AppointmentsTable = () => {
         size: 100,
       },
     ],
-    [deleteMutation]
-  );
+    [deleteMutation],
+  )
 
   const table = useReactTable({
     data: data || [],
@@ -123,14 +132,14 @@ export const AppointmentsTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
-  });
+  })
 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
-    );
+    )
   }
 
   if (isError) {
@@ -138,13 +147,15 @@ export const AppointmentsTable = () => {
       <div className="bg-red-50 text-red-700 p-4 rounded-md">
         Error loading appointments. Please try again.
       </div>
-    );
+    )
   }
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Appointment Management</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">
+          Appointment Management
+        </h1>
         <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
           <div className="flex-1">
             <input
@@ -156,7 +167,8 @@ export const AppointmentsTable = () => {
             />
           </div>
           <div className="text-sm text-gray-600 whitespace-nowrap">
-            Showing {table.getRowModel().rows.length} of {data?.total} appointments
+            Showing {table.getRowModel().rows.length} of {data?.total}{' '}
+            appointments
           </div>
         </div>
       </div>
@@ -175,7 +187,7 @@ export const AppointmentsTable = () => {
                     >
                       {flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                     </th>
                   ))}
@@ -186,11 +198,14 @@ export const AppointmentsTable = () => {
               {table.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50">
                   {row.getVisibleCells().map((cell) => (
-                    <td 
-                      key={cell.id} 
+                    <td
+                      key={cell.id}
                       className="px-6 py-4 whitespace-nowrap text-sm text-gray-600"
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </td>
                   ))}
                 </tr>
@@ -210,7 +225,7 @@ export const AppointmentsTable = () => {
                   ...pagination,
                   pageSize: Number(e.target.value),
                   pageIndex: 0,
-                });
+                })
               }}
               className="border rounded-md p-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
@@ -221,7 +236,7 @@ export const AppointmentsTable = () => {
               ))}
             </select>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-700">
               Page {pagination.pageIndex + 1} of {table.getPageCount()}
@@ -260,5 +275,5 @@ export const AppointmentsTable = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

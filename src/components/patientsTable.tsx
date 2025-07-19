@@ -1,5 +1,5 @@
 // components/PatientsTable.tsx
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react'
 import {
   useReactTable,
   getCoreRowModel,
@@ -7,13 +7,17 @@ import {
   getPaginationRowModel,
   flexRender,
   type ColumnDef,
-} from '@tanstack/react-table';
-import { useGetPatientQuery, useDeletePatient, useCreatePatient } from '@/hooks/patient';
-import type { TPatient } from '@/types/alltypes';
+} from '@tanstack/react-table'
+import {
+  useGetPatientQuery,
+  useDeletePatient,
+  useCreatePatient,
+} from '@/hooks/patient'
+import type { TPatient } from '@/types/alltypes'
 
 export const PatientsTable = () => {
-  const [search, setSearch] = useState('');
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [search, setSearch] = useState('')
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [newPatient, setNewPatient] = useState<Omit<TPatient, 'patient_id'>>({
     name: '',
     email: '',
@@ -21,42 +25,44 @@ export const PatientsTable = () => {
     gender: '',
     phone: '',
     address: '',
-  });
+  })
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
-  });
+  })
 
   const { data, isLoading, isError } = useGetPatientQuery(
     pagination.pageIndex + 1,
     pagination.pageSize,
-    search
-  );
+    search,
+  )
 
-  const deleteMutation = useDeletePatient();
-  const createMutation = useCreatePatient();
+  const deleteMutation = useDeletePatient()
+  const createMutation = useCreatePatient()
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-KE', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
-    });
-  };
+      day: 'numeric',
+    })
+  }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setNewPatient(prev => ({
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target
+    setNewPatient((prev) => ({
       ...prev,
-      [name]: value
-    }));
-  };
+      [name]: value,
+    }))
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     createMutation.mutate(newPatient as TPatient, {
       onSuccess: () => {
-        setIsAddModalOpen(false);
+        setIsAddModalOpen(false)
         setNewPatient({
           name: '',
           email: '',
@@ -64,10 +70,10 @@ export const PatientsTable = () => {
           gender: '',
           phone: '',
           address: '',
-        });
-      }
-    });
-  };
+        })
+      },
+    })
+  }
 
   const columns = useMemo<ColumnDef<TPatient>[]>(
     () => [
@@ -116,8 +122,10 @@ export const PatientsTable = () => {
         cell: ({ row }) => (
           <button
             onClick={() => {
-              if (confirm(`Are you sure you want to delete ${row.original.name}?`)) {
-                deleteMutation.mutate(row.original.patient_id);
+              if (
+                confirm(`Are you sure you want to delete ${row.original.name}?`)
+              ) {
+                deleteMutation.mutate(row.original.patient_id)
               }
             }}
             className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
@@ -129,8 +137,8 @@ export const PatientsTable = () => {
         size: 100,
       },
     ],
-    [deleteMutation]
-  );
+    [deleteMutation],
+  )
 
   const table = useReactTable({
     data: data || [],
@@ -146,14 +154,14 @@ export const PatientsTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
-  });
+  })
 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
-    );
+    )
   }
 
   if (isError) {
@@ -161,7 +169,7 @@ export const PatientsTable = () => {
       <div className="bg-red-50 text-red-700 p-4 rounded-md">
         Error loading patients. Please try again.
       </div>
-    );
+    )
   }
 
   return (
@@ -175,7 +183,9 @@ export const PatientsTable = () => {
               <form onSubmit={handleSubmit}>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Name
+                    </label>
                     <input
                       type="text"
                       name="name"
@@ -186,7 +196,9 @@ export const PatientsTable = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Email
+                    </label>
                     <input
                       type="email"
                       name="email"
@@ -197,7 +209,9 @@ export const PatientsTable = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Date of Birth
+                    </label>
                     <input
                       type="date"
                       name="dob"
@@ -208,7 +222,9 @@ export const PatientsTable = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Gender
+                    </label>
                     <select
                       name="gender"
                       value={newPatient.gender}
@@ -223,7 +239,9 @@ export const PatientsTable = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Phone
+                    </label>
                     <input
                       type="tel"
                       name="phone"
@@ -234,7 +252,9 @@ export const PatientsTable = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Address
+                    </label>
                     <input
                       type="text"
                       name="address"
@@ -307,7 +327,7 @@ export const PatientsTable = () => {
                     >
                       {flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                     </th>
                   ))}
@@ -318,11 +338,14 @@ export const PatientsTable = () => {
               {table.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50">
                   {row.getVisibleCells().map((cell) => (
-                    <td 
-                      key={cell.id} 
+                    <td
+                      key={cell.id}
                       className="px-6 py-4 whitespace-nowrap text-sm text-gray-600"
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </td>
                   ))}
                 </tr>
@@ -342,7 +365,7 @@ export const PatientsTable = () => {
                   ...pagination,
                   pageSize: Number(e.target.value),
                   pageIndex: 0,
-                });
+                })
               }}
               className="border rounded-md p-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
@@ -353,7 +376,7 @@ export const PatientsTable = () => {
               ))}
             </select>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-700">
               Page {pagination.pageIndex + 1} of {table.getPageCount()}
@@ -392,5 +415,5 @@ export const PatientsTable = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

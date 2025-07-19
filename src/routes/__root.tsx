@@ -8,9 +8,7 @@ interface MyRouteContext {
   queryClient: QueryClient
 }
 
-export const Route = createRootRoute < MyRouteContext>({
-
-
+export const Route = createRootRoute<MyRouteContext>({
   component: () => (
     <>
       <Header />

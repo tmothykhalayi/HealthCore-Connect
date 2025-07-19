@@ -1,5 +1,5 @@
 // components/DoctorsAppointmentsTable.tsx
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react'
 import {
   useReactTable,
   getCoreRowModel,
@@ -7,76 +7,93 @@ import {
   getPaginationRowModel,
   flexRender,
   type ColumnDef,
-} from '@tanstack/react-table';
-import { useGetAppointmentsByIdQuery, useDeleteAppointment, useCreateAppointment } from '@/hooks/doctor/appointment';
-import type { TAppointment } from '@/Types/types';
+} from '@tanstack/react-table'
+import {
+  useGetAppointmentsByIdQuery,
+  useDeleteAppointment,
+  useCreateAppointment,
+} from '@/hooks/doctor/appointment'
+import type { TAppointment } from '@/Types/types'
 
-export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => {
-  const [search, setSearch] = useState('');
+export const DoctorsAppointmentsTable = ({
+  doctorId,
+}: {
+  doctorId: number
+}) => {
+  const [search, setSearch] = useState('')
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
-  });
-  const [showForm, setShowForm] = useState(false);
+  })
+  const [showForm, setShowForm] = useState(false)
   const [formData, setFormData] = useState({
     patientId: '',
     status: 'scheduled',
     reason: '',
     appointment_date: '',
     appointment_time: '',
-  });
+  })
 
-  const { data: doctorData, isLoading, isError, refetch } = useGetAppointmentsByIdQuery(doctorId);
-  const appointments = doctorData?.appointments || [];
+  const {
+    data: doctorData,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetAppointmentsByIdQuery(doctorId)
+  const appointments = doctorData?.appointments || []
 
-  const deleteMutation = useDeleteAppointment();
-  const createMutation = useCreateAppointment();
+  const deleteMutation = useDeleteAppointment()
+  const createMutation = useCreateAppointment()
 
   // Format date to Kenyan format
   const formatDateTime = (dateTimeString: string) => {
-    const date = new Date(dateTimeString);
+    const date = new Date(dateTimeString)
     return date.toLocaleString('en-KE', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true
-    });
-  };
+      hour12: true,
+    })
+  }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
-    }));
-  };
+      [name]: value,
+    }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-       createMutation.mutate({
+      createMutation.mutate({
         doctor_id: doctorId,
         patient_id: Number(formData.patientId),
         status: formData.status,
         reason: formData.reason,
         created_at: new Date(),
-        appointment_time: new Date () ,
-      });
-      setShowForm(false);
+        appointment_time: new Date(),
+      })
+      setShowForm(false)
       setFormData({
         patientId: '',
         status: 'scheduled',
         reason: '',
         appointment_date: '',
         appointment_time: '',
-      });
-      refetch();
+      })
+      refetch()
     } catch (error) {
-      console.error('Error creating appointment:', error);
+      console.error('Error creating appointment:', error)
     }
-  };
+  }
 
   const columns = useMemo<ColumnDef<TAppointment>[]>(
     () => [
@@ -98,11 +115,15 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
         header: 'Status',
         accessorKey: 'status',
         cell: ({ row }) => (
-          <span className={`px-2 py-1 rounded-full text-xs ${
-            row.original.status === 'scheduled' ? 'bg-blue-100 text-blue-800' :
-            row.original.status === 'completed' ? 'bg-green-100 text-green-800' :
-            'bg-gray-100 text-gray-800'
-          }`}>
+          <span
+            className={`px-2 py-1 rounded-full text-xs ${
+              row.original.status === 'scheduled'
+                ? 'bg-blue-100 text-blue-800'
+                : row.original.status === 'completed'
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-gray-100 text-gray-800'
+            }`}
+          >
             {row.original.status}
           </span>
         ),
@@ -125,8 +146,10 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
         cell: ({ row }) => (
           <button
             onClick={() => {
-              if (confirm(`Are you sure you want to delete this appointment?`)) {
-                deleteMutation.mutate(row.original.appointment_id);
+              if (
+                confirm(`Are you sure you want to delete this appointment?`)
+              ) {
+                deleteMutation.mutate(row.original.appointment_id)
               }
             }}
             className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
@@ -138,8 +161,8 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
         size: 100,
       },
     ],
-    [deleteMutation]
-  );
+    [deleteMutation],
+  )
 
   const table = useReactTable({
     data: appointments,
@@ -155,14 +178,14 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: false,
-  });
+  })
 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
-    );
+    )
   }
 
   if (isError) {
@@ -170,13 +193,15 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
       <div className="bg-red-50 text-red-700 p-4 rounded-md">
         Error loading appointments. Please try again.
       </div>
-    );
+    )
   }
 
   if (!appointments.length && !showForm) {
     return (
       <div className="text-center p-4">
-        <div className="text-gray-500 mb-4">No appointments found for this doctor.</div>
+        <div className="text-gray-500 mb-4">
+          No appointments found for this doctor.
+        </div>
         <button
           onClick={() => setShowForm(true)}
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
@@ -184,14 +209,16 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
           Add New Appointment
         </button>
       </div>
-    );
+    )
   }
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
       <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold text-gray-800">Doctor's Appointments</h1>
+          <h1 className="text-2xl font-bold text-gray-800">
+            Doctor's Appointments
+          </h1>
           <button
             onClick={() => setShowForm(!showForm)}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
@@ -203,7 +230,9 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
         {/* Add Appointment Form */}
         {showForm && (
           <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200 mb-6">
-            <h2 className="text-xl font-semibold mb-4">Schedule New Appointment</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Schedule New Appointment
+            </h2>
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
@@ -234,7 +263,7 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
                     <option value="cancelled">Cancelled</option>
                   </select>
                 </div>
-             
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Appointment Time
@@ -293,7 +322,8 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
             />
           </div>
           <div className="text-sm text-gray-600 whitespace-nowrap">
-            Showing {table.getRowModel().rows.length} of {appointments.length} appointments
+            Showing {table.getRowModel().rows.length} of {appointments.length}{' '}
+            appointments
           </div>
         </div>
       </div>
@@ -312,7 +342,7 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
                     >
                       {flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                     </th>
                   ))}
@@ -323,11 +353,14 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
               {table.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50">
                   {row.getVisibleCells().map((cell) => (
-                    <td 
-                      key={cell.id} 
+                    <td
+                      key={cell.id}
                       className="px-6 py-4 whitespace-nowrap text-sm text-gray-600"
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </td>
                   ))}
                 </tr>
@@ -347,7 +380,7 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
                   ...pagination,
                   pageSize: Number(e.target.value),
                   pageIndex: 0,
-                });
+                })
               }}
               className="border rounded-md p-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
@@ -358,7 +391,7 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
               ))}
             </select>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-700">
               Page {pagination.pageIndex + 1} of {table.getPageCount()}
@@ -397,5 +430,5 @@ export const DoctorsAppointmentsTable = ({ doctorId }: { doctorId: number }) => 
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

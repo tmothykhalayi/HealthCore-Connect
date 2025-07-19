@@ -1,4 +1,4 @@
-import { useGetDoctorQuery } from '@/hooks/patients/doctorHook'
+import { useGetDoctorQuery } from '@/hooks/patient/doctor'
 import { Link } from '@tanstack/react-router'
 import { motion } from 'framer-motion' // Import framer-motion for animations
 
@@ -14,7 +14,7 @@ type Doctor = {
 
 const DoctorsList = () => {
   const { data: doctors, isLoading, isError } = useGetDoctorQuery()
-  console.log("Doctors data:", doctors);
+  console.log('Doctors data:', doctors)
 
   if (isLoading) {
     return (

@@ -5,12 +5,12 @@ export const Route = createFileRoute('/Dashboard/admin/appointments')({
 })
 
 // pages/appointments.tsx
-import { AppointmentsTable } from '@/components/appointmentsTable';
+import { AppointmentsTable } from '@/components/appointmentsTable'
 
 export default function AppointmentsPage() {
   return (
     <div className="bg-gray-50 min-h-screen py-8">
       <AppointmentsTable />
     </div>
-  );
+  )
 }
