@@ -6,7 +6,7 @@ export const Route = createFileRoute('/Dashboard/doctor/appointments')({
 
 // pages/appointments.tsx
 import { DoctorsAppointmentsTable } from '@/components/doctor/appointmentsTable'
-import { getUserIdHelper } from '@/lib/authHelper'
+import { getUserIdHelper } from '@/lib/auth'
 function AppointmentsPage() {
   const doctorIdString = getUserIdHelper()
   const doctorId = doctorIdString !== null ? Number(doctorIdString) : undefined

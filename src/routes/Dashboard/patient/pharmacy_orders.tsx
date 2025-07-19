@@ -5,7 +5,7 @@ export const Route = createFileRoute('/Dashboard/patient/pharmacy_orders')({
 })
 
 import PharmacyOrdersList from '@/components/patient/pharmacy_orderCard';
-import { getUserIdHelper } from '@/lib/authHelper';
+import { getUserIdHelper } from '@/lib/auth';
 
  function pharmacyOrdersCard() {
   const patientId = Number(getUserIdHelper());

@@ -1,167 +1,206 @@
-import { Link } from '@tanstack/react-router'
-import { FaUserMd, FaHeartbeat, FaClinicMedical, FaBrain, FaXRay, FaBone, FaBaby } from 'react-icons/fa'
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
 
-export default function AboutUs() {
-  const services = [
-    {
-      icon: <FaUserMd className="text-4xl text-blue-600" />,
-      title: "Expert Consultations",
-      description: "Board-certified specialists providing personalized care",
-      image: "https://i.pinimg.com/736x/1e/c3/63/1ec363db9598a75130f66966aacbc810.jpg"
-    },
-    {
-      icon: <FaHeartbeat className="text-4xl text-red-500" />,
-      title: "Cardiac Care",
-      description: "Advanced heart health diagnostics and treatments",
-      image: "https://i.pinimg.com/1200x/ac/60/c3/ac60c3dbb58ed3c8774344b29105be06.jpg"
-    },
-    {
-      icon: <FaClinicMedical className="text-4xl text-green-600" />,
-      title: "Primary Care",
-      description: "Comprehensive health services for all ages",
-      image: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-    },
-    {
-      icon: <FaBrain className="text-4xl text-purple-600" />,
-      title: "Neurology",
-      description: "Specialized care for nervous system disorders",
-      image: "https://i.pinimg.com/736x/5f/92/4c/5f924c0d30cf8ff63de65ff9c996ab84.jpg"
-    },
-    {
-      icon: <FaBone className="text-4xl text-yellow-600" />,
-      title: "Orthopedics",
-      description: "State-of-the-art orthopedic care and rehabilitation",
-      image: "https://i.pinimg.com/736x/5a/dd/e4/5adde433b6d1b6f699d8ae8b2549cd12.jpg"
-    },
-    {
-      icon: <FaBaby className="text-4xl text-yellow-600" />,
-      title: "Pediatrician",
-      description: "Comprehensive care for infants, children, and adolescents",
-      image: "https://i.pinimg.com/1200x/2d/b6/6f/2db66f0cfc877b36cd0872fd980170e0.jpg"
-    }
-  ]
+import { FaHandHoldingMedical, FaHeadset } from 'react-icons/fa'
+import { RiTeamFill } from 'react-icons/ri'
+import { IoArrowForward } from 'react-icons/io5'
 
+import doctorsData from './data/doctorsData'
+
+const Services = () => {
   return (
-    <div className="bg-white">
+    <>
       {/* Hero Section */}
-      <div className="relative bg-blue-50 py-20">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">About Our Healthcare Services</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Committed to excellence in medical care through innovation, compassion, and expertise.
+      <section className="py-8 px-4 bg-indigo-950 text-purple-400 lg:px-16 lg:py-20">
+        <div className="flex flex-col items-center gap-y-4 mb-8 md:flex-row lg:mb-16">
+          <h1 className="text-4xl text-balance mr-auto md:basis-1/3 md:text-5xl">
+            Empowering{' '}
+            <span className="font-playfair-display text-teal-400 italic">
+              health
+            </span>{' '}
+            and wellness.
+          </h1>
+
+          <p className="w-fit md:basis-1/3">
+            Our platform is dedicated to providing comprehensive and trustworthy
+            healthcare information, empowering individuals to make informed
+            decisions about their well-being.
           </p>
         </div>
-      </div>
 
-      {/* Services Showcase */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {services.map((service, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="h-48 overflow-hidden">
-                <img 
-                  src={service.image} 
-                  alt={service.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="mr-4">
-                    {service.icon}
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-800">{service.title}</h3>
-                </div>
-                <p className="text-gray-600">{service.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>    
-      </div>
+        <div className="flex items-center gap-x-4 mb-8 [&>*]:object-cover [&>*]:rounded-2xl">
+          <img
+            src="/assets/images/about/about-hero-1.jpg"
+            alt="Image of pediatrician."
+            className="w-2/4 h-52 max-h-[700px] md:h-72 lg:h-[400px]"
+          />
 
-      {/* Mission Statement */}
-      <div className="bg-gray-50 py-16">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Mission</h2>
-          <p className="text-xl text-gray-600 mb-8">
-            To provide exceptional, patient-centered healthcare that improves lives through 
-            cutting-edge medicine, compassionate service, and community partnership.
-          </p>
-          <div className="relative h-64 rounded-xl overflow-hidden shadow-md">
-            <img
-              src="https://images.unsplash.com/photo-1551601651-bc60f254d532?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-              alt="Medical team discussing treatment"
-              className="w-full h-full object-cover"
-            />
+          <img
+            src="/assets/images/about/about-hero-2.jpg"
+            alt="Doctor with a vaccine."
+            className="w-1/4 h-52 max-h-[700px] object-right md:h-72 lg:h-[400px]"
+          />
+
+          <img
+            src="/assets/images/about/about-hero-3.jpg"
+            alt="Doctor with a vaccine."
+            className="w-1/4 h-52 max-h-[700px] md:h-72 lg:h-[400px]"
+          />
+        </div>
+
+        <div className="flex flex-wrap items-center gap-4 sm:justify-between [&>*]:w-fit">
+          <div className="flex flex-col">
+            <span className="text-3xl font-semibold">100+</span>
+            <p>Medical Staff</p>
+          </div>
+
+          <div className="flex flex-col">
+            <span className="text-3xl font-semibold">2k+</span>
+            <p>Patients serviced every day</p>
+          </div>
+
+          <div className="flex flex-col">
+            <span className="text-3xl font-semibold">60k+</span>
+            <p>Happy patients</p>
+          </div>
+
+          <div className="flex flex-col">
+            <span className="text-3xl font-semibold">15</span>
+            <p>Years of Experience</p>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white pt-12 pb-6">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4">Healthcare Plus</h3>
-              <p className="text-gray-400">
-                Providing exceptional healthcare services since 2005. Our commitment to quality care is unmatched.
+      {/* Review Section */}
+      <section className="py-8 px-4 bg-cyan-400 text-purple-950 lg:px-16 lg:py-20">
+        <div className="mx-auto flex gap-x-4 sm:w-2/4">
+          <div className="w-4 h-32 bg-purple-500 text-purple-500 rounded-2xl select-none md:h-28">
+            #
+          </div>
+
+          <div className="flex flex-col gap-y-6 font-semibold">
+            <p className="md:text-xl">
+              "We had an incredible experience working with SrMedical and were
+              impressed they made such a big difference in only three weeks. Our
+              team is so grateful for the wonderful improvements they made and
+              their ability to get familiar with the concept so quickly."
+            </p>
+
+            <div className="flex gap-x-4">
+              <img
+                src="/assets/images/about/about-reviewer.jpg"
+                alt="Reviewer profile picture"
+                className="size-12 object-cover rounded-full"
+              />
+
+              <p>
+                <span className="text-lg font-bold">James Timothy</span>
+                <br /> Team Manager
               </p>
             </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2">
-                <Link to="/">
-                  <li><a href="#" className="text-gray-400 hover:text-white transition">Home</a></li>
-
-                </Link>
-                <li><a href="#" className="text-gray-400 hover:text-white transition">Services</a></li>
-                <Link to="/dashboard/patient/doctors">
-                  <li><a href="#" className="text-gray-400 hover:text-white transition">Doctors</a></li>
-                </Link>
-                <li><a href="#" className="text-gray-400 hover:text-white transition">Appointments</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition">Contact</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Contact Us</h4>
-              <address className="text-gray-400 not-italic">
-                <p>123 Medical Center Drive</p>
-                <p>Nairobi, Kenya</p>
-                <p className="mt-2">Phone: +254 712 345 678</p>
-                <p>Email: info@healthcareplus.com</p>
-              </address>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Follow Us</h4>
-              <div className="flex space-x-4">
-                <a href="#" className="text-gray-400 hover:text-white transition"><FaFacebook size={20} /></a>
-                <a href="#" className="text-gray-400 hover:text-white transition"><FaTwitter size={20} /></a>
-                <a href="#" className="text-gray-400 hover:text-white transition"><FaInstagram size={20} /></a>
-                <a href="#" className="text-gray-400 hover:text-white transition"><FaLinkedin size={20} /></a>
-              </div>
-              <div className="mt-6">
-                <div className="flex">
-                  <input 
-                    type="email" 
-                    placeholder="Your email" 
-                    className="px-3 py-2 text-gray-900 rounded-l focus:outline-none w-full"
-                  />
-                  <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-r">
-                    Subscribe
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-6 text-center text-gray-400 text-sm">
-            <p>&copy; {new Date().getFullYear()} Healthcare Plus. All rights reserved.</p>
-            <div className="mt-2">
-              <a href="#" className="hover:text-white transition">Privacy Policy</a> | 
+        </div>
+      </section>
+
+      {/* About Us Section */}
+      <section className="py-8 px-4 text-purple-900 flex flex-col gap-8 md:flex-row lg:px-16 lg:py-24 lg:gap-16">
+        <img
+          src="/assets/images/about/about-us.jpg"
+          alt="Doctor with a patient"
+          loading="lazy"
+          className="object-cover object-center rounded-3xl md:max-w-[50%]"
+        />
+
+        <div className="flex flex-col gap-y-4 lg:p-8">
+          <h2 className="text-2xl font-bold md:text-4xl">
+            Why choose HealthCare Connect
+            <br />{' '}
+            <span className="font-playfair-display italic text-3xl text-purple-400 md:text-4xl">
+              health service
+            </span>
+          </h2>
+
+          <div className="flex flex-col gap-y-4 lg:gap-y-8">
+            <div className="flex gap-x-2 md:gap-x-4">
+              <span className="h-fit p-4 text-3xl text-teal-500 bg-teal-50 rounded-full">
+                <FaHeadset />
+              </span>
+
+              <div>
+                <h3 className="mb-2 text-xl font-bold">
+                  24/7 Medical Consultation
+                </h3>
+                <p></p>
+              </div>
+            </div>
+
+            <div className="flex gap-x-2 md:gap-x-4">
+              <span className="h-fit p-4 text-3xl text-green-500 bg-green-50 rounded-full">
+                <FaHandHoldingMedical />
+              </span>
+
+              <div>
+                <h3 className="mb-2 text-xl font-bold">Healthcare Support</h3>
+                <p></p>
+              </div>
+            </div>
+
+            <div className="flex gap-x-2 md:gap-x-4">
+              <span className="h-fit p-4 text-3xl text-yellow-500 bg-yellow-50 rounded-full">
+                <RiTeamFill />
+              </span>
+
+              <div>
+                <h3 className="mb-2 text-xl font-bold">
+                  Professional Medical Team
+                </h3>
+                <p>
+                  Our team of experienced healthcare professionals is dedicated
+                  to providing you with the best care possible, ensuring your
+                  health and well-being are always our top priority.
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </footer>
-    </div>
+      </section>
+
+      {/* Doctor Showcase Section */}
+      <section className="py-8 px-4 text-purple-900 lg:px-16 lg:py-24">
+        <div className="flex flex-col items-center gap-y-4 mb-8 md:flex-row">
+          <h4 className="text-4xl font-semibold mr-auto md:basis-1/3">
+            Discover our Highly Qualified{' '}
+            <span className="font-playfair-display text-purple-400 italic">
+              Doctors
+            </span>
+          </h4>
+
+          <Link
+            to="/doctors"
+            className="w-fit py-4 px-8 self-start flex items-center gap-x-4 bg-teal-500 font-medium text-white rounded-2xl lg:hover:bg-teal-600 ease-in-out duration-200 active:scale-95"
+          >
+            See All Doctors <IoArrowForward className="text-2xl" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {doctorsData.map((doctor) => (
+            <div
+              key={doctor.id}
+              className="p-4 flex flex-col gap-y-2 bg-purple-100 text-center text-purple-900 rounded-2xl"
+            >
+              <img
+                src={doctor.url}
+                alt="Doctor"
+                className="w-full h-64 object-cover object-top rounded-2xl"
+              />
+              <h3 className="text-xl font-bold">Dr. Sudeshna Sinha</h3>
+              <p className="mb-4">MBBS, MD (Rheumatologist)</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
   )
 }
+
+export default Services

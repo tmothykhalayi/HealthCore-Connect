@@ -9,7 +9,7 @@ import {
   type ColumnDef,
 } from '@tanstack/react-table';
 import { useGetPrescriptionQuery, useDeletePrescription } from '@/hooks/prescription';
-import type { TPrescription } from '@/Types/types';
+import type { TPrescription } from '@/types/alltypes';
 
 export const PrescriptionsTable = () => {
   const [search, setSearch] = useState('');

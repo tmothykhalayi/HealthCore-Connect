@@ -5,7 +5,7 @@ export const Route = createFileRoute('/Dashboard/admin/pharmacy_orders')({
 })
 
 // pages/pharmacy-orders.tsx
-import { PharmacyOrdersTable } from '@/components/pharmacyOrdersTable';
+import { PharmacyOrdersTable } from '@/components/orders';
 
 export default function PharmacyOrdersPage() {
   return (

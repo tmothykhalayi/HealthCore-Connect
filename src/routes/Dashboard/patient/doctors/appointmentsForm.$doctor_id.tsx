@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { useCreateAppointment } from '@/hooks/patients/appointmentHook'
-import useAuthStore from '@/store/authStore'
+import { useCreateAppointment } from '@/hooks/patient/appointment'
+import useAuthStore from '@/store/auth'
 import { createFileRoute, useParams } from '@tanstack/react-router'
 
 export const Route = createFileRoute(

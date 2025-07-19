@@ -8,8 +8,8 @@ import {
   flexRender,
   type ColumnDef,
 } from '@tanstack/react-table';
-import { useGetPatientQuery, useDeletePatient, useCreatePatient } from '@/hooks/patientsHook';
-import type { TPatient } from '@/Types/types';
+import { useGetPatientQuery, useDeletePatient, useCreatePatient } from '@/hooks/patient';
+import type { TPatient } from '@/types/alltypes';
 
 export const PatientsTable = () => {
   const [search, setSearch] = useState('');

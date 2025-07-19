@@ -1,163 +1,101 @@
-import { useState } from 'react'
-import {
-  FaBars,
-  FaTimes,
-  FaSearch,
-  FaUserCircle,
-  FaSignOutAlt,
-} from 'react-icons/fa'
-import { MdLocalHospital } from 'react-icons/md'
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Hospital, Moon, Sun } from 'lucide-react'
+import { useRouter } from '@tanstack/react-router'
+// import { useTheme } from './theme-provider'
+import { Button } from '@/components/ui/button'
+// import { DropdownMenu,DropdownMenuContent,DropdownMenuItem,DropdownMenuTrigger,} from '@/components/ui/dropdown-menu'
+// import { RegisterUser } from '@/api/auth'
 
-const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false) // Add login state
-  const navigate = useNavigate()
+export default function Header() {
+  // const { setTheme } = useTheme()
+  const router = useRouter()
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
-  const toggleSearch = () => setIsSearchOpen(!isSearchOpen)
-
-  const handleSignOut = () => {
-    setIsLoggedIn(false)
-    navigate({ to: '/' }) // Redirect to home page after sign out
+  // Scroll to section if it exists
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' })
+    }
   }
 
-  // Navigation links array
-  const navLinks = [
-    { path: '/', label: 'Home' },
-    { path: '/about', label: 'About' },
-    { path: '/dashboard', label: 'Dashboard' },
-    { path: '/registration', label: 'Registration' },
-  ]
-
   return (
-    <header className="bg-white shadow-md">
-      {/* Main Header */}
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex justify-between items-center">
-          {/* Logo */}
-          <Link to="/" className="flex items-center">
-            <MdLocalHospital className="text-blue-600 text-4xl mr-2" />
-            <div>
-              <h1 className="text-2xl font-bold text-blue-800">HealthCare</h1>
-              <p className="text-xs text-gray-600">
-                Compassionate Care For Life
-              </p>
-            </div>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className="text-gray-700 font-medium hover:text-blue-600 [&.active]:text-blue-800 [&.active]:font-semibold"
-                activeProps={{ className: 'text-blue-800 font-semibold' }}
-              >
-                {link.label}
-              </Link>
-            ))}
-
-            <div className="flex items-center space-x-4 ml-4">
-              <button
-                onClick={toggleSearch}
-                className="text-gray-600 hover:text-blue-600"
-              >
-                <FaSearch />
-              </button>
-              {isLoggedIn ? (
-                <button
-                  onClick={handleSignOut}
-                  className="flex items-center bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition"
-                >
-                  <FaSignOutAlt className="mr-2" />
-                  <span>Sign Out</span>
-                </button>
-              ) : (
-                <Link
-                  to="/login"
-                  className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
-                  onClick={() => setIsLoggedIn(true)} // Simulate login
-                >
-                  <FaUserCircle className="mr-2" />
-                  <span>Login</span>
-                </Link>
-              )}
-            </div>
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center space-x-4">
-            <button onClick={toggleSearch} className="text-gray-600">
-              <FaSearch />
-            </button>
-            <button onClick={toggleMenu} className="text-gray-600">
-              {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-            </button>
-          </div>
+    <header className="w-full bg-blue-600 shadow-sm sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        {/* Left: Logo */}
+        <div className="flex items-center space-x-2 font-bold text-lg text-white">
+          <Hospital className="h-6 w-6 text-white" />
+          <button
+            onClick={() => {
+              router.navigate({ to: '/' })
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }}
+            className="hover:text-blue-200"
+          >
+            Healthcare Connect
+          </button>
         </div>
 
-        {/* Search Bar */}
-        {isSearchOpen && (
-          <div className="mt-4">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search services, doctors, locations..."
-                className="w-full p-3 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <FaSearch className="absolute left-3 top-3.5 text-gray-400" />
-            </div>
-          </div>
-        )}
+        {/* Center: Navigation */}
+        <nav className="hidden md:flex space-x-6 font-medium text-white">
+          <button
+            onClick={() => {
+              router.navigate({ to: '/' })
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }}
+            className="hover:text-blue-200"
+          >
+            Home
+          </button>
+          <button
+            onClick={() => scrollToSection('about-section')}
+            className="hover:text-blue-200 transition-colors"
+          >
+            About
+          </button>
+          <button
+            onClick={() => scrollToSection('contact-section')}
+            className="hover:text-blue-200 transition-colors"
+          >
+            Contact
+          </button>
+        </nav>
 
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden mt-4 pb-4">
-            <nav className="flex flex-col space-y-3">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className="text-gray-700 font-medium py-2 border-b border-gray-100 [&.active]:text-blue-800 [&.active]:font-semibold"
-                  activeProps={{ className: 'text-blue-800 font-semibold' }}
-                  onClick={toggleMenu}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              {isLoggedIn ? (
-                <button
-                  onClick={() => {
-                    handleSignOut()
-                    toggleMenu()
-                  }}
-                  className="flex items-center justify-center bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition mt-2"
-                >
-                  <FaSignOutAlt className="mr-2" />
-                  <span>Sign Out</span>
-                </button>
-              ) : (
-                <Link
-                  to="/login"
-                  className="flex items-center justify-center bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition mt-2"
-                  onClick={() => {
-                    setIsLoggedIn(true)
-                    toggleMenu()
-                  }}
-                >
-                  <FaUserCircle className="mr-2" />
-                  <span>Login</span>
-                </Link>
-              )}
-            </nav>
-          </div>
-        )}
+        {/* Right: Auth + Theme */}
+        <div className="flex items-center space-x-3">
+          <Button
+            variant="ghost"
+            className="text-sm text-white hover:text-blue-200"
+            onClick={() => router.navigate({ to: '/login' })}
+          >
+            Login
+          </Button>
+          <Button
+            className="bg-white hover:bg-blue-100 text-blue-700 text-sm font-medium"
+            onClick={() => router.navigate({ to: '/register' })}
+          >
+            Register
+          </Button>
+          {/* 
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon" aria-label="Toggle theme" className="bg-blue-500 border-none text-white hover:bg-blue-700">
+                <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+                <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setTheme('light')}>
+                Light
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme('dark')}>
+                Dark
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme('system')}>
+                System
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu> */}
+        </div>
       </div>
     </header>
   )
 }
-
-export default Header

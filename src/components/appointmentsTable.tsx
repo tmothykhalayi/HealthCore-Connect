@@ -10,7 +10,7 @@ import {
 } from '@tanstack/react-table';
 import { useGetAppointmentQuery, useDeleteAppointment } from '@/hooks/appointment';
 // import { useGetAppointmentQuery, useDeleteAppointment } from '@/hooks/doctors/appointment';
-import type { TAppointment } from '@/Types/types';
+import type { TAppointment } from '@/types/alltypes';
 
 export const AppointmentsTable = () => {
   const [search, setSearch] = useState('');

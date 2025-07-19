@@ -8,7 +8,7 @@ import {
   flexRender,
   type ColumnDef,
 } from '@tanstack/react-table'
-import { useGetUserQuery, useDeleteUser, useCreateUser } from '@/hooks/userHook'
+import { useGetUserQuery, useDeleteUser, useCreateUser } from '@/hooks/user'
 
 interface TUser {
   user_id: number

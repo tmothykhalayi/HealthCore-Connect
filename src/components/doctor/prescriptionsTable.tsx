@@ -8,8 +8,8 @@ import {
   type PaginationState
 } from '@tanstack/react-table';
 import { useGetPrescriptionQuery, useDeletePrescription,  } from '@/hooks/prescription';
-import type { TPrescription } from '@/Types/types';
-import { useCreatePrescription } from '@/hooks/doctor/prescriptions';
+import type { TPrescription } from '@/types/alltypes';
+import { useCreatePrescription } from '@/hooks/doctor/prescription';
 
 const PrescriptionTable = () => {
   // State for pagination and search

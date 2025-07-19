@@ -1,476 +1,369 @@
 import { useForm } from '@tanstack/react-form'
 import { useState } from 'react'
-import { FaUser, FaEnvelope, FaLock, FaPhone, FaCheck, FaTimes, FaSpinner } from 'react-icons/fa'
+import { useNavigate } from '@tanstack/react-router'
+import { Button } from '../components/ui/button'
+import { Input } from '../components/ui/input'
+import { Card } from '../components/ui/card'
+import type { TSignUp } from '@/types/types'
+import {
+  useCreateDoctorProfile,
+  useCreatePatientProfile,
+  useCreatePharmacistProfile,
+  useSignup,
+} from '@/hooks/useAuth'
 
-export function RegistrationPage() {
-  const [registrationStatus, setRegistrationStatus] = useState<{
-    success: boolean
-    message: string
-  } | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  // Manual validation functions
-  const validateName = (name: string, fieldName: string) => {
-    if (!name) return `${fieldName} is required`
-    if (name.length < 2) return `${fieldName} must be at least 2 characters`
-    return null
-  }
-
-  const validateEmail = (email: string) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!email) return 'Email is required'
-    if (!re.test(email)) return 'Please enter a valid email'
-    return null
-  }
-
-  const validatePhone = (phone: string) => {
-    const re = /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,3}[-\s.]?[0-9]{3,}[-\s.]?[0-9]{3,}$/im
-    if (!phone) return 'Phone number is required'
-    if (!re.test(phone)) return 'Please enter a valid phone number'
-    return null
-  }
-
-  const validatePassword = (password: string) => {
-    if (!password) return 'Password is required'
-    if (password.length < 6) return 'Password must be at least 6 characters'
-    return null
-  }
+export default function RegisterForm() {
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
+  const {
+    mutateAsync: signup,
+    isPending: isSignupPending,
+    error: signupError,
+  } = useSignup()
+  const createPatientProfile = useCreatePatientProfile()
+  const createDoctorProfile = useCreateDoctorProfile()
+  const createPharmacistProfile = useCreatePharmacistProfile()
 
   const form = useForm({
     defaultValues: {
       firstName: '',
       lastName: '',
       email: '',
-      phone: '',
       password: '',
-      confirmPassword: ''
+      phoneNumber: '',
+      country: '+254',
+      terms: false,
     },
     onSubmit: async ({ value }) => {
-      setIsSubmitting(true)
+      setLoading(true)
       try {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500))
-        
-        // Check if passwords match
-        if (value.password !== value.confirmPassword) {
-          throw new Error('Passwords do not match')
+        // Compose the signup payload
+        const payload: TSignUp = {
+          firstName: value.firstName || '',
+          lastName: value.lastName || '',
+          email: value.email,
+          password: value.password,
+          phoneNumber: value.phoneNumber || '',
+          role: value.role,
         }
-        
-        // Mock success - replace with real registration
-        setRegistrationStatus({
-          success: true,
-          message: 'Registration successful! Welcome to our platform!'
-        })
-        
-        // Here you would typically:
-        // 1. Call your registration API
-        // 2. Handle the response
-        // 3. Redirect to login or dashboard
-        
+        const user = await signup(payload)
+        // After signup, create the role profile
+        if (value.role === 'patient') {
+          await createPatientProfile.mutateAsync({}) // Add patient profile fields if needed
+        } else if (value.role === 'doctor') {
+          await createDoctorProfile.mutateAsync({}) // Add doctor profile fields if needed
+        } else if (value.role === 'pharmacist') {
+          await createPharmacistProfile.mutateAsync({}) // Add pharmacist profile fields if needed
+        }
+        navigate({ to: '/login' })
       } catch (error) {
-        setRegistrationStatus({
-          success: false,
-          message: error instanceof Error ? error.message : 'Registration failed. Please try again.'
-        })
+        // Error is handled by signupError
       } finally {
-        setIsSubmitting(false)
+        setLoading(false)
       }
     },
   })
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
-      {/* Registration Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-blue-600 mb-2">Register With Us</h1>
-        <p className="text-lg text-gray-600">Join our community today</p>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f172a] to-[#1e3a8a] dark:from-slate-950 dark:to-slate-900 fixed inset-0 z-50">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/30 backdrop-blur-sm z-0 cursor-pointer"
+        onClick={() => navigate({ to: '/' })}
+        aria-label="Close register"
+      />
+      <Card className="relative max-h-screen overflow-auto m-2 w-full max-w-sm p-6 rounded-lg shadow-md bg-white dark:bg-slate-900 z-10">
+        {/* X Button */}
+        <button
+          className="absolute top-2 right-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-xl font-bold p-1 rounded transition"
+          onClick={() => navigate({ to: '/' })}
+          aria-label="Close"
+          type="button"
+        >
+          ×
+        </button>
+        <div className="flex flex-col items-center mb-4">
+          <div className="text-xl font-bold text-indigo-900 dark:text-indigo-200 flex items-center gap-2">
+            <span className="inline-block bg-indigo-100 dark:bg-indigo-900 rounded-full p-1.5">
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2H7v-2h4V7h2v4h4v2h-4v2z"
+                />
+              </svg>
+            </span>
+            HealthCare
+          </div>
+          <div className="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">
+            Create Your Account
+          </div>
+          <div className="text-slate-500 dark:text-slate-400 text-xs">
+            Join in 30 seconds
+          </div>
+        </div>
 
-      {/* Registration Form Container */}
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
-        {/* Status Message */}
-        {registrationStatus && (
-          <div className={`mb-6 p-4 rounded-md flex items-center ${
-            registrationStatus.success 
-              ? 'bg-green-100 text-green-800' 
-              : 'bg-red-100 text-red-800'
-          }`}>
-            {registrationStatus.success ? (
-              <FaCheck className="mr-2 text-green-500" />
-            ) : (
-              <FaTimes className="mr-2 text-red-500" />
-            )}
-            <span>{registrationStatus.message}</span>
+        {/* Display signup error if any */}
+        {signupError && (
+          <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+            <div className="text-sm text-red-800 dark:text-red-200">
+              {signupError instanceof Error
+                ? signupError.message
+                : 'Registration failed. Please try again.'}
+            </div>
           </div>
         )}
 
-        
-          <form
-            onSubmit={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              form.handleSubmit()
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            void form.handleSubmit()
+          }}
+          className="flex flex-col gap-2"
+        >
+          {/* First Name Field */}
+          <form.Field
+            name="firstName"
+            validators={{
+              onChange: ({ value }) =>
+                !value ? 'First name is required' : undefined,
             }}
-            className="space-y-4"
           >
-            <div className="grid grid-cols-2 gap-4">
-              {/* First Name Field */}
-              <form.Field
-                name="firstName"
-                children={(field) => {
-                  const error = validateName(field.state.value, 'First name')
-                  return (
-                    <div className="col-span-1">
-                      <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-                        First Name
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <FaUser className={`h-5 w-5 ${
-                            field.state.value 
-                              ? error 
-                                ? 'text-red-400' 
-                                : 'text-green-400'
-                              : 'text-gray-400'
-                          }`} />
-                        </div>
-                        <input
-                          id="firstName"
-                          type="text"
-                          value={field.state.value}
-                          onBlur={field.handleBlur}
-                          onChange={(e) => {
-                            field.handleChange(e.target.value)
-                            setRegistrationStatus(null)
-                          }}
-                          className={`block w-full pl-10 pr-3 py-2 border ${
-                            field.state.value
-                              ? error
-                                ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
-                                : 'border-green-300 focus:ring-green-500 focus:border-green-500'
-                              : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-                          } rounded-md shadow-sm focus:outline-none`}
-                          placeholder="John"
-                        />
-                      </div>
-                      {field.state.value && error && (
-                        <p className="mt-1 text-sm text-red-600 flex items-center">
-                          <FaTimes className="mr-1" /> {error}
-                        </p>
-                      )}
-                    </div>
-                  )
-                }}
-              />
-
-              {/* Last Name Field */}
-              <form.Field
-                name="lastName"
-                children={(field) => {
-                  const error = validateName(field.state.value, 'Last name')
-                  return (
-                    <div className="col-span-1">
-                      <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
-                        Last Name
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <FaUser className={`h-5 w-5 ${
-                            field.state.value 
-                              ? error 
-                                ? 'text-red-400' 
-                                : 'text-green-400'
-                              : 'text-gray-400'
-                          }`} />
-                        </div>
-                        <input
-                          id="lastName"
-                          type="text"
-                          value={field.state.value}
-                          onBlur={field.handleBlur}
-                          onChange={(e) => {
-                            field.handleChange(e.target.value)
-                            setRegistrationStatus(null)
-                          }}
-                          className={`block w-full pl-10 pr-3 py-2 border ${
-                            field.state.value
-                              ? error
-                                ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
-                                : 'border-green-300 focus:ring-green-500 focus:border-green-500'
-                              : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-                          } rounded-md shadow-sm focus:outline-none`}
-                          placeholder="Doe"
-                        />
-                      </div>
-                      {field.state.value && error && (
-                        <p className="mt-1 text-sm text-red-600 flex items-center">
-                          <FaTimes className="mr-1" /> {error}
-                        </p>
-                      )}
-                    </div>
-                  )
-                }}
-              />
-            </div>
-
-            {/* Email Field */}
-            <form.Field
-              name="email"
-              children={(field) => {
-                const error = validateEmail(field.state.value)
-                return (
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                      Email Address
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FaEnvelope className={`h-5 w-5 ${
-                          field.state.value 
-                            ? error 
-                              ? 'text-red-400' 
-                              : 'text-green-400'
-                            : 'text-gray-400'
-                        }`} />
-                      </div>
-                      <input
-                        id="email"
-                        type="email"
-                        autoComplete="email"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => {
-                          field.handleChange(e.target.value)
-                          setRegistrationStatus(null)
-                        }}
-                        className={`block w-full pl-10 pr-3 py-2 border ${
-                          field.state.value
-                            ? error
-                              ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
-                              : 'border-green-300 focus:ring-green-500 focus:border-green-500'
-                            : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-                        } rounded-md shadow-sm focus:outline-none`}
-                        placeholder="your@email.com"
-                      />
-                    </div>
-                    {field.state.value && error && (
-                      <p className="mt-1 text-sm text-red-600 flex items-center">
-                        <FaTimes className="mr-1" /> {error}
-                      </p>
-                    )}
-                    {field.state.value && !error && (
-                      <p className="mt-1 text-sm text-green-600 flex items-center">
-                        <FaCheck className="mr-1" /> Email looks good!
-                      </p>
-                    )}
+            {(field) => (
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
+                  First Name*
+                </label>
+                <Input
+                  type="text"
+                  placeholder="Enter your first name"
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  className="mb-1"
+                />
+                {field.state.meta.isTouched && field.state.meta.errors && (
+                  <div className="text-xs text-red-500">
+                    {field.state.meta.errors}
                   </div>
-                )
-              }}
-            />
+                )}
+              </div>
+            )}
+          </form.Field>
 
-            {/* Phone Field */}
-            <form.Field
-              name="phone"
-              children={(field) => {
-                const error = validatePhone(field.state.value)
-                return (
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                      Phone Number
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FaPhone className={`h-5 w-5 ${
-                          field.state.value 
-                            ? error 
-                              ? 'text-red-400' 
-                              : 'text-green-400'
-                            : 'text-gray-400'
-                        }`} />
-                      </div>
-                      <input
-                        id="phone"
-                        type="tel"
-                        autoComplete="tel"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => {
-                          field.handleChange(e.target.value)
-                          setRegistrationStatus(null)
-                        }}
-                        className={`block w-full pl-10 pr-3 py-2 border ${
-                          field.state.value
-                            ? error
-                              ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
-                              : 'border-green-300 focus:ring-green-500 focus:border-green-500'
-                            : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-                        } rounded-md shadow-sm focus:outline-none`}
-                        placeholder="+1234567890"
-                      />
-                    </div>
-                    {field.state.value && error && (
-                      <p className="mt-1 text-sm text-red-600 flex items-center">
-                        <FaTimes className="mr-1" /> {error}
-                      </p>
-                    )}
-                    {field.state.value && !error && (
-                      <p className="mt-1 text-sm text-green-600 flex items-center">
-                        <FaCheck className="mr-1" /> Valid phone number
-                      </p>
-                    )}
+          {/* Last Name Field */}
+          <form.Field
+            name="lastName"
+            validators={{
+              onChange: ({ value }) =>
+                !value ? 'Last name is required' : undefined,
+            }}
+          >
+            {(field) => (
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
+                  Last Name*
+                </label>
+                <Input
+                  type="text"
+                  placeholder="Enter your last name"
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  className="mb-1"
+                />
+                {field.state.meta.isTouched && field.state.meta.errors && (
+                  <div className="text-xs text-red-500">
+                    {field.state.meta.errors}
                   </div>
-                )
-              }}
-            />
+                )}
+              </div>
+            )}
+          </form.Field>
 
-            {/* Password Field */}
-            <form.Field
-              name="password"
-              children={(field) => {
-                const error = validatePassword(field.state.value)
-                return (
-                  <div>
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                      Password
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FaLock className={`h-5 w-5 ${
-                          field.state.value 
-                            ? error 
-                              ? 'text-red-400' 
-                              : 'text-green-400'
-                            : 'text-gray-400'
-                        }`} />
-                      </div>
-                      <input
-                        id="password"
-                        type="password"
-                        autoComplete="new-password"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => {
-                          field.handleChange(e.target.value)
-                          setRegistrationStatus(null)
-                        }}
-                        className={`block w-full pl-10 pr-3 py-2 border ${
-                          field.state.value
-                            ? error
-                              ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
-                              : 'border-green-300 focus:ring-green-500 focus:border-green-500'
-                            : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-                        } rounded-md shadow-sm focus:outline-none`}
-                        placeholder="••••••"
-                      />
-                    </div>
-                    {field.state.value && error && (
-                      <p className="mt-1 text-sm text-red-600 flex items-center">
-                        <FaTimes className="mr-1" /> {error}
-                      </p>
-                    )}
-                    {field.state.value && !error && (
-                      <p className="mt-1 text-sm text-green-600 flex items-center">
-                        <FaCheck className="mr-1" /> Password meets requirements
-                      </p>
-                    )}
+          {/* Email Field */}
+          <form.Field
+            name="email"
+            validators={{
+              onChange: ({ value }) =>
+                !value
+                  ? 'Email is required'
+                  : !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)
+                    ? 'Invalid email'
+                    : undefined,
+            }}
+          >
+            {(field) => (
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
+                  Email Address*
+                </label>
+                <Input
+                  type="email"
+                  placeholder="Enter your email address"
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  className="mb-1"
+                />
+                {field.state.meta.isTouched && field.state.meta.errors && (
+                  <div className="text-xs text-red-500">
+                    {field.state.meta.errors}
                   </div>
-                )
-              }}
-            />
+                )}
+              </div>
+            )}
+          </form.Field>
 
-            {/* Confirm Password Field */}
-            <form.Field
-              name="confirmPassword"
-              children={(field) => {
-                const password = form.getFieldValue('password')
-                const error = 
-                  !field.state.value ? 'Please confirm your password' :
-                  field.state.value !== password ? 'Passwords do not match' : null
-                
-                return (
-                  <div>
-                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                      Confirm Password
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FaLock className={`h-5 w-5 ${
-                          field.state.value 
-                            ? error 
-                              ? 'text-red-400' 
-                              : 'text-green-400'
-                            : 'text-gray-400'
-                        }`} />
-                      </div>
-                      <input
-                        id="confirmPassword"
-                        type="password"
-                        autoComplete="new-password"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => {
-                          field.handleChange(e.target.value)
-                          setRegistrationStatus(null)
-                        }}
-                        className={`block w-full pl-10 pr-3 py-2 border ${
-                          field.state.value
-                            ? error
-                              ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
-                              : 'border-green-300 focus:ring-green-500 focus:border-green-500'
-                            : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-                        } rounded-md shadow-sm focus:outline-none`}
-                        placeholder="••••••"
-                      />
-                    </div>
-                    {field.state.value && error && (
-                      <p className="mt-1 text-sm text-red-600 flex items-center">
-                        <FaTimes className="mr-1" /> {error}
-                      </p>
-                    )}
-                    {field.state.value && !error && (
-                      <p className="mt-1 text-sm text-green-600 flex items-center">
-                        <FaCheck className="mr-1" /> Passwords match!
-                      </p>
-                    )}
+          {/* Password Field */}
+          <form.Field
+            name="password"
+            validators={{
+              onChange: ({ value }) =>
+                !value
+                  ? 'Password is required'
+                  : value.length < 6
+                    ? 'Password must be at least 6 characters'
+                    : undefined,
+            }}
+          >
+            {(field) => (
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
+                  Password*
+                </label>
+                <Input
+                  type="password"
+                  placeholder="Create a strong password"
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  className="mb-1"
+                />
+                <div className="text-xs text-slate-400 dark:text-slate-500 mb-1">
+                  Enter password to see strength
+                </div>
+                {field.state.meta.isTouched && field.state.meta.errors && (
+                  <div className="text-xs text-red-500">
+                    {field.state.meta.errors}
                   </div>
-                )
-              }}
-            />
+                )}
+              </div>
+            )}
+          </form.Field>
 
-            {/* Submit Button */}
-            <form.Subscribe
-              selector={(state) => [state.canSubmit, state.isSubmitting]}
-              children={([canSubmit]) => (
-                <button
-                  type="submit"
-                  disabled={!canSubmit || isSubmitting}
-                  className={`w-full mt-6 flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-                    !canSubmit || isSubmitting
-                      ? 'bg-blue-400 cursor-not-allowed'
-                      : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
-                  }`}
+          {/* Phone Field */}
+          <form.Field
+            name="phoneNumber"
+            validators={{
+              onChange: ({ value }) =>
+                !value ? 'Phone number is required' : undefined,
+            }}
+          >
+            {(field) => (
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
+                  Phone Number*
+                </label>
+                <div className="flex gap-2">
+                  <select
+                    className="rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-2"
+                    value={form.getFieldValue('country')}
+                    onChange={(e) =>
+                      form.setFieldValue('country', e.target.value)
+                    }
+                  >
+                    <option value="+1">+1</option>
+                    <option value="+254">+254</option>
+                    <option value="+91">+91</option>
+                  </select>
+                  <Input
+                    type="tel"
+                    placeholder="(555) 123-4567"
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    className="mb-1 flex-1"
+                  />
+                </div>
+                {field.state.meta.isTouched && field.state.meta.errors && (
+                  <div className="text-xs text-red-500">
+                    {field.state.meta.errors}
+                  </div>
+                )}
+              </div>
+            )}
+          </form.Field>
+
+          {/* Terms Field */}
+          <form.Field name="terms">
+            {(field) => (
+              <div className="flex items-center gap-2 my-1">
+                <input
+                  type="checkbox"
+                  checked={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.checked)}
+                  className="accent-indigo-500"
+                  id="terms"
+                />
+                <label
+                  htmlFor="terms"
+                  className="text-xs text-slate-700 dark:text-slate-200"
                 >
-                  {isSubmitting ? (
-                    <>
-                      <FaSpinner className="animate-spin mr-2" />
-                      Registering...
-                    </>
-                  ) : (
-                    'Create Account'
-                  )}
-                </button>
-              )}
-            />
-          </form>
-        
+                  I agree to the{' '}
+                  <a href="#" className="text-indigo-500 hover:underline">
+                    Terms of Service
+                  </a>{' '}
+                  and{' '}
+                  <a href="#" className="text-indigo-500 hover:underline">
+                    Privacy Policy
+                  </a>
+                </label>
+              </div>
+            )}
+          </form.Field>
 
-        <div className="mt-4 text-center text-sm text-gray-600">
+          <Button
+            type="submit"
+            className="w-full bg-indigo-400 hover:bg-indigo-500 text-white mt-2"
+            disabled={
+              loading ||
+              isSignupPending ||
+              !form.state.isValid ||
+              !form.state.values.terms
+            }
+          >
+            {loading || isSignupPending ? 'Creating...' : 'Continue'}
+          </Button>
+        </form>
+        <div className="flex items-center my-2">
+          <div className="flex-grow border-t border-slate-200 dark:border-slate-700" />
+          <span className="mx-2 text-xs text-slate-400">or</span>
+          <div className="flex-grow border-t border-slate-200 dark:border-slate-700" />
+        </div>
+        <div className="flex items-center justify-center mb-2">
+          <span className="text-xs text-indigo-500 flex items-center gap-1">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+              <path
+                fill="currentColor"
+                d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2H7v-2h4V7h2v4h4v2h-4v2z"
+              />
+            </svg>
+            HIPAA-compliant
+          </span>
+        </div>
+        <div className="text-center text-xs text-slate-500 dark:text-slate-400">
           Already have an account?{' '}
-          <a href="/login" className="font-medium text-blue-600 hover:text-blue-500">
+          <a href="/login" className="text-indigo-500 hover:underline">
             Sign in
           </a>
         </div>
-      </div>
+      </Card>
     </div>
   )
 }

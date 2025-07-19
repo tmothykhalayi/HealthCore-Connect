@@ -8,7 +8,7 @@ import {
   flexRender,
   type ColumnDef,
 } from '@tanstack/react-table';
-import { useGetMedicineQuery, useDeleteMedicine } from '@/hooks/medicineHook';
+import { useGetMedicineQuery, useDeleteMedicine } from '@/hooks/medicine';
 import type { TMedicine } from '@/Types/types';
 
 export const MedicinesTable = () => {

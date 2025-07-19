@@ -1,42 +1,24 @@
-import { useLoginHook } from '@/hooks/authHook'
-import { loginUserHelper } from '@/lib/authHelper'
 import { useForm } from '@tanstack/react-form'
-import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { FaEnvelope, FaLock, FaCheck, FaTimes, FaSpinner } from 'react-icons/fa'
+import { useNavigate } from '@tanstack/react-router'
+import { Button } from '../components/ui/button'
+import { Input } from '../components/ui/input'
+import { Card } from '../components/ui/card'
+import type { TSignIn } from '@/types/alltypes'
+import { useCurrentUser, useLogin, useUserRole } from '@/hooks/auth' // <-- FIXED
+import { isAuthenticated } from '@/api/auth'
 
-export function LoginPage() {
-  const [loginStatus, setLoginStatus] = useState<{
-    success: boolean
-    message: string
-  } | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  // AUTH LOGIN HOOK
-  const { mutate, data } = useLoginHook()
+export default function LoginForm() {
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  // Manual validation functions
-  const validateEmail = (email: string) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!email) return 'Email is required'
-    if (!re.test(email)) return 'Please enter a valid email'
-    return null
-  }
-
-  const validatePassword = (password: string) => {
-    if (!password) return 'Password is required'
-    if (password.length < 6) return 'Password must be at least 6 characters'
-    return null
-  }
-  useEffect(() => {
-    if (data) {
-      loginUserHelper(data.token, data.user)
-      navigate({ to: '/dashboard', replace: true })
-    }
-
-    console.log('data in useEffect', data)
-  }, [data])
+  const {
+    mutateAsync: login,
+    isPending: isLoginPending,
+    error: loginError,
+  } = useLogin()
+  const userRole = useUserRole()
+  const { data: currentUser, isLoading } = useCurrentUser()
 
   const form = useForm({
     defaultValues: {
@@ -44,55 +26,128 @@ export function LoginPage() {
       password: '',
     },
     onSubmit: async ({ value }) => {
-      setIsSubmitting(true)
+      setLoading(true)
       try {
-        // API call
-        mutate(value)
-        console.log('myresponse', data)
-
-        setLoginStatus({
-          success: true,
-          message: 'Login successful! Redirecting...',
-        })
+        const response = await login(value as TSignIn)
+        console.log('Login response:', response) // DEBUG LOG
+        // Save user info and tokens to localStorage
+        if (response?.user) {
+          localStorage.setItem('user', JSON.stringify(response.user))
+        }
+        if (response?.accessToken) {
+          localStorage.setItem('accessToken', response.accessToken)
+        }
+        if (response?.refreshToken) {
+          localStorage.setItem('refreshToken', response.refreshToken)
+        }
+        // Redirect based on role
+        if (response?.user?.role === 'admin') {
+          navigate({ to: '/dashboard/admin' })
+        } else if (response?.user?.role === 'doctor') {
+          navigate({ to: '/dashboard/doctor' })
+        } else if (response?.user?.role === 'patient') {
+          navigate({ to: '/dashboard/patient' })
+        } else if (response?.user?.role === 'pharmacist') {
+          navigate({ to: '/dashboard/pharmacist' })
+        } else {
+          navigate({ to: '/' })
+        }
       } catch (error) {
         console.error('Login failed:', error)
-        setLoginStatus({
-          success: false,
-          message: 'Invalid email or password',
-        })
       } finally {
-        setIsSubmitting(false)
+        setLoading(false)
       }
     },
   })
 
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
-      {/* Welcome Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-blue-600 mb-2">Welcome Back!</h1>
-        <p className="text-lg text-gray-600">
-          We're so excited to see you again!
-        </p>
-      </div>
+  useEffect(() => {
+    if (isLoading) return // Wait for user data to load before redirecting
 
-      {/* Login Form Container */}
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
-        {/* Status Message */}
-        {loginStatus && (
-          <div
-            className={`mb-6 p-4 rounded-md flex items-center ${
-              loginStatus.success
-                ? 'bg-green-100 text-green-800'
-                : 'bg-red-100 text-red-800'
-            }`}
-          >
-            {loginStatus.success ? (
-              <FaCheck className="mr-2 text-green-500" />
-            ) : (
-              <FaTimes className="mr-2 text-red-500" />
-            )}
-            <span>{loginStatus.message}</span>
+    const checkAuth = async () => {
+      const authenticated = await isAuthenticated()
+      if (authenticated && userRole && currentUser) {
+        if (userRole === 'doctor') {
+          if (!currentUser.profile) {
+            navigate({ to: '/dashboard/doctor/profile/create' })
+            return
+          }
+          navigate({ to: '/dashboard/doctor' })
+        } else if (userRole === 'patient') {
+          if (!currentUser.profile) {
+            navigate({ to: '/dashboard/patient/profile/create' })
+            return
+          }
+          navigate({ to: '/dashboard/patient' })
+        } else if (userRole === 'pharmacist') {
+          if (!currentUser.profile) {
+            navigate({ to: '/dashboard/pharmacist/profile/create' })
+            return
+          }
+          navigate({ to: '/dashboard/pharmacist' })
+        } else if (userRole === 'admin') {
+          navigate({ to: '/dashboard/admin' })
+        }
+      }
+    }
+    checkAuth()
+  }, [userRole, currentUser, isLoading, navigate])
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f172a] to-[#1e3a8a] dark:from-slate-950 dark:to-slate-900 fixed inset-0 z-50">
+        <div className="text-white dark:text-slate-200 text-lg font-semibold">
+          Loading user...
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f172a] to-[#1e3a8a] dark:from-slate-950 dark:to-slate-900 fixed inset-0 z-50">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/30 backdrop-blur-sm z-0 cursor-pointer"
+        onClick={() => navigate({ to: '/' })}
+        aria-label="Close login"
+      />
+      <Card className="relative w-full max-w-sm p-6 rounded-lg shadow-md bg-white dark:bg-slate-900 z-10">
+        {/* X Button */}
+        <button
+          className="absolute top-2 right-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-xl font-bold p-1 rounded transition"
+          onClick={() => navigate({ to: '/' })}
+          aria-label="Close"
+          type="button"
+        >
+          ×
+        </button>
+        <div className="flex flex-col items-center mb-4">
+          <div className="text-xl font-bold text-indigo-900 dark:text-indigo-200 flex items-center gap-2">
+            <span className="inline-block bg-indigo-100 dark:bg-indigo-900 rounded-full p-1.5">
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M12 2c-.3 0-.5.1-.7.2l-7 3.1c-.5.2-.8.7-.8 1.2v4.6c0 5.2 3.3 10.1 8.1 11.7.2.1.5.1.7 0 4.8-1.6 8.1-6.5 8.1-11.7V6.5c0-.5-.3-1-.8-1.2l-7-3.1C12.5 2.1 12.3 2 12 2zm0 2.2l6 2.7v4.1c0 4.3-2.7 8.5-6 9.9-3.3-1.4-6-5.6-6-9.9V6.9l6-2.7z"
+                />
+              </svg>
+            </span>
+            MedDash
+          </div>
+          <div className="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">
+            Welcome Back
+          </div>
+          <div className="text-slate-500 dark:text-slate-400 text-xs">
+            Sign in to your account to continue
+          </div>
+        </div>
+
+        {/* Display login error if any */}
+        {loginError && (
+          <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+            <div className="text-sm text-red-800 dark:text-red-200">
+              {loginError instanceof Error
+                ? loginError.message
+                : 'Login failed. Please try again.'}
+            </div>
           </div>
         )}
 
@@ -102,164 +157,135 @@ export function LoginPage() {
             e.stopPropagation()
             form.handleSubmit()
           }}
-          className="space-y-6"
+          className="flex flex-col gap-2"
         >
-          {/* Email Field */}
           <form.Field
             name="email"
-            children={(field) => {
-              const error = validateEmail(field.state.value)
-              return (
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FaEnvelope
-                        className={`h-5 w-5 ${
-                          field.state.value
-                            ? error
-                              ? 'text-red-400'
-                              : 'text-green-400'
-                            : 'text-gray-400'
-                        }`}
-                      />
-                    </div>
-                    <input
-                      id="email"
-                      type="email"
-                      autoComplete="email"
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => {
-                        field.handleChange(e.target.value)
-                        // Clear status when user starts typing again
-                        setLoginStatus(null)
-                      }}
-                      onKeyDown={() => setLoginStatus(null)}
-                      className={`block w-full pl-10 pr-3 py-2 border ${
-                        field.state.value
-                          ? error
-                            ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
-                            : 'border-green-300 focus:ring-green-500 focus:border-green-500'
-                          : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-                      } rounded-md shadow-sm focus:outline-none`}
-                      placeholder="your@email.com"
-                    />
-                  </div>
-                  {field.state.value && error && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center">
-                      <FaTimes className="mr-1" /> {error}
-                    </p>
-                  )}
-                  {field.state.value && !error && (
-                    <p className="mt-1 text-sm text-green-600 flex items-center">
-                      <FaCheck className="mr-1" /> Email looks good!
-                    </p>
-                  )}
-                </div>
-              )
+            validators={{
+              onChange: ({ value }) =>
+                !value
+                  ? 'Email is required'
+                  : !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)
+                    ? 'Invalid email'
+                    : undefined,
             }}
-          />
-
-          {/* Password Field */}
+          >
+            {(field) => (
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
+                  Email address*
+                </label>
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  className="mb-1"
+                  disabled={loading || isLoginPending}
+                />
+                {field.state.meta.isTouched && field.state.meta.errors && (
+                  <div className="text-xs text-red-500">
+                    {field.state.meta.errors}
+                  </div>
+                )}
+              </div>
+            )}
+          </form.Field>
           <form.Field
             name="password"
-            children={(field) => {
-              const error = validatePassword(field.state.value)
-              return (
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Password
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FaLock
-                        className={`h-5 w-5 ${
-                          field.state.value
-                            ? error
-                              ? 'text-red-400'
-                              : 'text-green-400'
-                            : 'text-gray-400'
-                        }`}
-                      />
-                    </div>
-                    <input
-                      id="password"
-                      type="password"
-                      autoComplete="current-password"
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => {
-                        field.handleChange(e.target.value)
-                        setLoginStatus(null)
-                      }}
-                      onKeyDown={() => setLoginStatus(null)}
-                      className={`block w-full pl-10 pr-3 py-2 border ${
-                        field.state.value
-                          ? error
-                            ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
-                            : 'border-green-300 focus:ring-green-500 focus:border-green-500'
-                          : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-                      } rounded-md shadow-sm focus:outline-none`}
-                      placeholder="••••••"
-                    />
-                  </div>
-                  {field.state.value && error && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center">
-                      <FaTimes className="mr-1" /> {error}
-                    </p>
-                  )}
-                  {field.state.value && !error && (
-                    <p className="mt-1 text-sm text-green-600 flex items-center">
-                      <FaCheck className="mr-1" /> Password meets requirements
-                    </p>
-                  )}
-                </div>
-              )
+            validators={{
+              onChange: ({ value }) =>
+                !value
+                  ? 'Password is required'
+                  : value.length < 6
+                    ? 'Password must be at least 6 characters'
+                    : undefined,
             }}
-          />
-
-          {/* Submit Button */}
-          <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
-            children={([canSubmit]) => (
-              <button
-                type="submit"
-                disabled={!canSubmit || isSubmitting}
-                className={`w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-                  !canSubmit || isSubmitting
-                    ? 'bg-blue-400 cursor-not-allowed'
-                    : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
-                }`}
-              >
-                {isSubmitting ? (
-                  <>
-                    <FaSpinner className="animate-spin mr-2" />
-                    Signing in...
-                  </>
-                ) : (
-                  'Sign in'
+          >
+            {(field) => (
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
+                  Password*
+                </label>
+                <Input
+                  type="password"
+                  placeholder="Enter your password"
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  className="mb-1"
+                  disabled={loading || isLoginPending}
+                />
+                <div className="flex justify-end">
+                  <a
+                    href="#"
+                    className="text-xs text-indigo-400 hover:underline"
+                  >
+                    Forgot password?
+                  </a>
+                </div>
+                {field.state.meta.isTouched && field.state.meta.errors && (
+                  <div className="text-xs text-red-500">
+                    {field.state.meta.errors}
+                  </div>
                 )}
-              </button>
+              </div>
             )}
-          />
+          </form.Field>
+          <Button
+            type="submit"
+            className="w-full bg-indigo-400 hover:bg-indigo-500 text-white mt-2"
+            disabled={loading || isLoginPending || !form.state.isValid}
+          >
+            {loading || isLoginPending ? 'Signing in...' : 'Sign In'}
+          </Button>
         </form>
-
-        <div className="mt-4 text-center text-sm text-gray-600">
+        <div className="flex items-center my-2">
+          <div className="flex-grow border-t border-slate-200 dark:border-slate-700" />
+          <span className="mx-2 text-xs text-slate-400">or continue with</span>
+          <div className="flex-grow border-t border-slate-200 dark:border-slate-700" />
+        </div>
+        <div className="flex gap-2 justify-center mb-1">
+          <Button
+            variant="outline"
+            className="w-10 h-10 p-0 flex items-center justify-center"
+          >
+            <svg width="20" height="20" viewBox="0 0 48 48">
+              <g>
+                <path
+                  fill="#4285F4"
+                  d="M44.5 20H24v8.5h11.7C34.7 33.1 29.8 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 19.5-7.6 21-17.5H24v-8.5h20.5z"
+                />
+              </g>
+            </svg>
+          </Button>
+          <Button
+            variant="outline"
+            className="w-10 h-10 p-0 flex items-center justify-center"
+          >
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.2-1.5-1.2-1.5-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1.7 1.5.7 1.5-.8 1.4-2.1 1-2.6.8-.1-.7-.3-1-.6-1.2-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2.9-.2 1.9-.3 2.9-.3s2 .1 2.9.3c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.7.9 1.2 1.9 1.2 3.2 0 4.4-2.7 5.4-5.3 5.7-.3.2-.6.5-.6 1.2 0 1.1.1 2.1.1 2.4 0 .3.2.7.8.6C20.7 21.4 24 17.1 24 12c0-6.3-5.2-11.5-12-11.5z" />
+            </svg>
+          </Button>
+          <Button
+            variant="outline"
+            className="w-10 h-10 p-0 flex items-center justify-center"
+          >
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M16.365 1.43c0 1.14-.93 2.07-2.07 2.07-1.14 0-2.07-.93-2.07-2.07 0-1.14.93-2.07 2.07-2.07 1.14 0 2.07.93 2.07 2.07zm-2.07 3.6c-2.07 0-3.6 1.53-3.6 3.6 0 1.14.93 2.07 2.07 2.07 1.14 0 2.07-.93 2.07-2.07 0-1.14-.93-2.07-2.07-2.07zm-2.07 3.6c-2.07 0-3.6 1.53-3.6 3.6 0 1.14.93 2.07 2.07 2.07 1.14 0 2.07-.93 2.07-2.07 0-1.14-.93-2.07-2.07-2.07zm-2.07 3.6c-2.07 0-3.6 1.53-3.6 3.6 0 1.14.93 2.07 2.07 2.07 1.14 0 2.07-.93 2.07-2.07 0-1.14-.93-2.07-2.07-2.07z" />
+            </svg>
+          </Button>
+        </div>
+        <div className="text-center text-xs text-slate-500 dark:text-slate-400">
           Don't have an account?{' '}
-          <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
-            Sign up
+          <a href="/register" className="text-indigo-500 hover:underline">
+            Create account →
           </a>
         </div>
-      </div>
+      </Card>
     </div>
   )
 }

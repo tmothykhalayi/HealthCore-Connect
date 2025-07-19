@@ -8,8 +8,8 @@ import {
   flexRender,
   type ColumnDef,
 } from '@tanstack/react-table';
-import { useGetPaymentQuery, useDeletePayment } from '@/hooks/paymentHook';
-import type { TPayment } from '@/Types/types';
+import { useGetPaymentQuery, useDeletePayment } from '@/hooks/payment';
+import type { TPayment } from '@/types/alltypes';
 
 export const PaymentsTable = () => {
   const [search, setSearch] = useState('');

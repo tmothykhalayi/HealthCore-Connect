@@ -8,8 +8,8 @@ import {
   flexRender,
   type ColumnDef,
 } from '@tanstack/react-table';
-import { useGetPharmacyOrdersQuery, useDeletePharmacyOrder } from '@/hooks/pharmarcy_order';
-import type { TPharmacyOrder } from '@/Types/types';
+import { useGetPharmacyOrdersQuery, useDeletePharmacyOrder } from '@/hooks/orders';
+import type { TPharmacyOrder } from '@/types/alltypes';
 
 export const PharmacyOrdersTable = () => {
   const [search, setSearch] = useState('');

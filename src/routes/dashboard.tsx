@@ -2,8 +2,8 @@ import { Outlet, createFileRoute } from '@tanstack/react-router'
 import { FaBars, FaTimes, FaBell, FaUserCircle } from 'react-icons/fa'
 import { useState } from 'react'
 import SideNav from '@/components/sideNav'
-import type { Role } from '@/Types/types'
-import { getUserRoleHelper } from '@/lib/authHelper'
+import type { Role } from '@/types/alltypes'
+import { getUserRoleHelper } from '@/lib/auth'
 
 export const Route = createFileRoute('/dashboard')({
   component: DashboardLayout,

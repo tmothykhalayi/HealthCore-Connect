@@ -8,8 +8,8 @@ import {
   flexRender,
   type ColumnDef,
 } from '@tanstack/react-table';
-import { useGetRecordsQuery, useDeleteRecord, useCreateRecord } from '@/hooks/recordHook';
-import type { TRecord } from '@/Types/types';
+import { useGetRecordsQuery, useDeleteRecord, useCreateRecord } from '@/hooks/medicalrecords';
+import type { TRecord } from '@/types/alltypes';
 
 export const RecordsTable = () => {
   const [search, setSearch] = useState('');
