@@ -9,7 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as RegistrationRouteImport } from './routes/registration'
+import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -42,9 +42,9 @@ import { Route as DashboardDoctorPatientIndexRouteImport } from './routes/Dashbo
 import { Route as DashboardDoctorPatientPatientIdRouteImport } from './routes/Dashboard/doctor/patient/$patientId'
 import { Route as DashboardPatientDoctorsAppointmentsFormDoctor_idRouteImport } from './routes/Dashboard/patient/doctors/appointmentsForm.$doctor_id'
 
-const RegistrationRoute = RegistrationRouteImport.update({
-  id: '/registration',
-  path: '/registration',
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -227,7 +227,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
-  '/registration': typeof RegistrationRoute
+  '/register': typeof RegisterRoute
   '/Dashboard/admin/appointments': typeof DashboardAdminAppointmentsRoute
   '/Dashboard/admin/dashboard': typeof DashboardAdminDashboardRoute
   '/Dashboard/admin/doctors': typeof DashboardAdminDoctorsRoute
@@ -261,7 +261,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
-  '/registration': typeof RegistrationRoute
+  '/register': typeof RegisterRoute
   '/Dashboard/admin/appointments': typeof DashboardAdminAppointmentsRoute
   '/Dashboard/admin/dashboard': typeof DashboardAdminDashboardRoute
   '/Dashboard/admin/doctors': typeof DashboardAdminDoctorsRoute
@@ -296,7 +296,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
-  '/registration': typeof RegistrationRoute
+  '/register': typeof RegisterRoute
   '/Dashboard/admin/appointments': typeof DashboardAdminAppointmentsRoute
   '/Dashboard/admin/dashboard': typeof DashboardAdminDashboardRoute
   '/Dashboard/admin/doctors': typeof DashboardAdminDoctorsRoute
@@ -332,7 +332,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/home'
     | '/login'
-    | '/registration'
+    | '/register'
     | '/Dashboard/admin/appointments'
     | '/Dashboard/admin/dashboard'
     | '/Dashboard/admin/doctors'
@@ -366,7 +366,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/home'
     | '/login'
-    | '/registration'
+    | '/register'
     | '/Dashboard/admin/appointments'
     | '/Dashboard/admin/dashboard'
     | '/Dashboard/admin/doctors'
@@ -400,7 +400,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/home'
     | '/login'
-    | '/registration'
+    | '/register'
     | '/Dashboard/admin/appointments'
     | '/Dashboard/admin/dashboard'
     | '/Dashboard/admin/doctors'
@@ -435,7 +435,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
-  RegistrationRoute: typeof RegistrationRoute
+  RegisterRoute: typeof RegisterRoute
   DashboardAdminAppointmentsRoute: typeof DashboardAdminAppointmentsRoute
   DashboardAdminDashboardRoute: typeof DashboardAdminDashboardRoute
   DashboardAdminDoctorsRoute: typeof DashboardAdminDoctorsRoute
@@ -465,11 +465,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/registration': {
-      id: '/registration'
-      path: '/registration'
-      fullPath: '/registration'
-      preLoaderRoute: typeof RegistrationRouteImport
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -699,7 +699,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
-  RegistrationRoute: RegistrationRoute,
+  RegisterRoute: RegisterRoute,
   DashboardAdminAppointmentsRoute: DashboardAdminAppointmentsRoute,
   DashboardAdminDashboardRoute: DashboardAdminDashboardRoute,
   DashboardAdminDoctorsRoute: DashboardAdminDoctorsRoute,

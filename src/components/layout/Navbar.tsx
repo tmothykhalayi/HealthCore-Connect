@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link } from '@tanstack/react-router'
 
 import { IoClose, IoMenu } from 'react-icons/io5'
 
@@ -13,66 +13,64 @@ const Navbar = () => {
 
   return (
     <nav className="relative flex items-center p-4 md:justify-around">
-      <NavLink
+      <Link
         to="/"
         className="mr-auto text-3xl font-playfair-display font-medium text-teal-500 md:mr-0"
       >
         SrMedical
-      </NavLink>
+      </Link>
 
       <div className="hidden sm:flex gap-x-4 text-lg font-medium text-purple-950 [&>*]:ease-in [&>*]:duration-75">
-        <NavLink
+        <Link
           to="/about"
-          className={({ isActive }) =>
-            isActive ? 'text-teal-400' : 'hover:text-teal-400'
-          }
+          className="hover:text-teal-400"
         >
           About
-        </NavLink>
+        </Link>
 
-        <NavLink
+        <Link
           to="/services"
-          className={({ isActive }) =>
-            isActive ? 'text-teal-400' : 'hover:text-teal-400'
-          }
+          className="hover:text-teal-400"
         >
           Services
-        </NavLink>
+        </Link>
 
-        <NavLink
+        <Link
           to="/doctors"
-          className={({ isActive }) =>
-            isActive ? 'text-teal-400' : 'hover:text-teal-400'
-          }
+          className="hover:text-teal-400"
         >
           Doctors
-        </NavLink>
+        </Link>
 
-        <NavLink
+        <Link
           to="/blog"
-          className={({ isActive }) =>
-            isActive ? 'text-teal-400' : 'hover:text-teal-400'
-          }
+          className="hover:text-teal-400"
         >
           Blog
-        </NavLink>
+        </Link>
 
-        <NavLink
+        <Link
           to="/contact"
-          className={({ isActive }) =>
-            isActive ? 'text-teal-400' : 'hover:text-teal-400'
-          }
+          className="hover:text-teal-400"
         >
           Contact
-        </NavLink>
+        </Link>
       </div>
 
-      <Link
-        to="/contact"
-        className="hidden md:block py-2 px-4 bg-teal-500 text-white rounded-2xl hover:bg-teal-600 ease-in-out duration-200 active:scale-95"
-      >
-        Schedule Appointment
-      </Link>
+      <div className="hidden md:flex gap-x-4 items-center">
+        <Link
+          to="/login"
+          className="py-2 px-4 text-teal-500 border border-teal-500 rounded-2xl hover:bg-teal-500 hover:text-white ease-in-out duration-200"
+        >
+          Login
+        </Link>
+        <Link
+          to="/registration"
+          className="py-2 px-4 bg-teal-500 text-white rounded-2xl hover:bg-teal-600 ease-in-out duration-200 active:scale-95"
+        >
+          Register
+        </Link>
+      </div>
 
       {/* Mobile menu */}
       <div className="text-3xl sm:hidden" onClick={handleMenu}>
@@ -85,9 +83,9 @@ const Navbar = () => {
           <Link to="/services">Services</Link>
           <Link to="/doctors">Doctors</Link>
           <Link to="/blog">Blog</Link>
-          <Link to="/contact" className="pb-4">
-            Contact
-          </Link>
+          <Link to="/contact">Contact</Link>
+          <Link to="/login" className="border-t pt-4">Login</Link>
+          <Link to="/registration" className="pb-4">Register</Link>
         </div>
       )}
     </nav>
