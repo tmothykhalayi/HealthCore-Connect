@@ -1,7 +1,7 @@
-import url from "@/constants/urls";
+import { API_BASE_URL} from "../api/BaseUrl";
 
 export const loginFn = async (email: string, password: string) => {
-    const response = await fetch(`${url}/auth/login`, {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

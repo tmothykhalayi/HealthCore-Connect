@@ -16,31 +16,31 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactsRouteImport } from './routes/contacts'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DashboardPharmarcistRecordsRouteImport } from './routes/dashboard/pharmarcist/records'
-import { Route as DashboardPharmarcistPrescriptionsRouteImport } from './routes/dashboard/pharmarcist/prescriptions'
-import { Route as DashboardPharmarcistPharmacy_ordersRouteImport } from './routes/dashboard/pharmarcist/pharmacy_orders'
-import { Route as DashboardPharmarcistPaymentsRouteImport } from './routes/dashboard/pharmarcist/payments'
-import { Route as DashboardPharmarcistPatientsRouteImport } from './routes/dashboard/pharmarcist/patients'
-import { Route as DashboardPatientPharmacy_ordersRouteImport } from './routes/dashboard/patient/pharmacy_orders'
-import { Route as DashboardPatientAppointmentsRouteImport } from './routes/dashboard/patient/appointments'
-import { Route as DashboardDoctorRecordsRouteImport } from './routes/dashboard/doctor/records'
-import { Route as DashboardDoctorPrescriptionsRouteImport } from './routes/dashboard/doctor/prescriptions'
-import { Route as DashboardDoctorAppointmentsRouteImport } from './routes/dashboard/doctor/appointments'
-import { Route as DashboardAdminUsersRouteImport } from './routes/dashboard/admin/users'
-import { Route as DashboardAdminRecordsRouteImport } from './routes/dashboard/admin/records'
-import { Route as DashboardAdminPrescriptionsRouteImport } from './routes/dashboard/admin/prescriptions'
-import { Route as DashboardAdminPharmacy_ordersRouteImport } from './routes/dashboard/admin/pharmacy_orders'
-import { Route as DashboardAdminPaymentsRouteImport } from './routes/dashboard/admin/payments'
-import { Route as DashboardAdminPatientsRouteImport } from './routes/dashboard/admin/patients'
-import { Route as DashboardAdminMedicinesRouteImport } from './routes/dashboard/admin/medicines'
-import { Route as DashboardAdminDoctorsRouteImport } from './routes/dashboard/admin/doctors'
-import { Route as DashboardAdminDashboardRouteImport } from './routes/dashboard/admin/dashboard'
-import { Route as DashboardAdminAppointmentsRouteImport } from './routes/dashboard/admin/appointments'
-import { Route as DashboardPatientMedicinesIndexRouteImport } from './routes/dashboard/patient/medicines/index'
-import { Route as DashboardPatientDoctorsIndexRouteImport } from './routes/dashboard/patient/doctors/index'
-import { Route as DashboardDoctorPatientIndexRouteImport } from './routes/dashboard/doctor/patient/index'
-import { Route as DashboardDoctorPatientPatientIdRouteImport } from './routes/dashboard/doctor/patient/$patientId'
-import { Route as DashboardPatientDoctorsAppointmentsFormDoctor_idRouteImport } from './routes/dashboard/patient/doctors/appointmentsForm.$doctor_id'
+import { Route as DashboardPharmarcistRecordsRouteImport } from './routes/Dashboard/pharmarcist/records'
+import { Route as DashboardPharmarcistPrescriptionsRouteImport } from './routes/Dashboard/pharmarcist/prescriptions'
+import { Route as DashboardPharmarcistPharmacy_ordersRouteImport } from './routes/Dashboard/pharmarcist/pharmacy_orders'
+import { Route as DashboardPharmarcistPaymentsRouteImport } from './routes/Dashboard/pharmarcist/payments'
+import { Route as DashboardPharmarcistPatientsRouteImport } from './routes/Dashboard/pharmarcist/patients'
+import { Route as DashboardPatientPharmacy_ordersRouteImport } from './routes/Dashboard/patient/pharmacy_orders'
+import { Route as DashboardPatientAppointmentsRouteImport } from './routes/Dashboard/patient/appointments'
+import { Route as DashboardDoctorRecordsRouteImport } from './routes/Dashboard/doctor/records'
+import { Route as DashboardDoctorPrescriptionsRouteImport } from './routes/Dashboard/doctor/prescriptions'
+import { Route as DashboardDoctorAppointmentsRouteImport } from './routes/Dashboard/doctor/appointments'
+import { Route as DashboardAdminUsersRouteImport } from './routes/Dashboard/admin/users'
+import { Route as DashboardAdminRecordsRouteImport } from './routes/Dashboard/admin/records'
+import { Route as DashboardAdminPrescriptionsRouteImport } from './routes/Dashboard/admin/prescriptions'
+import { Route as DashboardAdminPharmacy_ordersRouteImport } from './routes/Dashboard/admin/pharmacy_orders'
+import { Route as DashboardAdminPaymentsRouteImport } from './routes/Dashboard/admin/payments'
+import { Route as DashboardAdminPatientsRouteImport } from './routes/Dashboard/admin/patients'
+import { Route as DashboardAdminMedicinesRouteImport } from './routes/Dashboard/admin/medicines'
+import { Route as DashboardAdminDoctorsRouteImport } from './routes/Dashboard/admin/doctors'
+import { Route as DashboardAdminDashboardRouteImport } from './routes/Dashboard/admin/dashboard'
+import { Route as DashboardAdminAppointmentsRouteImport } from './routes/Dashboard/admin/appointments'
+import { Route as DashboardPatientMedicinesIndexRouteImport } from './routes/Dashboard/patient/medicines/index'
+import { Route as DashboardPatientDoctorsIndexRouteImport } from './routes/Dashboard/patient/doctors/index'
+import { Route as DashboardDoctorPatientIndexRouteImport } from './routes/Dashboard/doctor/patient/index'
+import { Route as DashboardDoctorPatientPatientIdRouteImport } from './routes/Dashboard/doctor/patient/$patientId'
+import { Route as DashboardPatientDoctorsAppointmentsFormDoctor_idRouteImport } from './routes/Dashboard/patient/doctors/appointmentsForm.$doctor_id'
 
 const RegistrationRoute = RegistrationRouteImport.update({
   id: '/registration',
@@ -79,249 +79,249 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const DashboardPharmarcistRecordsRoute =
   DashboardPharmarcistRecordsRouteImport.update({
-    id: '/pharmarcist/records',
-    path: '/pharmarcist/records',
-    getParentRoute: () => DashboardRoute,
+    id: '/Dashboard/pharmarcist/records',
+    path: '/Dashboard/pharmarcist/records',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const DashboardPharmarcistPrescriptionsRoute =
   DashboardPharmarcistPrescriptionsRouteImport.update({
-    id: '/pharmarcist/prescriptions',
-    path: '/pharmarcist/prescriptions',
-    getParentRoute: () => DashboardRoute,
+    id: '/Dashboard/pharmarcist/prescriptions',
+    path: '/Dashboard/pharmarcist/prescriptions',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const DashboardPharmarcistPharmacy_ordersRoute =
   DashboardPharmarcistPharmacy_ordersRouteImport.update({
-    id: '/pharmarcist/pharmacy_orders',
-    path: '/pharmarcist/pharmacy_orders',
-    getParentRoute: () => DashboardRoute,
+    id: '/Dashboard/pharmarcist/pharmacy_orders',
+    path: '/Dashboard/pharmarcist/pharmacy_orders',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const DashboardPharmarcistPaymentsRoute =
   DashboardPharmarcistPaymentsRouteImport.update({
-    id: '/pharmarcist/payments',
-    path: '/pharmarcist/payments',
-    getParentRoute: () => DashboardRoute,
+    id: '/Dashboard/pharmarcist/payments',
+    path: '/Dashboard/pharmarcist/payments',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const DashboardPharmarcistPatientsRoute =
   DashboardPharmarcistPatientsRouteImport.update({
-    id: '/pharmarcist/patients',
-    path: '/pharmarcist/patients',
-    getParentRoute: () => DashboardRoute,
+    id: '/Dashboard/pharmarcist/patients',
+    path: '/Dashboard/pharmarcist/patients',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const DashboardPatientPharmacy_ordersRoute =
   DashboardPatientPharmacy_ordersRouteImport.update({
-    id: '/patient/pharmacy_orders',
-    path: '/patient/pharmacy_orders',
-    getParentRoute: () => DashboardRoute,
+    id: '/Dashboard/patient/pharmacy_orders',
+    path: '/Dashboard/patient/pharmacy_orders',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const DashboardPatientAppointmentsRoute =
   DashboardPatientAppointmentsRouteImport.update({
-    id: '/patient/appointments',
-    path: '/patient/appointments',
-    getParentRoute: () => DashboardRoute,
+    id: '/Dashboard/patient/appointments',
+    path: '/Dashboard/patient/appointments',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const DashboardDoctorRecordsRoute = DashboardDoctorRecordsRouteImport.update({
-  id: '/doctor/records',
-  path: '/doctor/records',
-  getParentRoute: () => DashboardRoute,
+  id: '/Dashboard/doctor/records',
+  path: '/Dashboard/doctor/records',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardDoctorPrescriptionsRoute =
   DashboardDoctorPrescriptionsRouteImport.update({
-    id: '/doctor/prescriptions',
-    path: '/doctor/prescriptions',
-    getParentRoute: () => DashboardRoute,
+    id: '/Dashboard/doctor/prescriptions',
+    path: '/Dashboard/doctor/prescriptions',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const DashboardDoctorAppointmentsRoute =
   DashboardDoctorAppointmentsRouteImport.update({
-    id: '/doctor/appointments',
-    path: '/doctor/appointments',
-    getParentRoute: () => DashboardRoute,
+    id: '/Dashboard/doctor/appointments',
+    path: '/Dashboard/doctor/appointments',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const DashboardAdminUsersRoute = DashboardAdminUsersRouteImport.update({
-  id: '/admin/users',
-  path: '/admin/users',
-  getParentRoute: () => DashboardRoute,
+  id: '/Dashboard/admin/users',
+  path: '/Dashboard/admin/users',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardAdminRecordsRoute = DashboardAdminRecordsRouteImport.update({
-  id: '/admin/records',
-  path: '/admin/records',
-  getParentRoute: () => DashboardRoute,
+  id: '/Dashboard/admin/records',
+  path: '/Dashboard/admin/records',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardAdminPrescriptionsRoute =
   DashboardAdminPrescriptionsRouteImport.update({
-    id: '/admin/prescriptions',
-    path: '/admin/prescriptions',
-    getParentRoute: () => DashboardRoute,
+    id: '/Dashboard/admin/prescriptions',
+    path: '/Dashboard/admin/prescriptions',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const DashboardAdminPharmacy_ordersRoute =
   DashboardAdminPharmacy_ordersRouteImport.update({
-    id: '/admin/pharmacy_orders',
-    path: '/admin/pharmacy_orders',
-    getParentRoute: () => DashboardRoute,
+    id: '/Dashboard/admin/pharmacy_orders',
+    path: '/Dashboard/admin/pharmacy_orders',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const DashboardAdminPaymentsRoute = DashboardAdminPaymentsRouteImport.update({
-  id: '/admin/payments',
-  path: '/admin/payments',
-  getParentRoute: () => DashboardRoute,
+  id: '/Dashboard/admin/payments',
+  path: '/Dashboard/admin/payments',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardAdminPatientsRoute = DashboardAdminPatientsRouteImport.update({
-  id: '/admin/patients',
-  path: '/admin/patients',
-  getParentRoute: () => DashboardRoute,
+  id: '/Dashboard/admin/patients',
+  path: '/Dashboard/admin/patients',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardAdminMedicinesRoute = DashboardAdminMedicinesRouteImport.update({
-  id: '/admin/medicines',
-  path: '/admin/medicines',
-  getParentRoute: () => DashboardRoute,
+  id: '/Dashboard/admin/medicines',
+  path: '/Dashboard/admin/medicines',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardAdminDoctorsRoute = DashboardAdminDoctorsRouteImport.update({
-  id: '/admin/doctors',
-  path: '/admin/doctors',
-  getParentRoute: () => DashboardRoute,
+  id: '/Dashboard/admin/doctors',
+  path: '/Dashboard/admin/doctors',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardAdminDashboardRoute = DashboardAdminDashboardRouteImport.update({
-  id: '/admin/dashboard',
-  path: '/admin/dashboard',
-  getParentRoute: () => DashboardRoute,
+  id: '/Dashboard/admin/dashboard',
+  path: '/Dashboard/admin/dashboard',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardAdminAppointmentsRoute =
   DashboardAdminAppointmentsRouteImport.update({
-    id: '/admin/appointments',
-    path: '/admin/appointments',
-    getParentRoute: () => DashboardRoute,
+    id: '/Dashboard/admin/appointments',
+    path: '/Dashboard/admin/appointments',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const DashboardPatientMedicinesIndexRoute =
   DashboardPatientMedicinesIndexRouteImport.update({
-    id: '/patient/medicines/',
-    path: '/patient/medicines/',
-    getParentRoute: () => DashboardRoute,
+    id: '/Dashboard/patient/medicines/',
+    path: '/Dashboard/patient/medicines/',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const DashboardPatientDoctorsIndexRoute =
   DashboardPatientDoctorsIndexRouteImport.update({
-    id: '/patient/doctors/',
-    path: '/patient/doctors/',
-    getParentRoute: () => DashboardRoute,
+    id: '/Dashboard/patient/doctors/',
+    path: '/Dashboard/patient/doctors/',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const DashboardDoctorPatientIndexRoute =
   DashboardDoctorPatientIndexRouteImport.update({
-    id: '/doctor/patient/',
-    path: '/doctor/patient/',
-    getParentRoute: () => DashboardRoute,
+    id: '/Dashboard/doctor/patient/',
+    path: '/Dashboard/doctor/patient/',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const DashboardDoctorPatientPatientIdRoute =
   DashboardDoctorPatientPatientIdRouteImport.update({
-    id: '/doctor/patient/$patientId',
-    path: '/doctor/patient/$patientId',
-    getParentRoute: () => DashboardRoute,
+    id: '/Dashboard/doctor/patient/$patientId',
+    path: '/Dashboard/doctor/patient/$patientId',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const DashboardPatientDoctorsAppointmentsFormDoctor_idRoute =
   DashboardPatientDoctorsAppointmentsFormDoctor_idRouteImport.update({
-    id: '/patient/doctors/appointmentsForm/$doctor_id',
-    path: '/patient/doctors/appointmentsForm/$doctor_id',
-    getParentRoute: () => DashboardRoute,
+    id: '/Dashboard/patient/doctors/appointmentsForm/$doctor_id',
+    path: '/Dashboard/patient/doctors/appointmentsForm/$doctor_id',
+    getParentRoute: () => rootRouteImport,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contacts': typeof ContactsRoute
-  '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard': typeof DashboardRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/registration': typeof RegistrationRoute
-  '/dashboard/admin/appointments': typeof DashboardAdminAppointmentsRoute
-  '/dashboard/admin/dashboard': typeof DashboardAdminDashboardRoute
-  '/dashboard/admin/doctors': typeof DashboardAdminDoctorsRoute
-  '/dashboard/admin/medicines': typeof DashboardAdminMedicinesRoute
-  '/dashboard/admin/patients': typeof DashboardAdminPatientsRoute
-  '/dashboard/admin/payments': typeof DashboardAdminPaymentsRoute
-  '/dashboard/admin/pharmacy_orders': typeof DashboardAdminPharmacy_ordersRoute
-  '/dashboard/admin/prescriptions': typeof DashboardAdminPrescriptionsRoute
-  '/dashboard/admin/records': typeof DashboardAdminRecordsRoute
-  '/dashboard/admin/users': typeof DashboardAdminUsersRoute
-  '/dashboard/doctor/appointments': typeof DashboardDoctorAppointmentsRoute
-  '/dashboard/doctor/prescriptions': typeof DashboardDoctorPrescriptionsRoute
-  '/dashboard/doctor/records': typeof DashboardDoctorRecordsRoute
-  '/dashboard/patient/appointments': typeof DashboardPatientAppointmentsRoute
-  '/dashboard/patient/pharmacy_orders': typeof DashboardPatientPharmacy_ordersRoute
-  '/dashboard/pharmarcist/patients': typeof DashboardPharmarcistPatientsRoute
-  '/dashboard/pharmarcist/payments': typeof DashboardPharmarcistPaymentsRoute
-  '/dashboard/pharmarcist/pharmacy_orders': typeof DashboardPharmarcistPharmacy_ordersRoute
-  '/dashboard/pharmarcist/prescriptions': typeof DashboardPharmarcistPrescriptionsRoute
-  '/dashboard/pharmarcist/records': typeof DashboardPharmarcistRecordsRoute
-  '/dashboard/doctor/patient/$patientId': typeof DashboardDoctorPatientPatientIdRoute
-  '/dashboard/doctor/patient': typeof DashboardDoctorPatientIndexRoute
-  '/dashboard/patient/doctors': typeof DashboardPatientDoctorsIndexRoute
-  '/dashboard/patient/medicines': typeof DashboardPatientMedicinesIndexRoute
-  '/dashboard/patient/doctors/appointmentsForm/$doctor_id': typeof DashboardPatientDoctorsAppointmentsFormDoctor_idRoute
+  '/Dashboard/admin/appointments': typeof DashboardAdminAppointmentsRoute
+  '/Dashboard/admin/dashboard': typeof DashboardAdminDashboardRoute
+  '/Dashboard/admin/doctors': typeof DashboardAdminDoctorsRoute
+  '/Dashboard/admin/medicines': typeof DashboardAdminMedicinesRoute
+  '/Dashboard/admin/patients': typeof DashboardAdminPatientsRoute
+  '/Dashboard/admin/payments': typeof DashboardAdminPaymentsRoute
+  '/Dashboard/admin/pharmacy_orders': typeof DashboardAdminPharmacy_ordersRoute
+  '/Dashboard/admin/prescriptions': typeof DashboardAdminPrescriptionsRoute
+  '/Dashboard/admin/records': typeof DashboardAdminRecordsRoute
+  '/Dashboard/admin/users': typeof DashboardAdminUsersRoute
+  '/Dashboard/doctor/appointments': typeof DashboardDoctorAppointmentsRoute
+  '/Dashboard/doctor/prescriptions': typeof DashboardDoctorPrescriptionsRoute
+  '/Dashboard/doctor/records': typeof DashboardDoctorRecordsRoute
+  '/Dashboard/patient/appointments': typeof DashboardPatientAppointmentsRoute
+  '/Dashboard/patient/pharmacy_orders': typeof DashboardPatientPharmacy_ordersRoute
+  '/Dashboard/pharmarcist/patients': typeof DashboardPharmarcistPatientsRoute
+  '/Dashboard/pharmarcist/payments': typeof DashboardPharmarcistPaymentsRoute
+  '/Dashboard/pharmarcist/pharmacy_orders': typeof DashboardPharmarcistPharmacy_ordersRoute
+  '/Dashboard/pharmarcist/prescriptions': typeof DashboardPharmarcistPrescriptionsRoute
+  '/Dashboard/pharmarcist/records': typeof DashboardPharmarcistRecordsRoute
+  '/Dashboard/doctor/patient/$patientId': typeof DashboardDoctorPatientPatientIdRoute
+  '/Dashboard/doctor/patient': typeof DashboardDoctorPatientIndexRoute
+  '/Dashboard/patient/doctors': typeof DashboardPatientDoctorsIndexRoute
+  '/Dashboard/patient/medicines': typeof DashboardPatientMedicinesIndexRoute
+  '/Dashboard/patient/doctors/appointmentsForm/$doctor_id': typeof DashboardPatientDoctorsAppointmentsFormDoctor_idRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contacts': typeof ContactsRoute
-  '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard': typeof DashboardRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/registration': typeof RegistrationRoute
-  '/dashboard/admin/appointments': typeof DashboardAdminAppointmentsRoute
-  '/dashboard/admin/dashboard': typeof DashboardAdminDashboardRoute
-  '/dashboard/admin/doctors': typeof DashboardAdminDoctorsRoute
-  '/dashboard/admin/medicines': typeof DashboardAdminMedicinesRoute
-  '/dashboard/admin/patients': typeof DashboardAdminPatientsRoute
-  '/dashboard/admin/payments': typeof DashboardAdminPaymentsRoute
-  '/dashboard/admin/pharmacy_orders': typeof DashboardAdminPharmacy_ordersRoute
-  '/dashboard/admin/prescriptions': typeof DashboardAdminPrescriptionsRoute
-  '/dashboard/admin/records': typeof DashboardAdminRecordsRoute
-  '/dashboard/admin/users': typeof DashboardAdminUsersRoute
-  '/dashboard/doctor/appointments': typeof DashboardDoctorAppointmentsRoute
-  '/dashboard/doctor/prescriptions': typeof DashboardDoctorPrescriptionsRoute
-  '/dashboard/doctor/records': typeof DashboardDoctorRecordsRoute
-  '/dashboard/patient/appointments': typeof DashboardPatientAppointmentsRoute
-  '/dashboard/patient/pharmacy_orders': typeof DashboardPatientPharmacy_ordersRoute
-  '/dashboard/pharmarcist/patients': typeof DashboardPharmarcistPatientsRoute
-  '/dashboard/pharmarcist/payments': typeof DashboardPharmarcistPaymentsRoute
-  '/dashboard/pharmarcist/pharmacy_orders': typeof DashboardPharmarcistPharmacy_ordersRoute
-  '/dashboard/pharmarcist/prescriptions': typeof DashboardPharmarcistPrescriptionsRoute
-  '/dashboard/pharmarcist/records': typeof DashboardPharmarcistRecordsRoute
-  '/dashboard/doctor/patient/$patientId': typeof DashboardDoctorPatientPatientIdRoute
-  '/dashboard/doctor/patient': typeof DashboardDoctorPatientIndexRoute
-  '/dashboard/patient/doctors': typeof DashboardPatientDoctorsIndexRoute
-  '/dashboard/patient/medicines': typeof DashboardPatientMedicinesIndexRoute
-  '/dashboard/patient/doctors/appointmentsForm/$doctor_id': typeof DashboardPatientDoctorsAppointmentsFormDoctor_idRoute
+  '/Dashboard/admin/appointments': typeof DashboardAdminAppointmentsRoute
+  '/Dashboard/admin/dashboard': typeof DashboardAdminDashboardRoute
+  '/Dashboard/admin/doctors': typeof DashboardAdminDoctorsRoute
+  '/Dashboard/admin/medicines': typeof DashboardAdminMedicinesRoute
+  '/Dashboard/admin/patients': typeof DashboardAdminPatientsRoute
+  '/Dashboard/admin/payments': typeof DashboardAdminPaymentsRoute
+  '/Dashboard/admin/pharmacy_orders': typeof DashboardAdminPharmacy_ordersRoute
+  '/Dashboard/admin/prescriptions': typeof DashboardAdminPrescriptionsRoute
+  '/Dashboard/admin/records': typeof DashboardAdminRecordsRoute
+  '/Dashboard/admin/users': typeof DashboardAdminUsersRoute
+  '/Dashboard/doctor/appointments': typeof DashboardDoctorAppointmentsRoute
+  '/Dashboard/doctor/prescriptions': typeof DashboardDoctorPrescriptionsRoute
+  '/Dashboard/doctor/records': typeof DashboardDoctorRecordsRoute
+  '/Dashboard/patient/appointments': typeof DashboardPatientAppointmentsRoute
+  '/Dashboard/patient/pharmacy_orders': typeof DashboardPatientPharmacy_ordersRoute
+  '/Dashboard/pharmarcist/patients': typeof DashboardPharmarcistPatientsRoute
+  '/Dashboard/pharmarcist/payments': typeof DashboardPharmarcistPaymentsRoute
+  '/Dashboard/pharmarcist/pharmacy_orders': typeof DashboardPharmarcistPharmacy_ordersRoute
+  '/Dashboard/pharmarcist/prescriptions': typeof DashboardPharmarcistPrescriptionsRoute
+  '/Dashboard/pharmarcist/records': typeof DashboardPharmarcistRecordsRoute
+  '/Dashboard/doctor/patient/$patientId': typeof DashboardDoctorPatientPatientIdRoute
+  '/Dashboard/doctor/patient': typeof DashboardDoctorPatientIndexRoute
+  '/Dashboard/patient/doctors': typeof DashboardPatientDoctorsIndexRoute
+  '/Dashboard/patient/medicines': typeof DashboardPatientMedicinesIndexRoute
+  '/Dashboard/patient/doctors/appointmentsForm/$doctor_id': typeof DashboardPatientDoctorsAppointmentsFormDoctor_idRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contacts': typeof ContactsRoute
-  '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard': typeof DashboardRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/registration': typeof RegistrationRoute
-  '/dashboard/admin/appointments': typeof DashboardAdminAppointmentsRoute
-  '/dashboard/admin/dashboard': typeof DashboardAdminDashboardRoute
-  '/dashboard/admin/doctors': typeof DashboardAdminDoctorsRoute
-  '/dashboard/admin/medicines': typeof DashboardAdminMedicinesRoute
-  '/dashboard/admin/patients': typeof DashboardAdminPatientsRoute
-  '/dashboard/admin/payments': typeof DashboardAdminPaymentsRoute
-  '/dashboard/admin/pharmacy_orders': typeof DashboardAdminPharmacy_ordersRoute
-  '/dashboard/admin/prescriptions': typeof DashboardAdminPrescriptionsRoute
-  '/dashboard/admin/records': typeof DashboardAdminRecordsRoute
-  '/dashboard/admin/users': typeof DashboardAdminUsersRoute
-  '/dashboard/doctor/appointments': typeof DashboardDoctorAppointmentsRoute
-  '/dashboard/doctor/prescriptions': typeof DashboardDoctorPrescriptionsRoute
-  '/dashboard/doctor/records': typeof DashboardDoctorRecordsRoute
-  '/dashboard/patient/appointments': typeof DashboardPatientAppointmentsRoute
-  '/dashboard/patient/pharmacy_orders': typeof DashboardPatientPharmacy_ordersRoute
-  '/dashboard/pharmarcist/patients': typeof DashboardPharmarcistPatientsRoute
-  '/dashboard/pharmarcist/payments': typeof DashboardPharmarcistPaymentsRoute
-  '/dashboard/pharmarcist/pharmacy_orders': typeof DashboardPharmarcistPharmacy_ordersRoute
-  '/dashboard/pharmarcist/prescriptions': typeof DashboardPharmarcistPrescriptionsRoute
-  '/dashboard/pharmarcist/records': typeof DashboardPharmarcistRecordsRoute
-  '/dashboard/doctor/patient/$patientId': typeof DashboardDoctorPatientPatientIdRoute
-  '/dashboard/doctor/patient/': typeof DashboardDoctorPatientIndexRoute
-  '/dashboard/patient/doctors/': typeof DashboardPatientDoctorsIndexRoute
-  '/dashboard/patient/medicines/': typeof DashboardPatientMedicinesIndexRoute
-  '/dashboard/patient/doctors/appointmentsForm/$doctor_id': typeof DashboardPatientDoctorsAppointmentsFormDoctor_idRoute
+  '/Dashboard/admin/appointments': typeof DashboardAdminAppointmentsRoute
+  '/Dashboard/admin/dashboard': typeof DashboardAdminDashboardRoute
+  '/Dashboard/admin/doctors': typeof DashboardAdminDoctorsRoute
+  '/Dashboard/admin/medicines': typeof DashboardAdminMedicinesRoute
+  '/Dashboard/admin/patients': typeof DashboardAdminPatientsRoute
+  '/Dashboard/admin/payments': typeof DashboardAdminPaymentsRoute
+  '/Dashboard/admin/pharmacy_orders': typeof DashboardAdminPharmacy_ordersRoute
+  '/Dashboard/admin/prescriptions': typeof DashboardAdminPrescriptionsRoute
+  '/Dashboard/admin/records': typeof DashboardAdminRecordsRoute
+  '/Dashboard/admin/users': typeof DashboardAdminUsersRoute
+  '/Dashboard/doctor/appointments': typeof DashboardDoctorAppointmentsRoute
+  '/Dashboard/doctor/prescriptions': typeof DashboardDoctorPrescriptionsRoute
+  '/Dashboard/doctor/records': typeof DashboardDoctorRecordsRoute
+  '/Dashboard/patient/appointments': typeof DashboardPatientAppointmentsRoute
+  '/Dashboard/patient/pharmacy_orders': typeof DashboardPatientPharmacy_ordersRoute
+  '/Dashboard/pharmarcist/patients': typeof DashboardPharmarcistPatientsRoute
+  '/Dashboard/pharmarcist/payments': typeof DashboardPharmarcistPaymentsRoute
+  '/Dashboard/pharmarcist/pharmacy_orders': typeof DashboardPharmarcistPharmacy_ordersRoute
+  '/Dashboard/pharmarcist/prescriptions': typeof DashboardPharmarcistPrescriptionsRoute
+  '/Dashboard/pharmarcist/records': typeof DashboardPharmarcistRecordsRoute
+  '/Dashboard/doctor/patient/$patientId': typeof DashboardDoctorPatientPatientIdRoute
+  '/Dashboard/doctor/patient/': typeof DashboardDoctorPatientIndexRoute
+  '/Dashboard/patient/doctors/': typeof DashboardPatientDoctorsIndexRoute
+  '/Dashboard/patient/medicines/': typeof DashboardPatientMedicinesIndexRoute
+  '/Dashboard/patient/doctors/appointmentsForm/$doctor_id': typeof DashboardPatientDoctorsAppointmentsFormDoctor_idRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -333,31 +333,31 @@ export interface FileRouteTypes {
     | '/home'
     | '/login'
     | '/registration'
-    | '/dashboard/admin/appointments'
-    | '/dashboard/admin/dashboard'
-    | '/dashboard/admin/doctors'
-    | '/dashboard/admin/medicines'
-    | '/dashboard/admin/patients'
-    | '/dashboard/admin/payments'
-    | '/dashboard/admin/pharmacy_orders'
-    | '/dashboard/admin/prescriptions'
-    | '/dashboard/admin/records'
-    | '/dashboard/admin/users'
-    | '/dashboard/doctor/appointments'
-    | '/dashboard/doctor/prescriptions'
-    | '/dashboard/doctor/records'
-    | '/dashboard/patient/appointments'
-    | '/dashboard/patient/pharmacy_orders'
-    | '/dashboard/pharmarcist/patients'
-    | '/dashboard/pharmarcist/payments'
-    | '/dashboard/pharmarcist/pharmacy_orders'
-    | '/dashboard/pharmarcist/prescriptions'
-    | '/dashboard/pharmarcist/records'
-    | '/dashboard/doctor/patient/$patientId'
-    | '/dashboard/doctor/patient'
-    | '/dashboard/patient/doctors'
-    | '/dashboard/patient/medicines'
-    | '/dashboard/patient/doctors/appointmentsForm/$doctor_id'
+    | '/Dashboard/admin/appointments'
+    | '/Dashboard/admin/dashboard'
+    | '/Dashboard/admin/doctors'
+    | '/Dashboard/admin/medicines'
+    | '/Dashboard/admin/patients'
+    | '/Dashboard/admin/payments'
+    | '/Dashboard/admin/pharmacy_orders'
+    | '/Dashboard/admin/prescriptions'
+    | '/Dashboard/admin/records'
+    | '/Dashboard/admin/users'
+    | '/Dashboard/doctor/appointments'
+    | '/Dashboard/doctor/prescriptions'
+    | '/Dashboard/doctor/records'
+    | '/Dashboard/patient/appointments'
+    | '/Dashboard/patient/pharmacy_orders'
+    | '/Dashboard/pharmarcist/patients'
+    | '/Dashboard/pharmarcist/payments'
+    | '/Dashboard/pharmarcist/pharmacy_orders'
+    | '/Dashboard/pharmarcist/prescriptions'
+    | '/Dashboard/pharmarcist/records'
+    | '/Dashboard/doctor/patient/$patientId'
+    | '/Dashboard/doctor/patient'
+    | '/Dashboard/patient/doctors'
+    | '/Dashboard/patient/medicines'
+    | '/Dashboard/patient/doctors/appointmentsForm/$doctor_id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -367,31 +367,31 @@ export interface FileRouteTypes {
     | '/home'
     | '/login'
     | '/registration'
-    | '/dashboard/admin/appointments'
-    | '/dashboard/admin/dashboard'
-    | '/dashboard/admin/doctors'
-    | '/dashboard/admin/medicines'
-    | '/dashboard/admin/patients'
-    | '/dashboard/admin/payments'
-    | '/dashboard/admin/pharmacy_orders'
-    | '/dashboard/admin/prescriptions'
-    | '/dashboard/admin/records'
-    | '/dashboard/admin/users'
-    | '/dashboard/doctor/appointments'
-    | '/dashboard/doctor/prescriptions'
-    | '/dashboard/doctor/records'
-    | '/dashboard/patient/appointments'
-    | '/dashboard/patient/pharmacy_orders'
-    | '/dashboard/pharmarcist/patients'
-    | '/dashboard/pharmarcist/payments'
-    | '/dashboard/pharmarcist/pharmacy_orders'
-    | '/dashboard/pharmarcist/prescriptions'
-    | '/dashboard/pharmarcist/records'
-    | '/dashboard/doctor/patient/$patientId'
-    | '/dashboard/doctor/patient'
-    | '/dashboard/patient/doctors'
-    | '/dashboard/patient/medicines'
-    | '/dashboard/patient/doctors/appointmentsForm/$doctor_id'
+    | '/Dashboard/admin/appointments'
+    | '/Dashboard/admin/dashboard'
+    | '/Dashboard/admin/doctors'
+    | '/Dashboard/admin/medicines'
+    | '/Dashboard/admin/patients'
+    | '/Dashboard/admin/payments'
+    | '/Dashboard/admin/pharmacy_orders'
+    | '/Dashboard/admin/prescriptions'
+    | '/Dashboard/admin/records'
+    | '/Dashboard/admin/users'
+    | '/Dashboard/doctor/appointments'
+    | '/Dashboard/doctor/prescriptions'
+    | '/Dashboard/doctor/records'
+    | '/Dashboard/patient/appointments'
+    | '/Dashboard/patient/pharmacy_orders'
+    | '/Dashboard/pharmarcist/patients'
+    | '/Dashboard/pharmarcist/payments'
+    | '/Dashboard/pharmarcist/pharmacy_orders'
+    | '/Dashboard/pharmarcist/prescriptions'
+    | '/Dashboard/pharmarcist/records'
+    | '/Dashboard/doctor/patient/$patientId'
+    | '/Dashboard/doctor/patient'
+    | '/Dashboard/patient/doctors'
+    | '/Dashboard/patient/medicines'
+    | '/Dashboard/patient/doctors/appointmentsForm/$doctor_id'
   id:
     | '__root__'
     | '/'
@@ -401,41 +401,66 @@ export interface FileRouteTypes {
     | '/home'
     | '/login'
     | '/registration'
-    | '/dashboard/admin/appointments'
-    | '/dashboard/admin/dashboard'
-    | '/dashboard/admin/doctors'
-    | '/dashboard/admin/medicines'
-    | '/dashboard/admin/patients'
-    | '/dashboard/admin/payments'
-    | '/dashboard/admin/pharmacy_orders'
-    | '/dashboard/admin/prescriptions'
-    | '/dashboard/admin/records'
-    | '/dashboard/admin/users'
-    | '/dashboard/doctor/appointments'
-    | '/dashboard/doctor/prescriptions'
-    | '/dashboard/doctor/records'
-    | '/dashboard/patient/appointments'
-    | '/dashboard/patient/pharmacy_orders'
-    | '/dashboard/pharmarcist/patients'
-    | '/dashboard/pharmarcist/payments'
-    | '/dashboard/pharmarcist/pharmacy_orders'
-    | '/dashboard/pharmarcist/prescriptions'
-    | '/dashboard/pharmarcist/records'
-    | '/dashboard/doctor/patient/$patientId'
-    | '/dashboard/doctor/patient/'
-    | '/dashboard/patient/doctors/'
-    | '/dashboard/patient/medicines/'
-    | '/dashboard/patient/doctors/appointmentsForm/$doctor_id'
+    | '/Dashboard/admin/appointments'
+    | '/Dashboard/admin/dashboard'
+    | '/Dashboard/admin/doctors'
+    | '/Dashboard/admin/medicines'
+    | '/Dashboard/admin/patients'
+    | '/Dashboard/admin/payments'
+    | '/Dashboard/admin/pharmacy_orders'
+    | '/Dashboard/admin/prescriptions'
+    | '/Dashboard/admin/records'
+    | '/Dashboard/admin/users'
+    | '/Dashboard/doctor/appointments'
+    | '/Dashboard/doctor/prescriptions'
+    | '/Dashboard/doctor/records'
+    | '/Dashboard/patient/appointments'
+    | '/Dashboard/patient/pharmacy_orders'
+    | '/Dashboard/pharmarcist/patients'
+    | '/Dashboard/pharmarcist/payments'
+    | '/Dashboard/pharmarcist/pharmacy_orders'
+    | '/Dashboard/pharmarcist/prescriptions'
+    | '/Dashboard/pharmarcist/records'
+    | '/Dashboard/doctor/patient/$patientId'
+    | '/Dashboard/doctor/patient/'
+    | '/Dashboard/patient/doctors/'
+    | '/Dashboard/patient/medicines/'
+    | '/Dashboard/patient/doctors/appointmentsForm/$doctor_id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactsRoute: typeof ContactsRoute
-  DashboardRoute: typeof DashboardRouteWithChildren
+  DashboardRoute: typeof DashboardRoute
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
   RegistrationRoute: typeof RegistrationRoute
+  DashboardAdminAppointmentsRoute: typeof DashboardAdminAppointmentsRoute
+  DashboardAdminDashboardRoute: typeof DashboardAdminDashboardRoute
+  DashboardAdminDoctorsRoute: typeof DashboardAdminDoctorsRoute
+  DashboardAdminMedicinesRoute: typeof DashboardAdminMedicinesRoute
+  DashboardAdminPatientsRoute: typeof DashboardAdminPatientsRoute
+  DashboardAdminPaymentsRoute: typeof DashboardAdminPaymentsRoute
+  DashboardAdminPharmacy_ordersRoute: typeof DashboardAdminPharmacy_ordersRoute
+  DashboardAdminPrescriptionsRoute: typeof DashboardAdminPrescriptionsRoute
+  DashboardAdminRecordsRoute: typeof DashboardAdminRecordsRoute
+  DashboardAdminUsersRoute: typeof DashboardAdminUsersRoute
+  DashboardDoctorAppointmentsRoute: typeof DashboardDoctorAppointmentsRoute
+  DashboardDoctorPrescriptionsRoute: typeof DashboardDoctorPrescriptionsRoute
+  DashboardDoctorRecordsRoute: typeof DashboardDoctorRecordsRoute
+  DashboardPatientAppointmentsRoute: typeof DashboardPatientAppointmentsRoute
+  DashboardPatientPharmacy_ordersRoute: typeof DashboardPatientPharmacy_ordersRoute
+  DashboardPharmarcistPatientsRoute: typeof DashboardPharmarcistPatientsRoute
+  DashboardPharmarcistPaymentsRoute: typeof DashboardPharmarcistPaymentsRoute
+  DashboardPharmarcistPharmacy_ordersRoute: typeof DashboardPharmarcistPharmacy_ordersRoute
+  DashboardPharmarcistPrescriptionsRoute: typeof DashboardPharmarcistPrescriptionsRoute
+  DashboardPharmarcistRecordsRoute: typeof DashboardPharmarcistRecordsRoute
+  DashboardDoctorPatientPatientIdRoute: typeof DashboardDoctorPatientPatientIdRoute
+  DashboardDoctorPatientIndexRoute: typeof DashboardDoctorPatientIndexRoute
+  DashboardPatientDoctorsIndexRoute: typeof DashboardPatientDoctorsIndexRoute
+  DashboardPatientMedicinesIndexRoute: typeof DashboardPatientMedicinesIndexRoute
+  DashboardPatientDoctorsAppointmentsFormDoctor_idRoute: typeof DashboardPatientDoctorsAppointmentsFormDoctor_idRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -489,213 +514,192 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/pharmarcist/records': {
-      id: '/dashboard/pharmarcist/records'
-      path: '/pharmarcist/records'
-      fullPath: '/dashboard/pharmarcist/records'
+    '/Dashboard/pharmarcist/records': {
+      id: '/Dashboard/pharmarcist/records'
+      path: '/Dashboard/pharmarcist/records'
+      fullPath: '/Dashboard/pharmarcist/records'
       preLoaderRoute: typeof DashboardPharmarcistRecordsRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/pharmarcist/prescriptions': {
-      id: '/dashboard/pharmarcist/prescriptions'
-      path: '/pharmarcist/prescriptions'
-      fullPath: '/dashboard/pharmarcist/prescriptions'
+    '/Dashboard/pharmarcist/prescriptions': {
+      id: '/Dashboard/pharmarcist/prescriptions'
+      path: '/Dashboard/pharmarcist/prescriptions'
+      fullPath: '/Dashboard/pharmarcist/prescriptions'
       preLoaderRoute: typeof DashboardPharmarcistPrescriptionsRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/pharmarcist/pharmacy_orders': {
-      id: '/dashboard/pharmarcist/pharmacy_orders'
-      path: '/pharmarcist/pharmacy_orders'
-      fullPath: '/dashboard/pharmarcist/pharmacy_orders'
+    '/Dashboard/pharmarcist/pharmacy_orders': {
+      id: '/Dashboard/pharmarcist/pharmacy_orders'
+      path: '/Dashboard/pharmarcist/pharmacy_orders'
+      fullPath: '/Dashboard/pharmarcist/pharmacy_orders'
       preLoaderRoute: typeof DashboardPharmarcistPharmacy_ordersRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/pharmarcist/payments': {
-      id: '/dashboard/pharmarcist/payments'
-      path: '/pharmarcist/payments'
-      fullPath: '/dashboard/pharmarcist/payments'
+    '/Dashboard/pharmarcist/payments': {
+      id: '/Dashboard/pharmarcist/payments'
+      path: '/Dashboard/pharmarcist/payments'
+      fullPath: '/Dashboard/pharmarcist/payments'
       preLoaderRoute: typeof DashboardPharmarcistPaymentsRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/pharmarcist/patients': {
-      id: '/dashboard/pharmarcist/patients'
-      path: '/pharmarcist/patients'
-      fullPath: '/dashboard/pharmarcist/patients'
+    '/Dashboard/pharmarcist/patients': {
+      id: '/Dashboard/pharmarcist/patients'
+      path: '/Dashboard/pharmarcist/patients'
+      fullPath: '/Dashboard/pharmarcist/patients'
       preLoaderRoute: typeof DashboardPharmarcistPatientsRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/patient/pharmacy_orders': {
-      id: '/dashboard/patient/pharmacy_orders'
-      path: '/patient/pharmacy_orders'
-      fullPath: '/dashboard/patient/pharmacy_orders'
+    '/Dashboard/patient/pharmacy_orders': {
+      id: '/Dashboard/patient/pharmacy_orders'
+      path: '/Dashboard/patient/pharmacy_orders'
+      fullPath: '/Dashboard/patient/pharmacy_orders'
       preLoaderRoute: typeof DashboardPatientPharmacy_ordersRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/patient/appointments': {
-      id: '/dashboard/patient/appointments'
-      path: '/patient/appointments'
-      fullPath: '/dashboard/patient/appointments'
+    '/Dashboard/patient/appointments': {
+      id: '/Dashboard/patient/appointments'
+      path: '/Dashboard/patient/appointments'
+      fullPath: '/Dashboard/patient/appointments'
       preLoaderRoute: typeof DashboardPatientAppointmentsRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/doctor/records': {
-      id: '/dashboard/doctor/records'
-      path: '/doctor/records'
-      fullPath: '/dashboard/doctor/records'
+    '/Dashboard/doctor/records': {
+      id: '/Dashboard/doctor/records'
+      path: '/Dashboard/doctor/records'
+      fullPath: '/Dashboard/doctor/records'
       preLoaderRoute: typeof DashboardDoctorRecordsRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/doctor/prescriptions': {
-      id: '/dashboard/doctor/prescriptions'
-      path: '/doctor/prescriptions'
-      fullPath: '/dashboard/doctor/prescriptions'
+    '/Dashboard/doctor/prescriptions': {
+      id: '/Dashboard/doctor/prescriptions'
+      path: '/Dashboard/doctor/prescriptions'
+      fullPath: '/Dashboard/doctor/prescriptions'
       preLoaderRoute: typeof DashboardDoctorPrescriptionsRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/doctor/appointments': {
-      id: '/dashboard/doctor/appointments'
-      path: '/doctor/appointments'
-      fullPath: '/dashboard/doctor/appointments'
+    '/Dashboard/doctor/appointments': {
+      id: '/Dashboard/doctor/appointments'
+      path: '/Dashboard/doctor/appointments'
+      fullPath: '/Dashboard/doctor/appointments'
       preLoaderRoute: typeof DashboardDoctorAppointmentsRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/admin/users': {
-      id: '/dashboard/admin/users'
-      path: '/admin/users'
-      fullPath: '/dashboard/admin/users'
+    '/Dashboard/admin/users': {
+      id: '/Dashboard/admin/users'
+      path: '/Dashboard/admin/users'
+      fullPath: '/Dashboard/admin/users'
       preLoaderRoute: typeof DashboardAdminUsersRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/admin/records': {
-      id: '/dashboard/admin/records'
-      path: '/admin/records'
-      fullPath: '/dashboard/admin/records'
+    '/Dashboard/admin/records': {
+      id: '/Dashboard/admin/records'
+      path: '/Dashboard/admin/records'
+      fullPath: '/Dashboard/admin/records'
       preLoaderRoute: typeof DashboardAdminRecordsRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/admin/prescriptions': {
-      id: '/dashboard/admin/prescriptions'
-      path: '/admin/prescriptions'
-      fullPath: '/dashboard/admin/prescriptions'
+    '/Dashboard/admin/prescriptions': {
+      id: '/Dashboard/admin/prescriptions'
+      path: '/Dashboard/admin/prescriptions'
+      fullPath: '/Dashboard/admin/prescriptions'
       preLoaderRoute: typeof DashboardAdminPrescriptionsRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/admin/pharmacy_orders': {
-      id: '/dashboard/admin/pharmacy_orders'
-      path: '/admin/pharmacy_orders'
-      fullPath: '/dashboard/admin/pharmacy_orders'
+    '/Dashboard/admin/pharmacy_orders': {
+      id: '/Dashboard/admin/pharmacy_orders'
+      path: '/Dashboard/admin/pharmacy_orders'
+      fullPath: '/Dashboard/admin/pharmacy_orders'
       preLoaderRoute: typeof DashboardAdminPharmacy_ordersRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/admin/payments': {
-      id: '/dashboard/admin/payments'
-      path: '/admin/payments'
-      fullPath: '/dashboard/admin/payments'
+    '/Dashboard/admin/payments': {
+      id: '/Dashboard/admin/payments'
+      path: '/Dashboard/admin/payments'
+      fullPath: '/Dashboard/admin/payments'
       preLoaderRoute: typeof DashboardAdminPaymentsRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/admin/patients': {
-      id: '/dashboard/admin/patients'
-      path: '/admin/patients'
-      fullPath: '/dashboard/admin/patients'
+    '/Dashboard/admin/patients': {
+      id: '/Dashboard/admin/patients'
+      path: '/Dashboard/admin/patients'
+      fullPath: '/Dashboard/admin/patients'
       preLoaderRoute: typeof DashboardAdminPatientsRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/admin/medicines': {
-      id: '/dashboard/admin/medicines'
-      path: '/admin/medicines'
-      fullPath: '/dashboard/admin/medicines'
+    '/Dashboard/admin/medicines': {
+      id: '/Dashboard/admin/medicines'
+      path: '/Dashboard/admin/medicines'
+      fullPath: '/Dashboard/admin/medicines'
       preLoaderRoute: typeof DashboardAdminMedicinesRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/admin/doctors': {
-      id: '/dashboard/admin/doctors'
-      path: '/admin/doctors'
-      fullPath: '/dashboard/admin/doctors'
+    '/Dashboard/admin/doctors': {
+      id: '/Dashboard/admin/doctors'
+      path: '/Dashboard/admin/doctors'
+      fullPath: '/Dashboard/admin/doctors'
       preLoaderRoute: typeof DashboardAdminDoctorsRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/admin/dashboard': {
-      id: '/dashboard/admin/dashboard'
-      path: '/admin/dashboard'
-      fullPath: '/dashboard/admin/dashboard'
+    '/Dashboard/admin/dashboard': {
+      id: '/Dashboard/admin/dashboard'
+      path: '/Dashboard/admin/dashboard'
+      fullPath: '/Dashboard/admin/dashboard'
       preLoaderRoute: typeof DashboardAdminDashboardRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/admin/appointments': {
-      id: '/dashboard/admin/appointments'
-      path: '/admin/appointments'
-      fullPath: '/dashboard/admin/appointments'
+    '/Dashboard/admin/appointments': {
+      id: '/Dashboard/admin/appointments'
+      path: '/Dashboard/admin/appointments'
+      fullPath: '/Dashboard/admin/appointments'
       preLoaderRoute: typeof DashboardAdminAppointmentsRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/patient/medicines/': {
-      id: '/dashboard/patient/medicines/'
-      path: '/patient/medicines'
-      fullPath: '/dashboard/patient/medicines'
+    '/Dashboard/patient/medicines/': {
+      id: '/Dashboard/patient/medicines/'
+      path: '/Dashboard/patient/medicines'
+      fullPath: '/Dashboard/patient/medicines'
       preLoaderRoute: typeof DashboardPatientMedicinesIndexRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/patient/doctors/': {
-      id: '/dashboard/patient/doctors/'
-      path: '/patient/doctors'
-      fullPath: '/dashboard/patient/doctors'
+    '/Dashboard/patient/doctors/': {
+      id: '/Dashboard/patient/doctors/'
+      path: '/Dashboard/patient/doctors'
+      fullPath: '/Dashboard/patient/doctors'
       preLoaderRoute: typeof DashboardPatientDoctorsIndexRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/doctor/patient/': {
-      id: '/dashboard/doctor/patient/'
-      path: '/doctor/patient'
-      fullPath: '/dashboard/doctor/patient'
+    '/Dashboard/doctor/patient/': {
+      id: '/Dashboard/doctor/patient/'
+      path: '/Dashboard/doctor/patient'
+      fullPath: '/Dashboard/doctor/patient'
       preLoaderRoute: typeof DashboardDoctorPatientIndexRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/doctor/patient/$patientId': {
-      id: '/dashboard/doctor/patient/$patientId'
-      path: '/doctor/patient/$patientId'
-      fullPath: '/dashboard/doctor/patient/$patientId'
+    '/Dashboard/doctor/patient/$patientId': {
+      id: '/Dashboard/doctor/patient/$patientId'
+      path: '/Dashboard/doctor/patient/$patientId'
+      fullPath: '/Dashboard/doctor/patient/$patientId'
       preLoaderRoute: typeof DashboardDoctorPatientPatientIdRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/dashboard/patient/doctors/appointmentsForm/$doctor_id': {
-      id: '/dashboard/patient/doctors/appointmentsForm/$doctor_id'
-      path: '/patient/doctors/appointmentsForm/$doctor_id'
-      fullPath: '/dashboard/patient/doctors/appointmentsForm/$doctor_id'
+    '/Dashboard/patient/doctors/appointmentsForm/$doctor_id': {
+      id: '/Dashboard/patient/doctors/appointmentsForm/$doctor_id'
+      path: '/Dashboard/patient/doctors/appointmentsForm/$doctor_id'
+      fullPath: '/Dashboard/patient/doctors/appointmentsForm/$doctor_id'
       preLoaderRoute: typeof DashboardPatientDoctorsAppointmentsFormDoctor_idRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface DashboardRouteChildren {
-  DashboardAdminAppointmentsRoute: typeof DashboardAdminAppointmentsRoute
-  DashboardAdminDashboardRoute: typeof DashboardAdminDashboardRoute
-  DashboardAdminDoctorsRoute: typeof DashboardAdminDoctorsRoute
-  DashboardAdminMedicinesRoute: typeof DashboardAdminMedicinesRoute
-  DashboardAdminPatientsRoute: typeof DashboardAdminPatientsRoute
-  DashboardAdminPaymentsRoute: typeof DashboardAdminPaymentsRoute
-  DashboardAdminPharmacy_ordersRoute: typeof DashboardAdminPharmacy_ordersRoute
-  DashboardAdminPrescriptionsRoute: typeof DashboardAdminPrescriptionsRoute
-  DashboardAdminRecordsRoute: typeof DashboardAdminRecordsRoute
-  DashboardAdminUsersRoute: typeof DashboardAdminUsersRoute
-  DashboardDoctorAppointmentsRoute: typeof DashboardDoctorAppointmentsRoute
-  DashboardDoctorPrescriptionsRoute: typeof DashboardDoctorPrescriptionsRoute
-  DashboardDoctorRecordsRoute: typeof DashboardDoctorRecordsRoute
-  DashboardPatientAppointmentsRoute: typeof DashboardPatientAppointmentsRoute
-  DashboardPatientPharmacy_ordersRoute: typeof DashboardPatientPharmacy_ordersRoute
-  DashboardPharmarcistPatientsRoute: typeof DashboardPharmarcistPatientsRoute
-  DashboardPharmarcistPaymentsRoute: typeof DashboardPharmarcistPaymentsRoute
-  DashboardPharmarcistPharmacy_ordersRoute: typeof DashboardPharmarcistPharmacy_ordersRoute
-  DashboardPharmarcistPrescriptionsRoute: typeof DashboardPharmarcistPrescriptionsRoute
-  DashboardPharmarcistRecordsRoute: typeof DashboardPharmarcistRecordsRoute
-  DashboardDoctorPatientPatientIdRoute: typeof DashboardDoctorPatientPatientIdRoute
-  DashboardDoctorPatientIndexRoute: typeof DashboardDoctorPatientIndexRoute
-  DashboardPatientDoctorsIndexRoute: typeof DashboardPatientDoctorsIndexRoute
-  DashboardPatientMedicinesIndexRoute: typeof DashboardPatientMedicinesIndexRoute
-  DashboardPatientDoctorsAppointmentsFormDoctor_idRoute: typeof DashboardPatientDoctorsAppointmentsFormDoctor_idRoute
-}
-
-const DashboardRouteChildren: DashboardRouteChildren = {
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  ContactsRoute: ContactsRoute,
+  DashboardRoute: DashboardRoute,
+  HomeRoute: HomeRoute,
+  LoginRoute: LoginRoute,
+  RegistrationRoute: RegistrationRoute,
   DashboardAdminAppointmentsRoute: DashboardAdminAppointmentsRoute,
   DashboardAdminDashboardRoute: DashboardAdminDashboardRoute,
   DashboardAdminDoctorsRoute: DashboardAdminDoctorsRoute,
@@ -724,20 +728,6 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardPatientMedicinesIndexRoute: DashboardPatientMedicinesIndexRoute,
   DashboardPatientDoctorsAppointmentsFormDoctor_idRoute:
     DashboardPatientDoctorsAppointmentsFormDoctor_idRoute,
-}
-
-const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
-  DashboardRouteChildren,
-)
-
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
-  ContactsRoute: ContactsRoute,
-  DashboardRoute: DashboardRouteWithChildren,
-  HomeRoute: HomeRoute,
-  LoginRoute: LoginRoute,
-  RegistrationRoute: RegistrationRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

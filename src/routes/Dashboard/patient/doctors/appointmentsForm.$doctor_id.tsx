@@ -4,7 +4,7 @@ import useAuthStore from '@/store/authStore'
 import { createFileRoute, useParams } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
-  '/dashboard/patient/doctors/appointmentsForm/$doctor_id',
+  '/Dashboard/patient/doctors/appointmentsForm/$doctor_id',
 )({
   component: AppointmentForm,
 })

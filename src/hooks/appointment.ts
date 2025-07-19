@@ -1,4 +1,4 @@
-import { deleteAppointmentFn, getAppointmentsFn } from '@/API/appointments'
+import { deleteAppointmentFn, getAppointmentsFn } from '@/api/appointments'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 export const useGetAppointmentQuery = (

@@ -1,0 +1,344 @@
+// Common base interface
+export interface GenericsType {
+  id: string
+}
+
+// Vehicle interface for vehicle management
+export interface Vehicle extends GenericsType {
+  name: string
+  type: string
+  model: string
+  year: number
+  licensePlate: string
+  status: 'active' | 'inactive' | 'maintenance'
+  createdAt: Date
+  updatedAt: Date
+}
+
+// User roles for the health system
+export enum UserRole {
+  DOCTOR = 'doctor',
+  PATIENT = 'patient',
+  PHARMACY = 'pharmacy',
+  ADMIN = 'admin'
+}
+
+// User entity for the health system
+export interface UserTypes extends GenericsType {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  password: string
+  role: UserRole
+  hashedRefreshToken: string
+  isVerified: boolean
+  provider: string
+  providerId: string
+  profilePicture: string
+  createdAt: Date
+  updatedAt: Date
+  walletBalance: number
+
+  // Role-specific profiles
+  doctorProfile?: DoctorProfile
+  patientProfile?: PatientProfile
+  pharmacyProfile?: PharmacyProfile
+  adminProfile?: AdminProfile
+
+  // Relations
+  appointments: Appointment[]
+  prescriptions: Prescription[]
+  medicalRecords: MedicalRecord[]
+  transactions: Transaction[]
+  notifications: Notification[]
+  supportTickets: SupportTicket[]
+  devices: Device[]
+}
+
+// Doctor profile
+export interface DoctorProfile extends GenericsType {
+  specialization: string
+  licenseNumber: string
+  yearsOfExperience: number
+  bio: string
+  availableSlots: TimeSlot[]
+}
+
+// Patient profile
+export interface PatientProfile extends GenericsType {
+  dateOfBirth: Date
+  gender: 'male' | 'female' | 'other'
+  bloodType: string
+  emergencyContact: string
+}
+
+// Pharmacy profile
+export interface PharmacyProfile extends GenericsType {
+  licenseId: string
+  address: string
+  contactPerson: string
+}
+
+// Admin profile
+export interface AdminProfile extends GenericsType {
+  accessLevel: string
+}
+
+// Appointment data
+export interface Appointment extends GenericsType {
+  doctorId: string
+  patientId: string
+  scheduledAt: Date
+  status: 'scheduled' | 'completed' | 'cancelled'
+  notes?: string
+}
+
+// Prescription data
+export interface Prescription extends GenericsType {
+  doctorId: string
+  patientId: string
+  issuedAt: Date
+  medications: Medication[]
+  notes: string
+}
+
+// Medication details
+export interface Medication {
+  name: string
+  dosage: string
+  frequency: string
+  duration: string
+}
+
+// Medical records
+export interface MedicalRecord extends GenericsType {
+  patientId: string
+  description: string
+  documents: string[] // URLs or IDs of attached files
+  recordedAt: Date
+}
+
+// Transactions for payments or purchases
+export interface Transaction extends GenericsType {
+  amount: number
+  type: 'credit' | 'debit'
+  reference: string
+  createdAt: Date
+}
+
+// Device information for notifications
+export interface Device extends GenericsType {
+  deviceId: string
+  platform: 'ios' | 'android' | 'web'
+  pushToken: string
+}
+
+// Notification info
+export interface Notification extends GenericsType {
+  title: string
+  message: string
+  read: boolean
+  sentAt: Date
+}
+
+// Support ticket
+export interface SupportTicket extends GenericsType {
+  subject: string
+  message: string
+  status: 'open' | 'resolved' | 'closed'
+  createdAt: Date
+}
+
+// Available time slot for doctor appointments
+export interface TimeSlot {
+  day: string // e.g. 'Monday'
+  from: string // e.g. '09:00'
+  to: string // e.g. '12:00'
+}
+
+// Login-related interfaces
+export interface LoginPayload {
+  email: string
+  phone?: string
+  password: string
+}
+
+export interface LoginResponse {
+  isVerified?: boolean
+  accessToken: string
+  refreshToken: string
+  user?: {
+    id: string
+    email: string
+    phone?: string
+    role?: UserRole
+  }
+}
+
+export interface GlobalDataType {
+  isVerified?: boolean
+  tokens: {
+    accessToken: string
+    refreshToken: string
+  }
+  user: {
+    id: string
+    email: string
+    role: UserRole
+  }
+}
+
+export interface loginResponse {
+ token: {
+   accessToken: string
+   refreshToken: string
+ }
+ user:{
+   email: string
+  role: Role,
+  user_id: string
+ }
+ 
+}
+
+export interface loginType {
+  email: string
+  password: string
+}
+
+export interface TUser {
+  user_id: string | number
+  name: string
+  email: string
+  phone: string
+  role: string
+}
+
+export type UserRole = 'admin' | 'pharmacist' | 'patient' | 'doctor'
+
+export type AuthState = {
+  tokens: Tokens | null
+  user: UserAuthType | null
+  isAuthenticated: boolean
+}
+
+export enum Role {
+  admin = 'admin',
+  pharmacist = 'pharmacist',
+  patient = 'patient',
+  doctor = 'doctor',
+}
+
+
+export interface UserAuthType {
+  user_id: string
+  email: string
+  role: Role
+}
+
+export type Tokens = {
+  accessToken: string
+  refreshToken: string
+}
+export type AuthActions = {
+  login: (token: Tokens, userData: UserAuthType) => void;
+  logout: () => void;
+  updateAccessToken: (newAccessToken: string) => void;
+  updateUser: (updatedUser: Partial<UserAuthType>) => void;
+  verifyUser: () => void;
+  reinitialize: () => void;
+};
+
+export type AuthStoreType = AuthState & AuthActions;
+
+
+export interface TDoctor {
+  doctor_id: number;
+  name: string;
+  email: string;
+  specialization: string;
+  license_number: string;
+  availability: string;
+  consultation_fee: number;
+  appointment_id: number;
+}
+
+export interface TPatient {
+  patient_id: number;
+  name: string;
+  email: string;
+  dob: string;
+  gender: string;
+  phone: string;
+  address: string;
+
+}
+
+export interface TAppointment {
+  appointment_id: number;
+  patient_id: number;
+  doctor_id: number;
+  appointment_time: string;
+  status: string;
+  reason: string;
+  created_at: string;
+}
+
+export interface TPrescription {
+  prescription_id: number;
+  patient_id: number;
+  doctor_id: number;
+  appointment_id: number;
+  notes: string;
+  created_at: string;
+}
+
+export interface TPharmacyOrder {
+  pharmacy_order_id: number;
+  patient_id: number;
+  doctor_id: number;
+  quantity: number;
+  status: string;
+  created_at: string;
+}
+
+export interface TMedicine {
+  medicine_id: number;
+  name: string;
+  description: string;
+  stock_quantity: number;
+  price: number;
+  expiry_date: string;
+}
+
+export interface TRecord{
+  record_id: number;
+  patient_id: number;
+  doctor_id: number;
+  prescription_id: number;
+  description: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TPayment {
+  payment_id: number; 
+  appointment_id: number;
+  patient_id: number; 
+  payment_method: string;
+  pharmacy_order_id: number;
+  created_at: string;
+  amount: number; 
+  status: string;
+}
+  
+export interface Doctor{
+     doctor_id: string | number;
+  name: string;
+  specialization: string;
+  email: string;
+  availability: string;
+  license_number: string;
+  consultation_fee?: number;
+};

@@ -1,4 +1,4 @@
-import { getPatientsFn } from "@/API/patients";
+import { getPatientsFn } from "@/api/patient";
 import { useQuery } from "@tanstack/react-query";
 
 
