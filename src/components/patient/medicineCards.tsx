@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import OrderMedicineModal from './ordersForm'
 import { useGetMedicineQuery } from '@/hooks/patients/medicine'
+import { getUserIdHelper } from '@/lib/auth'
 
 type Medicine = {
   medicine_id: number
@@ -33,8 +34,18 @@ const MedicinesList = () => {
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Available Medicines</h1>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-lg font-semibold text-gray-800">
+            Available Medicines ({medicines?.length || 0})
+          </h2>
+          <p className="text-sm text-gray-600">
+            Browse and order medicines from our pharmacy
+          </p>
+        </div>
+      </div>
+      
       <motion.div
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         initial="hidden"
@@ -69,7 +80,7 @@ const MedicineCard = ({
   index: number
 }) => {
   const [showOrderModal, setShowOrderModal] = useState(false)
-  const patientId = 1 // Replace with actual patient ID from auth context
+  const patientId = Number(getUserIdHelper()) // Use actual user ID from auth context
 
   const handleOrderSuccess = (orderData: any) => {
     console.log('Order created:', orderData)

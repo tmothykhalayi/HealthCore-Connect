@@ -109,7 +109,7 @@ export default function SideNav({ role }: SideNavProps) {
       {
         icon: <FaPills />,
         label: 'Medicines',
-        to: '/Dashboard/patient/medicines',
+        to: '/Dashboard/patient/medicines/',
       },
       {
         icon: <FaPrescriptionBottleAlt size={18} />,
@@ -124,7 +124,7 @@ export default function SideNav({ role }: SideNavProps) {
       {
         icon: <FaUserMd size={18} />,
         label: 'Doctors',
-        to: '/Dashboard/patient/doctors',
+        to: '/Dashboard/patient/doctors/',
       },
       {
         icon: <FaProcedures size={18} />,

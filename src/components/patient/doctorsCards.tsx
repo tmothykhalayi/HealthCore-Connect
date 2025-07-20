@@ -44,8 +44,18 @@ const DoctorsList = () => {
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Available Doctors</h1>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-lg font-semibold text-gray-800">
+            Available Doctors ({doctors?.length || 0})
+          </h2>
+          <p className="text-sm text-gray-600">
+            Browse and book appointments with our specialists
+          </p>
+        </div>
+      </div>
+      
       <motion.div
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         variants={container}
