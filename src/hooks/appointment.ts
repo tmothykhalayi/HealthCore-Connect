@@ -7,8 +7,8 @@ export const useGetAppointmentQuery = (
   search: string,
 ) => {
   return useQuery({
-    queryKey: ['appointments', page],
-    queryFn: () => getAppointmentsFn(page),
+    queryKey: ['appointments', page, limit, search],
+    queryFn: () => getAppointmentsFn(page, limit, search),
   })
 }
 

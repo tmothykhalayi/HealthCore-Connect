@@ -49,7 +49,24 @@ export const getPaymentsFn = async (
     throw new Error('Network response was not ok')
   }
 
-  return response.json()
+  const result = await response.json()
+  
+  // Map backend response to frontend expected format
+  const mappedData = result.data.map((payment: any) => ({
+    payment_id: payment.id,
+    appointment_id: payment.relatedEntityId || 0,
+    patient_id: payment.userId || 0,
+    payment_method: payment.paymentMethod,
+    pharmacy_order_id: payment.orderId || 0,
+    created_at: payment.createdAt,
+    amount: payment.amount,
+    status: payment.status,
+  }))
+
+  return {
+    data: mappedData,
+    total: result.total,
+  }
 }
 
 export const deletePaymentsFn = async (paymentId: number): Promise<void> => {

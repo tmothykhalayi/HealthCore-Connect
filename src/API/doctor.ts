@@ -137,16 +137,16 @@ export const updateDoctorFn = async (doctorId: number, doctorData: any): Promise
   const fullUrl = `${API_BASE_URL}/doctors/${doctorId}`;
   const token = getAccessTokenHelper();
 
-  // Map frontend fields to backend fields if needed
+  // Map frontend fields (snake_case) to backend fields (camelCase)
   const payload = {
     specialization: doctorData.specialization,
     licenseNumber: doctorData.license_number,
     yearsOfExperience: doctorData.yearsOfExperience,
     phoneNumber: doctorData.phoneNumber,
-    education: doctorData.education,
     officeAddress: doctorData.officeAddress,
+    education: doctorData.education,
     consultationFee: doctorData.consultation_fee,
-    availableDays: doctorData.availableDays,
+    availableDays: doctorData.availability ? doctorData.availability.split(',').map((s: string) => s.trim()) : undefined,
     availableHours: doctorData.availableHours,
     status: doctorData.status,
   };

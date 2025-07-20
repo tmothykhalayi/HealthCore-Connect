@@ -120,7 +120,7 @@ export const AppointmentsTable = () => {
   )
 
   const table = useReactTable({
-    data: data || [],
+    data: data?.data || [],
     columns,
     pageCount: Math.ceil((data?.total || 0) / pagination.pageSize),
     state: {

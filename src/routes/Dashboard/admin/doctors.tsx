@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { DoctorsTable } from '@/components/doctorsTable'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 
 export const Route = createFileRoute('/Dashboard/admin/doctors')({
   component: DoctorsPage,
@@ -8,9 +9,8 @@ export const Route = createFileRoute('/Dashboard/admin/doctors')({
 
 function DoctorsPage() {
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-6">Doctors Management</h1>
+    <DashboardLayout>
       <DoctorsTable />
-    </div>
+    </DashboardLayout>
   )
 }

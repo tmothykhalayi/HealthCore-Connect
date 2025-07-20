@@ -4,12 +4,20 @@ import type { TAppointment } from '@/types/alltypes'
 import { getAccessTokenHelper } from '@/lib/auth'
 
 export const getAppointmentsFn = async (
-  patientId: number,
+  page = 1,
+  limit = 10,
+  search = '',
 ): Promise<{
   data: Array<TAppointment>
   total: number
 }> => {
-  const fullUrl = `${API_BASE_URL}/appointments`
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    search: search,
+  })
+
+  const fullUrl = `${API_BASE_URL}/appointments?${params.toString()}`
   const token = getAccessTokenHelper()
 
   const response = await fetch(fullUrl, {
@@ -24,7 +32,23 @@ export const getAppointmentsFn = async (
     throw new Error('Network response was not ok')
   }
 
-  return response.json()
+  const result = await response.json()
+  
+  // Map backend response to frontend expected format
+  const mappedData = result.data.map((appointment: any) => ({
+    appointment_id: appointment.id,
+    patient_id: appointment.patientId || appointment.patient?.id || 0,
+    doctor_id: appointment.doctorId || appointment.doctor?.id || 0,
+    appointment_time: appointment.appointmentDate,
+    status: appointment.status,
+    reason: appointment.reason || appointment.title || '',
+    created_at: appointment.createdAt,
+  }))
+
+  return {
+    data: mappedData,
+    total: result.total,
+  }
 }
 
 export const deleteAppointmentFn = async (

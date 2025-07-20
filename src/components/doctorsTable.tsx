@@ -10,7 +10,7 @@ import {
 } from '@tanstack/react-table'
 import type {ColumnDef} from '@tanstack/react-table';
 import type { TDoctor } from '@/types/alltypes'
-import { useDeleteDoctor, useGetDoctorQuery } from '@/hooks/doctor'
+import { useDeleteDoctor, useGetDoctorQuery, useUpdateDoctor } from '@/hooks/doctor'
 
 export const DoctorsTable = () => {
   const [search, setSearch] = useState('')
@@ -26,6 +26,46 @@ export const DoctorsTable = () => {
   )
 
   const deleteMutation = useDeleteDoctor()
+  const updateDoctorMutation = useUpdateDoctor();
+  const [showModal, setShowModal] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState<TDoctor | null>(null);
+  const [formState, setFormState] = useState<any>({});
+
+  function handleUpdateDoctor(doctor: TDoctor) {
+    setSelectedDoctor(doctor);
+    setFormState(doctor);
+    setShowModal(true);
+  }
+
+  function handleModalClose() {
+    setShowModal(false);
+    setSelectedDoctor(null);
+    setFormState({});
+  }
+
+  function handleFormChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    setFormState({
+      ...formState,
+      [name]: name === 'consultation_fee' ? Number(value) : value,
+    });
+  }
+
+  function handleFormSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (selectedDoctor) {
+      if (!formState.consultation_fee || formState.consultation_fee <= 0) {
+        alert('Consultation fee must be a positive number');
+        return;
+      }
+      updateDoctorMutation.mutate({
+        doctorId: selectedDoctor.doctor_id,
+        doctorData: formState,
+      }, {
+        onSuccess: handleModalClose,
+      });
+    }
+  }
 
   // Format currency to Kenyan Shillings
   const formatToKES = (amount: number) => {
@@ -262,11 +302,67 @@ export const DoctorsTable = () => {
           </div>
         </div>
       </div>
+      {showModal && (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
+        <h2 className="text-xl font-bold mb-4">Update Doctor</h2>
+        <form onSubmit={handleFormSubmit} className="space-y-4">
+          <input
+            name="name"
+            value={formState.name || ''}
+            onChange={handleFormChange}
+            placeholder="Name"
+            className="border p-2 rounded w-full"
+            disabled
+          />
+          <input
+            name="email"
+            value={formState.email || ''}
+            onChange={handleFormChange}
+            placeholder="Email"
+            className="border p-2 rounded w-full"
+            disabled
+          />
+          <input
+            name="specialization"
+            value={formState.specialization || ''}
+            onChange={handleFormChange}
+            placeholder="Specialization"
+            className="border p-2 rounded w-full"
+          />
+          <input
+            name="license_number"
+            value={formState.license_number || ''}
+            onChange={handleFormChange}
+            placeholder="License Number"
+            className="border p-2 rounded w-full"
+          />
+          <input
+            name="consultation_fee"
+            value={formState.consultation_fee || ''}
+            onChange={handleFormChange}
+            placeholder="Consultation Fee"
+            className="border p-2 rounded w-full"
+            type="number"
+            min="1"
+          />
+          <input
+            name="availability"
+            value={formState.availability || ''}
+            onChange={handleFormChange}
+            placeholder="Availability"
+            className="border p-2 rounded w-full"
+          />
+          <div className="flex justify-end gap-2">
+            <button type="button" onClick={handleModalClose} className="px-4 py-2 bg-gray-300 rounded">Cancel</button>
+            <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded" disabled={updateDoctorMutation.isPending}>
+              {updateDoctorMutation.isPending ? 'Updating...' : 'Update'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )}
     </div>
   )
-}
-
-function handleUpdateDoctor(doctor: TDoctor) {
-  // TODO: Open update modal or form with doctor data
-  alert(`Update doctor: ${doctor.name}`);
 }

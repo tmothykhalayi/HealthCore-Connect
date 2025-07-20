@@ -50,7 +50,22 @@ export const getMedicinesFn = async (
     throw new Error('Network response was not ok')
   }
 
-  return response.json()
+  const result = await response.json()
+  
+  // Map backend response to frontend expected format
+  const mappedData = result.data.map((medicine: any) => ({
+    medicine_id: medicine.id,
+    name: medicine.name,
+    description: medicine.description,
+    stock_quantity: medicine.stockQuantity || 0,
+    price: medicine.price,
+    expiry_date: medicine.expiryDate,
+  }))
+
+  return {
+    data: mappedData,
+    total: result.total,
+  }
 }
 
 export const deleteMedicinesFn = async (medicineId: number): Promise<void> => {

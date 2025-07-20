@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 // pages/users.tsx
 import { UsersTable } from '@/components/usersTable'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 
 export const Route = createFileRoute('/Dashboard/admin/users')({
   component: UsersPage,
@@ -9,9 +10,8 @@ export const Route = createFileRoute('/Dashboard/admin/users')({
 
 function UsersPage() {
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-6">Users Management</h1>
+    <DashboardLayout>
       <UsersTable />
-    </div>
+    </DashboardLayout>
   )
 }

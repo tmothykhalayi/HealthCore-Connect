@@ -164,7 +164,7 @@ export default function SideNav({ role }: SideNavProps) {
   const navItems = [...(roleNavItems[role] || [])]
 
   return (
-    <nav className="h-full bg-white border-r border-gray-200 flex flex-col">
+    <nav className="sticky top-0 h-screen z-30 bg-white shadow">
       <div className="flex-1 overflow-y-auto py-4">
         <ul className="space-y-1 px-2">
           {navItems.map((item, index) => (

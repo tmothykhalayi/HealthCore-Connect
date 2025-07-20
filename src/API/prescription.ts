@@ -31,7 +31,22 @@ export const getPrescriptionsFn = async (
     throw new Error('Network response was not ok')
   }
 
-  return response.json()
+  const result = await response.json()
+  
+  // Map backend response to frontend expected format
+  const mappedData = result.data.map((prescription: any) => ({
+    prescription_id: prescription.id,
+    patient_id: prescription.patientId || prescription.patient?.id || 0,
+    doctor_id: prescription.doctorId || prescription.doctor?.id || 0,
+    appointment_id: prescription.appointmentId || 0,
+    notes: prescription.notes || '',
+    created_at: prescription.issueDate || prescription.createdAt,
+  }))
+
+  return {
+    data: mappedData,
+    total: result.total,
+  }
 }
 
 export const deletePrescriptionFn = async (
