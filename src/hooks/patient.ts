@@ -1,6 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createPatientFn, deletePatientFn, getPatientsFn, updatePatientFn, getPatientByIdFn, getPatientByUserIdFn } from '@/api/patient'
+import { createPatientFn, deletePatientFn, getPatientsFn, updatePatientFn, getPatientByIdFn, getPatientByUserIdFn, getAllPatientsFn } from '@/api/patient'
 import type { patient } from '@/api/patient'
+
+// Hook to get all patients without pagination
+export const useGetAllPatientsQuery = () => {
+  return useQuery({
+    queryKey: ['all-patients'],
+    queryFn: getAllPatientsFn,
+    refetchInterval: 30000, // Refetch every 30 seconds
+  })
+}
 
 export const useGetPatientQuery = (
   page: number,
@@ -13,23 +22,14 @@ export const useGetPatientQuery = (
   })
 }
 
-// hooks/patientsHook.ts
 export const useCreatePatient = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: createPatientFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['patients'],
-        exact: false,
-      })
-      // Optional: Add a success notification
-      alert('Patient created successfully!')
-    },
-    onError: (error: Error) => {
-      console.error('Creation error:', error)
-      alert(`Error creating patient: ${error.message}`)
+      queryClient.invalidateQueries({ queryKey: ['patients'] })
+      queryClient.invalidateQueries({ queryKey: ['all-patients'] })
     },
   })
 }
@@ -41,15 +41,8 @@ export const useDeletePatient = () => {
     mutationFn: deletePatientFn,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['patients'] })
+      queryClient.invalidateQueries({ queryKey: ['all-patients'] })
     },
-  })
-}
-
-export const useGetSinglePatient = (patientId: number) => {
-  return useQuery({
-    queryKey: ['patient', patientId],
-    queryFn: () => getPatientsFn(patientId),
-    enabled: !!patientId, // Only fetch if patientId exists
   })
 }
 
@@ -59,11 +52,9 @@ export const useUpdatePatient = () => {
   return useMutation({
     mutationFn: ({ patientId, patientData }: { patientId: number; patientData: Partial<patient> }) =>
       updatePatientFn(patientId, patientData),
-    onSuccess: (data, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['patients'] })
-      queryClient.invalidateQueries({
-        queryKey: ['patient', variables.patientId],
-      })
+      queryClient.invalidateQueries({ queryKey: ['all-patients'] })
     },
   })
 }
@@ -78,7 +69,7 @@ export const useGetPatientById = (patientId: number) => {
 
 export const useGetPatientByUserId = (userId: number) => {
   return useQuery({
-    queryKey: ['patientByUserId', userId],
+    queryKey: ['patient-by-user', userId],
     queryFn: () => getPatientByUserIdFn(userId),
     enabled: !!userId,
   })

@@ -47,7 +47,20 @@ export const getDoctorFn = async (
     throw new Error('Network response was not ok')
   }
 
-  return response.json()
+  const result = await response.json();
+  return {
+    data: result.data.map((doctor: any) => ({
+      doctor_id: doctor.id,
+      name: doctor.user ? `${doctor.user.firstName} ${doctor.user.lastName}` : '',
+      email: doctor.user?.email,
+      specialization: doctor.specialization,
+      license_number: doctor.licenseNumber,
+      consultation_fee: doctor.consultationFee,
+      availability: Array.isArray(doctor.availableDays) ? doctor.availableDays.join(', ') : '',
+      // Add more mappings as needed
+    })),
+    total: result.total,
+  };
 }
 
 export const deleteDoctorFn = async (doctorId: number): Promise<void> => {
@@ -65,3 +78,91 @@ export const deleteDoctorFn = async (doctorId: number): Promise<void> => {
     throw new Error('Failed to delete user')
   }
 }
+
+export const getDoctorByIdFn = async (doctorId: number): Promise<TDoctor> => {
+  const fullUrl = `${API_BASE_URL}/doctors/${doctorId}`
+  const token = getAccessTokenHelper()
+
+  const response = await fetch(fullUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch doctor')
+  }
+
+  return response.json()
+}
+
+export const createDoctorFn = async (doctorData: any): Promise<any> => {
+  const fullUrl = `${API_BASE_URL}/doctors`;
+  const token = getAccessTokenHelper();
+
+  // Map frontend fields to backend fields if needed
+  const payload = {
+    userId: doctorData.userId,
+    specialization: doctorData.specialization,
+    licenseNumber: doctorData.license_number,
+    yearsOfExperience: doctorData.yearsOfExperience,
+    phoneNumber: doctorData.phoneNumber,
+    education: doctorData.education,
+    officeAddress: doctorData.officeAddress,
+    consultationFee: doctorData.consultation_fee,
+    availableDays: doctorData.availableDays,
+    availableHours: doctorData.availableHours,
+    status: doctorData.status,
+  };
+
+  const response = await fetch(fullUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to create doctor');
+  }
+
+  return response.json();
+};
+
+export const updateDoctorFn = async (doctorId: number, doctorData: any): Promise<any> => {
+  const fullUrl = `${API_BASE_URL}/doctors/${doctorId}`;
+  const token = getAccessTokenHelper();
+
+  // Map frontend fields to backend fields if needed
+  const payload = {
+    specialization: doctorData.specialization,
+    licenseNumber: doctorData.license_number,
+    yearsOfExperience: doctorData.yearsOfExperience,
+    phoneNumber: doctorData.phoneNumber,
+    education: doctorData.education,
+    officeAddress: doctorData.officeAddress,
+    consultationFee: doctorData.consultation_fee,
+    availableDays: doctorData.availableDays,
+    availableHours: doctorData.availableHours,
+    status: doctorData.status,
+  };
+
+  const response = await fetch(fullUrl, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to update doctor');
+  }
+
+  return response.json();
+};

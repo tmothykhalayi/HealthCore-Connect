@@ -3,6 +3,27 @@ import { API_BASE_URL } from './BaseUrl'
 import type { TUser } from '@/types/alltypes'
 import { getAccessTokenHelper } from '@/lib/auth'
 
+// Get all users without pagination (backend doesn't support pagination params)
+export const getAllUsersFn = async (): Promise<Array<TUser>> => {
+  const fullUrl = `${API_BASE_URL}/users`
+  const token = getAccessTokenHelper()
+
+  const response = await fetch(fullUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch users')
+  }
+
+  const data = await response.json()
+  return data.data || data // Handle both response formats
+}
+
 export const getUserFn = async (
   page = 1,
   limit = 10,
@@ -35,20 +56,23 @@ export const getUserFn = async (
   return response.json()
 }
 
-export const deleteUserFn = async (userId: number): Promise<void> => {
+export const deleteUserFn = async (userId: number) => {
   const fullUrl = `${API_BASE_URL}/users/${userId}`
+  const token = getAccessTokenHelper()
 
   const response = await fetch(fullUrl, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${getAccessTokenHelper()}`,
+      Authorization: `Bearer ${token}`,
     },
   })
 
   if (!response.ok) {
     throw new Error('Failed to delete user')
   }
+
+  return response.json()
 }
 
 export const createUserFn = async (userData: {
@@ -103,23 +127,17 @@ export const getCurrentUserProfileFn = async () => {
   const fullUrl = `${API_BASE_URL}/users/profile`
   const token = getAccessTokenHelper()
 
-  try {
-    const response = await fetch(fullUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    })
+  const response = await fetch(fullUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.message || 'Failed to fetch user profile')
-    }
-
-    return response.json()
-  } catch (error) {
-    console.error('API Error:', error)
-    throw error
+  if (!response.ok) {
+    throw new Error('Failed to fetch user profile')
   }
+
+  return response.json()
 }

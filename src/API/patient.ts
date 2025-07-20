@@ -28,6 +28,27 @@ export interface patient {
   status?: string
 }
 
+// Get all patients without pagination (backend doesn't support pagination params)
+export const getAllPatientsFn = async (): Promise<Array<any>> => {
+  const fullUrl = `${API_BASE_URL}/patients`
+  const token = getAccessTokenHelper()
+
+  const response = await fetch(fullUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch patients')
+  }
+
+  const data = await response.json()
+  return data.data || data // Handle both response formats
+}
+
 export const getPatientsFn = async (
   page = 1,
   limit = 10,
@@ -113,6 +134,12 @@ export const updatePatientFn = async (
   const fullUrl = `${API_BASE_URL}/patients/${patientId}`
   const token = getAccessTokenHelper()
 
+  console.log('Frontend sending update request:', {
+    url: fullUrl,
+    patientId,
+    patientData
+  })
+
   try {
     const response = await fetch(fullUrl, {
       method: 'PATCH',
@@ -123,12 +150,17 @@ export const updatePatientFn = async (
       body: JSON.stringify(patientData),
     })
 
+    console.log('Backend response status:', response.status)
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
+      console.error('Backend error:', errorData)
       throw new Error(errorData.message || 'Failed to update patient')
     }
 
-    return response.json()
+    const result = await response.json()
+    console.log('Backend success response:', result)
+    return result
   } catch (error) {
     console.error('API Error:', error)
     throw error

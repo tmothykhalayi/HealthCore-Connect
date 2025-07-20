@@ -69,19 +69,27 @@ export const DoctorsTable = () => {
       {
         header: 'Actions',
         cell: ({ row }) => (
-          <button
-            onClick={() => {
-              if (
-                confirm(`Are you sure you want to delete ${row.original.name}?`)
-              ) {
-                deleteMutation.mutate(row.original.doctor_id)
-              }
-            }}
-            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-            disabled={deleteMutation.isPending}
-          >
-            {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => handleUpdateDoctor(row.original)}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
+            >
+              Update
+            </button>
+            <button
+              onClick={() => {
+                if (
+                  confirm(`Are you sure you want to delete ${row.original.name}?`)
+                ) {
+                  deleteMutation.mutate(row.original.doctor_id)
+                }
+              }}
+              className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+            </button>
+          </div>
         ),
       },
     ],
@@ -89,7 +97,7 @@ export const DoctorsTable = () => {
   )
 
   const table = useReactTable({
-    data: data || [],
+    data: data?.data || [],
     columns,
     pageCount: Math.ceil((data?.total || 0) / pagination.pageSize),
     state: {
@@ -256,4 +264,9 @@ export const DoctorsTable = () => {
       </div>
     </div>
   )
+}
+
+function handleUpdateDoctor(doctor: TDoctor) {
+  // TODO: Open update modal or form with doctor data
+  alert(`Update doctor: ${doctor.name}`);
 }
