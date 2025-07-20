@@ -21,6 +21,38 @@ export interface Medicine {
   minimumStockLevel?: number
 }
 
+export interface CreateMedicineData {
+  userId: number
+  name: string
+  description: string
+  manufacturer: string
+  price: number
+  expiryDate: string
+  category?: string
+  dosageForm?: string
+  strength?: string
+  prescriptionRequired?: boolean
+  status?: string
+  stockQuantity?: number
+  minimumStockLevel?: number
+}
+
+export interface UpdateMedicineData {
+  userId?: number
+  name?: string
+  description?: string
+  manufacturer?: string
+  price?: number
+  expiryDate?: string
+  category?: string
+  dosageForm?: string
+  strength?: string
+  prescriptionRequired?: boolean
+  status?: string
+  stockQuantity?: number
+  minimumStockLevel?: number
+}
+
 export const getMedicinesFn = async (
   page = 1,
   limit = 10,
@@ -68,6 +100,59 @@ export const getMedicinesFn = async (
   }
 }
 
+export const createMedicineFn = async (medicineData: CreateMedicineData): Promise<TMedicine> => {
+  const fullUrl = `${API_BASE_URL}/medicines`
+  const token = getAccessTokenHelper()
+
+  const response = await fetch(fullUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(medicineData),
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to create medicine')
+  }
+
+  const result = await response.json()
+  return result.data
+}
+
+export const updateMedicineFn = async (
+  medicineId: number,
+  medicineData: UpdateMedicineData
+): Promise<TMedicine> => {
+  const fullUrl = `${API_BASE_URL}/medicines/${medicineId}`
+  const token = getAccessTokenHelper()
+
+  console.log('Sending PATCH request to:', fullUrl)
+  console.log('Request data:', medicineData)
+
+  const response = await fetch(fullUrl, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(medicineData),
+  })
+
+  console.log('Response status:', response.status)
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    console.error('Update failed:', errorText)
+    throw new Error(`Failed to update medicine: ${response.status} ${errorText}`)
+  }
+
+  const result = await response.json()
+  console.log('Update response:', result)
+  return result.data
+}
+
 export const deleteMedicinesFn = async (medicineId: number): Promise<void> => {
   const fullUrl = `${API_BASE_URL}/medicines/${medicineId}`
 
@@ -82,25 +167,4 @@ export const deleteMedicinesFn = async (medicineId: number): Promise<void> => {
   if (!response.ok) {
     throw new Error('Failed to delete medicine')
   }
-}
-
-export const createMedicineFn = async (
-  medicine: TMedicine,
-): Promise<TMedicine> => {
-  const fullUrl = `${API_BASE_URL}/medicines`
-
-  const response = await fetch(fullUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${getAccessTokenHelper()}`,
-    },
-    body: JSON.stringify(medicine),
-  })
-
-  if (!response.ok) {
-    throw new Error('Failed to create medicine')
-  }
-
-  return response.json()
 }

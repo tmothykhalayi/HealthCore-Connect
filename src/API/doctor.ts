@@ -35,6 +35,8 @@ export const getDoctorFn = async (
   const fullUrl = `${API_BASE_URL}/doctors?${params.toString()}`
   const token = getAccessTokenHelper()
 
+  console.log(`[getDoctorFn] Fetching doctors from: ${fullUrl}`);
+
   const response = await fetch(fullUrl, {
     method: 'GET',
     headers: {
@@ -48,7 +50,9 @@ export const getDoctorFn = async (
   }
 
   const result = await response.json();
-  return {
+  console.log('[getDoctorFn] Raw backend response:', result);
+  
+  const mappedData = {
     data: result.data.map((doctor: any) => ({
       doctor_id: doctor.id,
       name: doctor.user ? `${doctor.user.firstName} ${doctor.user.lastName}` : '',
@@ -61,6 +65,9 @@ export const getDoctorFn = async (
     })),
     total: result.total,
   };
+  
+  console.log('[getDoctorFn] Mapped data for frontend:', mappedData);
+  return mappedData;
 }
 
 export const deleteDoctorFn = async (doctorId: number): Promise<void> => {
@@ -137,19 +144,17 @@ export const updateDoctorFn = async (doctorId: number, doctorData: any): Promise
   const fullUrl = `${API_BASE_URL}/doctors/${doctorId}`;
   const token = getAccessTokenHelper();
 
+  console.log('Frontend sending doctor data:', doctorData);
+
   // Map frontend fields (snake_case) to backend fields (camelCase)
   const payload = {
     specialization: doctorData.specialization,
     licenseNumber: doctorData.license_number,
-    yearsOfExperience: doctorData.yearsOfExperience,
-    phoneNumber: doctorData.phoneNumber,
-    officeAddress: doctorData.officeAddress,
-    education: doctorData.education,
     consultationFee: doctorData.consultation_fee,
     availableDays: doctorData.availability ? doctorData.availability.split(',').map((s: string) => s.trim()) : undefined,
-    availableHours: doctorData.availableHours,
-    status: doctorData.status,
   };
+
+  console.log('Mapped payload for backend:', payload);
 
   const response = await fetch(fullUrl, {
     method: 'PATCH',
@@ -161,8 +166,12 @@ export const updateDoctorFn = async (doctorId: number, doctorData: any): Promise
   });
 
   if (!response.ok) {
-    throw new Error('Failed to update doctor');
+    const errorText = await response.text();
+    console.error('Update doctor error response:', errorText);
+    throw new Error(`Failed to update doctor: ${errorText}`);
   }
 
-  return response.json();
+  const result = await response.json();
+  console.log('Update doctor response:', result);
+  return result;
 };

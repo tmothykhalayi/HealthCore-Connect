@@ -5,7 +5,12 @@ import {
   getPharmacistByUserId,
   getPharmacyByUserId,
   updateOrderStatus,
-  getPatientsWithOrders
+  getPatientsWithOrders,
+  getAllPharmacists,
+  getPharmacistById,
+  createPharmacist,
+  updatePharmacist,
+  deletePharmacist
 } from '@/api/pharmacist'
 import { getUserIdHelper } from '@/lib/auth'
 
@@ -71,6 +76,55 @@ export const useUpdateOrderStatus = () => {
     onSuccess: () => {
       // Invalidate and refetch pharmacy orders
       queryClient.invalidateQueries({ queryKey: ['pharmacy-orders'] })
+    },
+  })
+}
+
+// Admin hooks for managing pharmacists
+export const useGetAllPharmacists = (page: number, limit: number, search: string) => {
+  return useQuery({
+    queryKey: ['pharmacists', page, limit, search],
+    queryFn: () => getAllPharmacists(page, limit, search),
+    staleTime: 0, // Always consider data stale to force refresh
+    refetchOnWindowFocus: true,
+  })
+}
+
+export const useGetPharmacistById = (pharmacistId: number) => {
+  return useQuery({
+    queryKey: ['pharmacist', pharmacistId],
+    queryFn: () => getPharmacistById(pharmacistId),
+    enabled: !!pharmacistId,
+  })
+}
+
+export const useCreatePharmacist = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: createPharmacist,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pharmacists'] })
+    },
+  })
+}
+
+export const useUpdatePharmacist = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ pharmacistId, pharmacistData }: { pharmacistId: number; pharmacistData: any }) => 
+      updatePharmacist(pharmacistId, pharmacistData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pharmacists'] })
+    },
+  })
+}
+
+export const useDeletePharmacist = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: deletePharmacist,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pharmacists'] })
     },
   })
 } 

@@ -9,7 +9,7 @@ import {
   useReactTable
 } from '@tanstack/react-table'
 import type {ColumnDef} from '@tanstack/react-table';
-import { useCreateUser, useDeleteUser, useGetAllUsersQuery } from '@/hooks/user'
+import { useCreateUser, useDeleteUser, useGetAllUsersQuery, useUpdateUser } from '@/hooks/user'
 
 interface TUser {
   id: number
@@ -30,6 +30,8 @@ export const UsersTable = () => {
     pageSize: 10,
   })
   const [showCreateForm, setShowCreateForm] = useState(false)
+  const [showUpdateForm, setShowUpdateForm] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<TUser | null>(null)
   const [newUser, setNewUser] = useState({
     firstName: '',
     lastName: '',
@@ -38,17 +40,27 @@ export const UsersTable = () => {
     role: 'patient',
     phoneNumber: '',
   })
+  const [updateUser, setUpdateUser] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    role: 'patient',
+    phoneNumber: '',
+    isActive: true,
+    isEmailVerified: false,
+  })
 
   const { data: users, isLoading, error } = useGetAllUsersQuery()
 
   const deleteMutation = useDeleteUser()
   const createMutation = useCreateUser()
+  const updateMutation = useUpdateUser()
 
   // Filter users based on search
   const filteredUsers = useMemo(() => {
     if (!users) return []
     
-    return users.filter((user: TUser) => {
+    return users.filter((user: any) => {
       const searchLower = search.toLowerCase()
       return (
         user.firstName?.toLowerCase().includes(searchLower) ||
@@ -80,12 +92,10 @@ export const UsersTable = () => {
     e.preventDefault()
     try {
       createMutation.mutate({
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
+        name: `${newUser.firstName} ${newUser.lastName}`,
         email: newUser.email,
-        password: newUser.password,
         role: newUser.role,
-        phoneNumber: newUser.phoneNumber,
+        phone: newUser.phoneNumber,
       })
       setShowCreateForm(false)
       setNewUser({
@@ -101,7 +111,7 @@ export const UsersTable = () => {
     }
   }
 
-  const columns = useMemo<Array<ColumnDef<TUser>>>(
+  const columns = useMemo<Array<ColumnDef<any>>>(
     () => [
       {
         header: 'ID',
@@ -172,21 +182,41 @@ export const UsersTable = () => {
       {
         header: 'Actions',
         cell: ({ row }) => (
-          <button
-            onClick={() => {
-              if (
-                confirm(
-                  `Are you sure you want to delete user ${row.original.firstName} ${row.original.lastName}?`,
-                )
-              ) {
-                deleteMutation.mutate(row.original.id)
-              }
-            }}
-            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors"
-            disabled={deleteMutation.isPending}
-          >
-            {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                setSelectedUser(row.original)
+                setUpdateUser({
+                  firstName: row.original.firstName,
+                  lastName: row.original.lastName,
+                  email: row.original.email,
+                  role: row.original.role,
+                  phoneNumber: row.original.phoneNumber || '',
+                  isActive: row.original.isActive,
+                  isEmailVerified: row.original.isEmailVerified,
+                })
+                setShowUpdateForm(true)
+              }}
+              className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
+            >
+              Update
+            </button>
+            <button
+              onClick={() => {
+                if (
+                  confirm(
+                    `Are you sure you want to delete user ${row.original.firstName} ${row.original.lastName}?`,
+                  )
+                ) {
+                  deleteMutation.mutate(row.original.id)
+                }
+              }}
+              className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors"
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+            </button>
+          </div>
         ),
       },
     ],
@@ -339,6 +369,131 @@ export const UsersTable = () => {
                 <button
                   type="button"
                   onClick={() => setShowCreateForm(false)}
+                  className="flex-1 bg-gray-500 text-white py-2 rounded-md hover:bg-gray-600"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Update User Form */}
+      {showUpdateForm && selectedUser && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">Update User</h2>
+            <form onSubmit={(e) => {
+              e.preventDefault()
+              // Only send user fields to /api/users/:id
+              updateMutation.mutate({
+                userId: selectedUser.id,
+                userData: {
+                  firstName: updateUser.firstName,
+                  lastName: updateUser.lastName,
+                  email: updateUser.email,
+                  role: updateUser.role,
+                  phoneNumber: updateUser.phoneNumber,
+                  isActive: updateUser.isActive,
+                  isEmailVerified: updateUser.isEmailVerified,
+                }
+              })
+              setShowUpdateForm(false)
+              setSelectedUser(null)
+            }} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">First Name</label>
+                <input
+                  type="text"
+                  name="firstName"
+                  value={updateUser.firstName}
+                  onChange={(e) => setUpdateUser(prev => ({ ...prev, firstName: e.target.value }))}
+                  required
+                  className="mt-1 w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Last Name</label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={updateUser.lastName}
+                  onChange={(e) => setUpdateUser(prev => ({ ...prev, lastName: e.target.value }))}
+                  required
+                  className="mt-1 w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={updateUser.email}
+                  onChange={(e) => setUpdateUser(prev => ({ ...prev, email: e.target.value }))}
+                  required
+                  className="mt-1 w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Phone Number</label>
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  value={updateUser.phoneNumber}
+                  onChange={(e) => setUpdateUser(prev => ({ ...prev, phoneNumber: e.target.value }))}
+                  className="mt-1 w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Role</label>
+                <select
+                  name="role"
+                  value={updateUser.role}
+                  onChange={(e) => setUpdateUser(prev => ({ ...prev, role: e.target.value }))}
+                  required
+                  className="mt-1 w-full p-2 border border-gray-300 rounded-md"
+                >
+                  <option value="patient">Patient</option>
+                  <option value="doctor">Doctor</option>
+                  <option value="pharmacist">Pharmacist</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              <div className="flex gap-4">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={updateUser.isActive}
+                    onChange={(e) => setUpdateUser(prev => ({ ...prev, isActive: e.target.checked }))}
+                    className="mr-2"
+                  />
+                  <span className="text-sm font-medium text-gray-700">Active</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={updateUser.isEmailVerified}
+                    onChange={(e) => setUpdateUser(prev => ({ ...prev, isEmailVerified: e.target.checked }))}
+                    className="mr-2"
+                  />
+                  <span className="text-sm font-medium text-gray-700">Email Verified</span>
+                </label>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  disabled={updateMutation.isPending}
+                  className="flex-1 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 disabled:opacity-50"
+                >
+                  {updateMutation.isPending ? 'Updating...' : 'Update User'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowUpdateForm(false)
+                    setSelectedUser(null)
+                  }}
                   className="flex-1 bg-gray-500 text-white py-2 rounded-md hover:bg-gray-600"
                 >
                   Cancel

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createUserFn, deleteUserFn, getUserFn, getCurrentUserProfileFn, getAllUsersFn } from '@/api/user'
+import { createUserFn, deleteUserFn, getUserFn, getCurrentUserProfileFn, getAllUsersFn, updateUserFn } from '@/api/user'
 
 // Hook to get all users without pagination
 export const useGetAllUsersQuery = () => {
@@ -38,6 +38,19 @@ export const useDeleteUser = () => {
 
   return useMutation({
     mutationFn: deleteUserFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+      queryClient.invalidateQueries({ queryKey: ['all-users'] })
+    },
+  })
+}
+
+export const useUpdateUser = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ userId, userData }: { userId: number; userData: any }) => 
+      updateUserFn(userId, userData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })
       queryClient.invalidateQueries({ queryKey: ['all-users'] })

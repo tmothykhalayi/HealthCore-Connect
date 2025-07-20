@@ -9,6 +9,8 @@ export const useGetDoctorQuery = (
   return useQuery({
     queryKey: ['doctors', page, limit, search],
     queryFn: () => getDoctorFn(page, limit, search),
+    staleTime: 0, // Always consider data stale to force refresh
+    refetchOnWindowFocus: true,
   })
 }
 

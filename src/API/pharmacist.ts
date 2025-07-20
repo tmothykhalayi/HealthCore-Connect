@@ -153,3 +153,144 @@ export const getPatientsWithOrders = async (pharmacyId: number) => {
   
   return patients.filter(Boolean)
 }
+
+// Admin API functions for managing pharmacists
+export const getAllPharmacists = async (page = 1, limit = 10, search = '') => {
+  const fullUrl = `${API_BASE_URL}/pharmacists?page=${page}&limit=${limit}&search=${search}`
+  const token = getAccessTokenHelper()
+
+  const response = await fetch(fullUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch pharmacists')
+  }
+
+  const data = await response.json()
+  
+  // Map backend response to frontend expected format
+  const mappedData = (data.data || []).map((pharmacist: any) => ({
+    pharmacist_id: pharmacist.id,
+    name: `${pharmacist.user?.firstName || ''} ${pharmacist.user?.lastName || ''}`.trim(),
+    email: pharmacist.user?.email || '',
+    pharmacy_name: pharmacist.pharmacy?.name || '',
+    license_number: pharmacist.licenseNumber || '',
+    phone_number: pharmacist.user?.phoneNumber || '',
+    status: pharmacist.user?.isActive ? 'active' : 'inactive',
+  }))
+
+  return {
+    data: mappedData,
+    total: data.total || 0,
+    page: data.page || page,
+    limit: data.limit || limit,
+  }
+}
+
+export const getPharmacistById = async (pharmacistId: number) => {
+  const fullUrl = `${API_BASE_URL}/pharmacists/${pharmacistId}`
+  const token = getAccessTokenHelper()
+
+  const response = await fetch(fullUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch pharmacist')
+  }
+
+  const pharmacist = await response.json()
+  
+  // Map backend response to frontend expected format
+  return {
+    pharmacist_id: pharmacist.id,
+    name: `${pharmacist.user?.firstName || ''} ${pharmacist.user?.lastName || ''}`.trim(),
+    email: pharmacist.user?.email || '',
+    pharmacy_name: pharmacist.pharmacy?.name || '',
+    license_number: pharmacist.licenseNumber || '',
+    phone_number: pharmacist.user?.phoneNumber || '',
+    status: pharmacist.user?.isActive ? 'active' : 'inactive',
+  }
+}
+
+export const createPharmacist = async (pharmacistData: any) => {
+  const fullUrl = `${API_BASE_URL}/pharmacists`
+  const token = getAccessTokenHelper()
+
+  const response = await fetch(fullUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(pharmacistData),
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to create pharmacist')
+  }
+
+  return await response.json()
+}
+
+export const updatePharmacist = async (pharmacistId: number, pharmacistData: any) => {
+  const fullUrl = `${API_BASE_URL}/pharmacists/${pharmacistId}`
+  const token = getAccessTokenHelper()
+
+  console.log('Frontend sending pharmacist data:', pharmacistData);
+
+  // Map frontend fields to backend expected fields
+  // Backend only accepts: userId, pharmacyId, licenseNumber
+  const payload = {
+    licenseNumber: pharmacistData.license_number,
+  };
+
+  console.log('Mapped payload for backend:', payload);
+
+  const response = await fetch(fullUrl, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('Update pharmacist error response:', errorText);
+    throw new Error(`Failed to update pharmacist: ${errorText}`);
+  }
+
+  const result = await response.json();
+  console.log('Update pharmacist response:', result);
+  return result;
+}
+
+export const deletePharmacist = async (pharmacistId: number) => {
+  const fullUrl = `${API_BASE_URL}/pharmacists/${pharmacistId}`
+  const token = getAccessTokenHelper()
+
+  const response = await fetch(fullUrl, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to delete pharmacist')
+  }
+
+  return await response.json()
+}

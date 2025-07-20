@@ -285,9 +285,16 @@ export interface TAppointment {
   appointment_id: number
   patient_id: number
   doctor_id: number
+  patient_name?: string
+  doctor_name?: string
   appointment_time: string
+  appointment_date?: string
+  appointment_time_slot?: string
   status: string
   reason: string
+  notes?: string
+  priority?: string
+  duration?: number
   created_at: string
 }
 
@@ -304,9 +311,13 @@ export interface TPharmacyOrder {
   pharmacy_order_id: number
   patient_id: number
   doctor_id: number
+  medicine_id: number
   quantity: number
   status: string
   created_at: string
+  patient_name?: string
+  doctor_name?: string
+  order_id?: string
 }
 
 export interface TMedicine {
@@ -319,13 +330,81 @@ export interface TMedicine {
 }
 
 export interface TRecord {
-  record_id: number
-  patient_id: number
-  doctor_id: number
-  prescription_id: number
+  id: number
+  patientId: number
+  doctorId: number
+  appointmentId?: number
+  recordType: string
+  title: string
   description: string
-  created_at: string
-  updated_at: string
+  diagnosis?: string
+  treatment?: string
+  medications?: any
+  labResults?: any
+  vitals?: any
+  allergies?: any
+  followUpInstructions?: string
+  nextAppointmentDate?: string
+  priority: string
+  status: string
+  notes?: string
+  attachments?: any
+  createdAt: string
+  updatedAt: string
+  // Relations
+  patient?: {
+    id: number
+    name: string
+    email: string
+  }
+  doctor?: {
+    id: number
+    name: string
+    email: string
+    specialization: string
+  }
+}
+
+export interface CreateRecordData {
+  patientId: number
+  doctorId: number
+  appointmentId?: number
+  recordType: string
+  title: string
+  description: string
+  diagnosis?: string
+  treatment?: string
+  medications?: any
+  labResults?: any
+  vitals?: any
+  allergies?: any
+  followUpInstructions?: string
+  nextAppointmentDate?: string
+  priority?: string
+  status?: string
+  notes?: string
+  attachments?: any
+}
+
+export interface UpdateRecordData {
+  patientId?: number
+  doctorId?: number
+  appointmentId?: number
+  recordType?: string
+  title?: string
+  description?: string
+  diagnosis?: string
+  treatment?: string
+  medications?: any
+  labResults?: any
+  vitals?: any
+  allergies?: any
+  followUpInstructions?: string
+  nextAppointmentDate?: string
+  priority?: string
+  status?: string
+  notes?: string
+  attachments?: any
 }
 
 export interface TPayment {
@@ -453,4 +532,14 @@ interface User {
   lastName: string
   phoneNumber?: string
   userRole: string
+}
+
+export interface TPharmacist {
+  pharmacist_id: number
+  name: string
+  email: string
+  pharmacy_name: string
+  license_number: string
+  phone_number: string
+  status: string
 }

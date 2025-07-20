@@ -107,7 +107,7 @@ export const updateUserFn = async (
   const fullUrl = `${API_BASE_URL}/users/${userId}`
 
   const response = await fetch(fullUrl, {
-    method: 'PUT',
+    method: 'PATCH', // Changed from PUT to PATCH
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${getAccessTokenHelper()}`,

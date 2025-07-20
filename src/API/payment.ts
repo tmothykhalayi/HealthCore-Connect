@@ -20,6 +20,28 @@ export interface Payment {
   relatedEntityId: number
 }
 
+export interface CreatePaymentData {
+  userId: number
+  orderId: string
+  amount: number
+  paymentMethod: string
+  status: PaymentStatus
+  relatedEntityType: string
+  relatedEntityId: number
+  transactionId: string
+}
+
+export interface UpdatePaymentData {
+  userId?: number
+  orderId?: string
+  amount?: number
+  paymentMethod?: string
+  status?: PaymentStatus
+  relatedEntityType?: string
+  relatedEntityId?: number
+  transactionId?: string
+}
+
 export const getPaymentsFn = async (
   page = 1,
   limit = 10,
@@ -67,6 +89,51 @@ export const getPaymentsFn = async (
     data: mappedData,
     total: result.total,
   }
+}
+
+export const createPaymentFn = async (paymentData: CreatePaymentData): Promise<Payment> => {
+  const fullUrl = `${API_BASE_URL}/payments`
+  const token = getAccessTokenHelper()
+
+  const response = await fetch(fullUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(paymentData),
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to create payment')
+  }
+
+  const result = await response.json()
+  return result.data
+}
+
+export const updatePaymentFn = async (
+  paymentId: number,
+  paymentData: UpdatePaymentData
+): Promise<Payment> => {
+  const fullUrl = `${API_BASE_URL}/payments/${paymentId}`
+  const token = getAccessTokenHelper()
+
+  const response = await fetch(fullUrl, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(paymentData),
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to update payment')
+  }
+
+  const result = await response.json()
+  return result.data
 }
 
 export const deletePaymentsFn = async (paymentId: number): Promise<void> => {

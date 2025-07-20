@@ -12,6 +12,11 @@ import {
 import { FaPills, FaUserMd } from 'react-icons/fa'
 import { Link } from '@tanstack/react-router'
 import { useAdminDashboardStats, useRecentActivities, useSystemHealth } from '@/hooks/admin'
+import { useGetDoctorQuery } from '@/hooks/doctor'
+import { useGetAllUsersQuery } from '@/hooks/user'
+import { useGetAppointmentQuery } from '@/hooks/appointment'
+import { useGetPaymentQuery } from '@/hooks/payment'
+import { useGetMedicineQuery } from '@/hooks/medicine'
 
 const AdminDashboard = () => {
   // Fetch dashboard data
@@ -19,7 +24,26 @@ const AdminDashboard = () => {
   const { data: activities, isLoading: activitiesLoading } = useRecentActivities()
   const { data: systemHealth } = useSystemHealth()
 
-  // Route cards configuration
+  // Fetch real data from working endpoints
+  const { data: doctorsData } = useGetDoctorQuery(1, 1000, '')
+  const { data: usersData } = useGetAllUsersQuery()
+  const { data: appointmentsData } = useGetAppointmentQuery(1, 1000, '')
+  const { data: paymentsData } = useGetPaymentQuery(1, 1000, '')
+  const { data: medicinesData } = useGetMedicineQuery(1, 1000, '')
+
+  // Calculate real statistics from actual data
+  const realStats = {
+    totalDoctors: doctorsData?.total || 0,
+    totalUsers: usersData?.length || 0,
+    totalAppointments: appointmentsData?.total || 0,
+    totalPayments: paymentsData?.total || 0,
+    totalMedicines: medicinesData?.total || 0,
+    totalPharmacists: 0, // Will be updated when pharmacist endpoint is available
+    activeUsers: usersData?.filter((user: any) => user.isActive)?.length || 0,
+    verifiedUsers: usersData?.filter((user: any) => user.isEmailVerified)?.length || 0,
+  }
+
+  // Route cards configuration with real data
   const routeCards = [
     {
       title: 'Patients',
@@ -27,7 +51,7 @@ const AdminDashboard = () => {
       color: 'bg-blue-100 text-blue-600',
       route: '/dashboard/admin/patients',
       description: 'Manage patient records and information',
-      count: stats?.users?.byRole?.patients || 0,
+      count: realStats.totalUsers - realStats.totalDoctors,
     },
     {
       title: 'Doctors',
@@ -35,7 +59,7 @@ const AdminDashboard = () => {
       color: 'bg-teal-100 text-teal-600',
       route: '/dashboard/admin/doctors',
       description: 'View and manage medical staff',
-      count: stats?.users?.byRole?.doctors || 0,
+      count: realStats.totalDoctors,
     },
     {
       title: 'Appointments',
@@ -43,7 +67,7 @@ const AdminDashboard = () => {
       color: 'bg-green-100 text-green-600',
       route: '/dashboard/admin/appointments',
       description: 'Schedule and track appointments',
-      count: stats?.appointments?.total || 0,
+      count: realStats.totalAppointments,
     },
     {
       title: 'Prescriptions',
@@ -51,7 +75,7 @@ const AdminDashboard = () => {
       color: 'bg-purple-100 text-purple-600',
       route: '/dashboard/admin/prescriptions',
       description: 'Create and manage prescriptions',
-      count: 0, // TODO: Add prescription count when endpoint is available
+      count: 0, // Will be updated when prescription endpoint is available
     },
     {
       title: 'Pharmacy Orders',
@@ -67,7 +91,7 @@ const AdminDashboard = () => {
       color: 'bg-indigo-100 text-indigo-600',
       route: '/dashboard/admin/payments',
       description: 'View payment records',
-      count: stats?.payments?.total || 0,
+      count: realStats.totalPayments,
     },
     {
       title: 'Medicines',
@@ -75,7 +99,7 @@ const AdminDashboard = () => {
       color: 'bg-pink-100 text-pink-600',
       route: '/dashboard/admin/medicines',
       description: 'Manage medicine inventory',
-      count: stats?.medicines?.total || 0,
+      count: realStats.totalMedicines,
     },
     {
       title: 'Records',
@@ -83,7 +107,7 @@ const AdminDashboard = () => {
       color: 'bg-orange-100 text-orange-600',
       route: '/dashboard/admin/records',
       description: 'Access medical records',
-      count: 0, // TODO: Add records count when endpoint is available
+      count: 0, // Will be updated when records endpoint is available
     },
   ]
 
@@ -176,30 +200,30 @@ const AdminDashboard = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-blue-50 p-4 rounded-lg text-center">
             <p className="text-sm text-blue-600 mb-1">Total Users</p>
-            <p className="text-2xl font-bold">{stats?.users?.total || 0}</p>
+            <p className="text-2xl font-bold">{realStats.totalUsers}</p>
             <p className="text-xs text-blue-500">
-              {stats?.users?.active || 0} active
+              {realStats.activeUsers} active
             </p>
           </div>
           <div className="bg-green-50 p-4 rounded-lg text-center">
-            <p className="text-sm text-green-600 mb-1">Today's Appointments</p>
-            <p className="text-2xl font-bold">{stats?.appointments?.recent || 0}</p>
+            <p className="text-sm text-green-600 mb-1">Total Appointments</p>
+            <p className="text-2xl font-bold">{realStats.totalAppointments}</p>
             <p className="text-xs text-green-500">
-              {stats?.appointments?.completionRate || '0'}% completion
+              {appointmentsData?.data?.filter((apt: any) => apt.status === 'completed')?.length || 0} completed
             </p>
           </div>
           <div className="bg-purple-50 p-4 rounded-lg text-center">
-            <p className="text-sm text-purple-600 mb-1">Pending Orders</p>
-            <p className="text-2xl font-bold">{stats?.orders?.pending || 0}</p>
+            <p className="text-sm text-purple-600 mb-1">Total Payments</p>
+            <p className="text-2xl font-bold">{realStats.totalPayments}</p>
             <p className="text-xs text-purple-500">
-              {stats?.orders?.total || 0} total orders
+              {paymentsData?.data?.filter((payment: any) => payment.status === 'completed')?.length || 0} completed
             </p>
           </div>
           <div className="bg-yellow-50 p-4 rounded-lg text-center">
-            <p className="text-sm text-yellow-600 mb-1">Total Revenue</p>
-            <p className="text-2xl font-bold">${stats?.payments?.completed || 0}</p>
+            <p className="text-sm text-yellow-600 mb-1">Total Medicines</p>
+            <p className="text-2xl font-bold">{realStats.totalMedicines}</p>
             <p className="text-xs text-yellow-500">
-              {stats?.payments?.total || 0} transactions
+              Available in inventory
             </p>
           </div>
         </div>

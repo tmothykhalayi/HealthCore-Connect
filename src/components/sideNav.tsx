@@ -43,6 +43,11 @@ export default function SideNav({ role }: SideNavProps) {
         to: '/Dashboard/admin/doctors',
       },
       {
+        icon: <MdLocalPharmacy size={20} />,
+        label: 'Pharmacists',
+        to: '/Dashboard/admin/pharmacists',
+      },
+      {
         icon: <FaCalendarAlt size={18} />,
         label: 'Appointments',
         to: '/Dashboard/admin/appointments',
