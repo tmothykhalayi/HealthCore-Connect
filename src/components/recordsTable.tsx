@@ -36,6 +36,10 @@ export const RecordsTable = () => {
     search,
   )
 
+  // If backend response is { data: { data: [...], total: n } }
+  const records = data?.data || [];
+  const total = data?.total || 0;
+
   const deleteMutation = useDeleteRecord()
   const createMutation = useCreateRecord()
 
@@ -99,22 +103,41 @@ export const RecordsTable = () => {
     () => [
       {
         header: 'Record ID',
-        accessorKey: 'record_id',
+        accessorKey: 'id',
+        cell: ({ row }) => <span>{row.original.id ?? '-'}</span>,
         size: 100,
       },
       {
         header: 'Patient ID',
         accessorKey: 'patient_id',
+        cell: ({ row }) => {
+          // Handles both direct and nested patient_id
+          const value = row.original.patient_id ?? row.original.patient?.id;
+          return <span>{value ?? '-'}</span>;
+        },
         size: 100,
       },
       {
         header: 'Doctor ID',
         accessorKey: 'doctor_id',
+        cell: ({ row }) => {
+          // Handles both direct and nested doctor_id
+          const value = row.original.doctor_id ?? row.original.doctor?.id;
+          return <span>{value ?? '-'}</span>;
+        },
         size: 100,
       },
       {
         header: 'Prescription ID',
         accessorKey: 'prescription_id',
+        cell: ({ row }) => {
+          // Handles direct, nested, and appointment prescription_id
+          const value =
+            row.original.prescription_id ??
+            row.original.prescription?.id ??
+            row.original.appointment?.prescription?.id;
+          return <span>{value ?? '-'}</span>;
+        },
         size: 120,
       },
       {
@@ -128,11 +151,35 @@ export const RecordsTable = () => {
       },
       {
         header: 'Created At',
-        cell: ({ row }) => formatDateTime(row.original.created_at),
+        cell: ({ row }) => {
+          const dateValue = row.original.createdAt;
+          if (!dateValue) return <span>-</span>;
+          const date = new Date(dateValue);
+          return isNaN(date.getTime()) ? <span>-</span> : <span>{date.toLocaleString('en-KE', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+          })}</span>;
+        },
       },
       {
         header: 'Updated At',
-        cell: ({ row }) => formatDateTime(row.original.updated_at),
+        cell: ({ row }) => {
+          const dateValue = row.original.updatedAt;
+          if (!dateValue) return <span>-</span>;
+          const date = new Date(dateValue);
+          return isNaN(date.getTime()) ? <span>-</span> : <span>{date.toLocaleString('en-KE', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+          })}</span>;
+        },
       },
       {
         header: 'Actions',
@@ -141,10 +188,10 @@ export const RecordsTable = () => {
             onClick={() => {
               if (
                 confirm(
-                  `Are you sure you want to delete record #${row.original.record_id}?`,
+                  `Are you sure you want to delete record #${row.original.id}?`,
                 )
               ) {
-                deleteMutation.mutate(row.original.record_id)
+                deleteMutation.mutate(row.original.id)
               }
             }}
             className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
@@ -160,9 +207,9 @@ export const RecordsTable = () => {
   )
 
   const table = useReactTable({
-    data: data || [],
+    data: records,
     columns,
-    pageCount: Math.ceil((data?.total || 0) / pagination.pageSize),
+    pageCount: Math.ceil(total / pagination.pageSize),
     state: {
       pagination,
       globalFilter: search,
@@ -173,7 +220,7 @@ export const RecordsTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
-  })
+  });
 
   if (isLoading) {
     return (
@@ -208,7 +255,7 @@ export const RecordsTable = () => {
             />
           </div>
           <div className="text-sm text-gray-600 whitespace-nowrap">
-            Showing {table.getRowModel().rows.length} of {data?.total} records
+            Showing {table.getRowModel().rows.length} of {total} records
           </div>
         </div>
       </div>

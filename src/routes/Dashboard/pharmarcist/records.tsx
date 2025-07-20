@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import DashboardLayout from '@/components/layout/DashboardLayout'
+import { RecordsTable } from '@/components/recordsTable'
 
 export const Route = createFileRoute('/Dashboard/pharmarcist/records')({
   component: RouteComponent,
@@ -8,7 +9,7 @@ export const Route = createFileRoute('/Dashboard/pharmarcist/records')({
 function RouteComponent() {
   return (
     <DashboardLayout>
-      <div>Hello "/dashboard/pharmarcist/records"!</div>
+      <RecordsTable />
     </DashboardLayout>
-  )
+  );
 }

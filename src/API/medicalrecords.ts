@@ -17,7 +17,7 @@ export const getRecordFn = async (
     search: search,
   })
 
-  const fullUrl = `${API_BASE_URL}/records?${params.toString()}`
+  const fullUrl = `${API_BASE_URL}/medical-records?${params.toString()}`
   const token = getAccessTokenHelper()
 
   const response = await fetch(fullUrl, {
@@ -36,7 +36,7 @@ export const getRecordFn = async (
 }
 
 export const deleteRecordFn = async (recordId: number): Promise<void> => {
-  const fullUrl = `${API_BASE_URL}/records/${recordId}`
+  const fullUrl = `${API_BASE_URL}/medical-records/${recordId}`
 
   const response = await fetch(fullUrl, {
     method: 'DELETE',
@@ -52,7 +52,7 @@ export const deleteRecordFn = async (recordId: number): Promise<void> => {
 }
 
 export const createRecordFn = async (recordData: TRecord): Promise<TRecord> => {
-  const fullUrl = `${API_BASE_URL}/records`
+  const fullUrl = `${API_BASE_URL}/medical-records`
 
   const response = await fetch(fullUrl, {
     method: 'POST',
