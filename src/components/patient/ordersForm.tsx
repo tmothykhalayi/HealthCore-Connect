@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { useCreatePharmacyOrder } from '@/hooks/patients/pharmacy_ordersHook'
+import { useCreatePharmacyOrder } from '@/hooks/patient/order'
 
 type Medicine = {
   medicine_id: number
@@ -35,10 +35,11 @@ const OrderMedicineModal = ({
     try {
       const orderData = {
         patient_id: patientId,
-        medicine_id: medicine.medicine_id,
+        medication_name: medicine.name,
+        dosage: '', // Provide appropriate dosage if available
         quantity,
         status: 'pending',
-        created_at: new Date().toISOString(),
+        created_at: new Date(),
       }
 
       const result = await createOrderMutation.mutateAsync(orderData)

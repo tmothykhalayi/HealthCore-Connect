@@ -5,10 +5,11 @@ export const useGetPharmacyOrdersQuery = (
   page: number,
   limit: number,
   search: string,
+  patientId?: number,
 ) => {
   return useQuery({
-    queryKey: ['pharmacyOrders', page, limit, search],
-    queryFn: () => getPharmacyOrdersFn(page, limit, search),
+    queryKey: ['pharmacyOrders', page, limit, search, patientId],
+    queryFn: () => getPharmacyOrdersFn(page, limit, search, patientId),
   })
 }
 

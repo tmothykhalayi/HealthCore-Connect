@@ -5,17 +5,20 @@ export const getPharmacyOrdersFn = async (
   page = 1,
   limit = 10,
   search = '',
+  patientId?: number,
 ): Promise<{
   data: Array<any>
   total: number
 }> => {
-  console.log('[DEBUG] getPharmacyOrdersFn called with:', { page, limit, search });
+  console.log('[DEBUG] getPharmacyOrdersFn called with:', { page, limit, search, patientId });
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
     search: search,
   })
-
+  if (patientId) {
+    params.append('patientId', patientId.toString())
+  }
   const fullUrl = `${API_BASE_URL}/orders?${params.toString()}`
   const token = getAccessTokenHelper()
 

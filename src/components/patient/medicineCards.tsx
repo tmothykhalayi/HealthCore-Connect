@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import OrderMedicineModal from './ordersForm'
-import { useGetMedicineQuery } from '@/hooks/patients/medicine'
+import { useGetMedicineQuery } from '@/hooks/patient/medicine'
 import { getUserIdHelper } from '@/lib/auth'
 
 type Medicine = {
@@ -15,7 +15,8 @@ type Medicine = {
 }
 
 const MedicinesList = () => {
-  const { data: medicines, isLoading, isError, error } = useGetMedicineQuery()
+  const { data, isLoading, isError, error } = useGetMedicineQuery()
+  const medicines: Medicine[] = Array.isArray(data) ? data : []
 
   if (isLoading) {
     return (
@@ -94,7 +95,7 @@ const MedicineCard = ({
       y: 0,
       transition: {
         duration: 0.5,
-        ease: ['easeOut'],
+        ease: 'easeOut',
       },
     },
     hover: {

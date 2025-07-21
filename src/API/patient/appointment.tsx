@@ -44,3 +44,48 @@ export const deleteAppointmentFn = async (
     throw new Error('Failed to delete appointment')
   }
 }
+
+export const cancelAppointmentFn = async (
+  appointmentId: number,
+): Promise<void> => {
+  const fullUrl = `${API_BASE_URL}/appointments/${appointmentId}/cancel`
+  const token = getAccessTokenHelper()
+
+  const response = await fetch(fullUrl, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ status: 'cancelled' }),
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to cancel appointment')
+  }
+}
+
+export const rescheduleAppointmentFn = async (
+  appointmentId: number,
+  newDate: string,
+  newTime: string,
+): Promise<void> => {
+  const fullUrl = `${API_BASE_URL}/appointments/${appointmentId}`
+  const token = getAccessTokenHelper()
+
+  const response = await fetch(fullUrl, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ 
+      appointmentDate: newDate,
+      appointmentTime: newTime 
+    }),
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to reschedule appointment')
+  }
+}

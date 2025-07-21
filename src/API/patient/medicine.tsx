@@ -1,3 +1,27 @@
+import type { TMedicine } from '@/types/alltypes'
+
+// Fetch medicines for a patient (or all medicines if patientId not needed)
+export const getMedicineFn = async (): Promise<{
+  data: Array<TMedicine>
+  total: number
+}> => {
+  const fullUrl = `${API_BASE_URL}/medicines`;
+  const token = getAccessTokenHelper();
+
+  const response = await fetch(fullUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+
+  return response.json();
+}
 // API/patients.ts
 import { API_BASE_URL } from '../BaseUrl'
 import type { TAppointment } from '@/types/alltypes'

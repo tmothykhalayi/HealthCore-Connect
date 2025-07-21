@@ -19,6 +19,7 @@ function AppointmentForm() {
   const { doctor_id } = useParams({ strict: false })
   const doctorIdNumber = Number(doctor_id)
   const patient_id = useAuthStore((state) => state.user?.user_id)
+  const user = useAuthStore((state) => state.user)
 
   const [formData, setFormData] = useState({
     appointment_time: '', // Changed from appointmentDate
@@ -40,13 +41,20 @@ function AppointmentForm() {
     e.preventDefault()
     console.log('Submitting appointment with data:', formData)
 
+    // Parse date and time from datetime-local input
+    const [date, time] = formData.appointment_time.split('T')
     const finalData = {
-      doctor_id: doctorIdNumber,
-      patient_id: Number(patient_id),
-      status: formData.status,
+      doctorId: doctorIdNumber,
+      patientId: Number(patient_id),
+      appointmentDate: formData.appointment_time, // ISO string
+      appointmentTime: time || '',
+      patientEmail: user?.email || '',
+      duration: 30, // default duration, or add to form if needed
       reason: formData.reason,
-      appointment_time: new Date(formData.appointment_time), // Convert to Date object
-      created_at: new Date(), // Add current timestamp
+      status: formData.status,
+      date: date || '',
+      time: time || '',
+      title: formData.reason, // or add a separate title field
     }
 
     submitAppointment(finalData)

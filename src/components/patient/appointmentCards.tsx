@@ -1,4 +1,7 @@
 import { useGetAppointmentsByIdQuery } from '@/hooks/patient/appointment'
+import { useGetDoctorById } from '@/hooks/doctor'
+import { useState } from 'react'
+import { FaCalendarAlt, FaClock, FaUserMd, FaTimes, FaEdit, FaEye } from 'react-icons/fa'
 
 interface AppointmentCardProps {
   appointment: {
@@ -14,14 +17,17 @@ interface AppointmentCardProps {
 }
 
 const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
+  const [showActions, setShowActions] = useState(false)
+  
+  // Fetch doctor information
+  const { data: doctor, isLoading: doctorLoading } = useGetDoctorById(appointment.doctorId)
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
     })
   }
 
@@ -50,41 +56,100 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
     }
   }
 
+  const isUpcoming = new Date(appointment.appointmentDate) > new Date() && appointment.status !== 'cancelled'
+  const canCancel = isUpcoming && ['scheduled', 'confirmed', 'pending'].includes(appointment.status.toLowerCase())
+
   return (
     <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-gray-200">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-semibold text-gray-800">
           Appointment #{appointment.id}
         </h3>
-        <span
-          className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-            appointment.status,
-          )}`}
-        >
-          {appointment.status}
-        </span>
+        <div className="flex items-center space-x-2">
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+              appointment.status,
+            )}`}
+          >
+            {appointment.status}
+          </span>
+          <button
+            onClick={() => setShowActions(!showActions)}
+            className="p-1 text-gray-400 hover:text-gray-600"
+          >
+            <FaEdit size={16} />
+          </button>
+        </div>
       </div>
 
-      <div className="space-y-2">
-        <p className="text-gray-600">
-          <span className="font-medium">Date:</span>{' '}
-          {formatDate(appointment.appointmentDate)}
-        </p>
-        <p className="text-gray-600">
-          <span className="font-medium">Time:</span>{' '}
-          {formatTime(appointment.appointmentTime)}
-        </p>
-        <p className="text-gray-600">
-          <span className="font-medium">Doctor ID:</span> {appointment.doctorId}
-        </p>
-        <p className="text-gray-600">
-          <span className="font-medium">Reason:</span> {appointment.reason}
-        </p>
+      <div className="space-y-3">
+        {/* Doctor Information */}
+        <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
+          <FaUserMd className="text-blue-600" size={20} />
+          <div className="flex-1">
+            {doctorLoading ? (
+              <p className="text-sm text-gray-600">Loading doctor info...</p>
+            ) : doctor ? (
+              <div>
+                <p className="font-medium text-gray-800">
+                  Dr. {doctor.firstName} {doctor.lastName}
+                </p>
+                <p className="text-sm text-gray-600">{doctor.specialization}</p>
+              </div>
+            ) : (
+              <p className="text-sm text-gray-600">Doctor ID: {appointment.doctorId}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Date and Time */}
+        <div className="flex items-center space-x-3">
+          <FaCalendarAlt className="text-gray-400" size={16} />
+          <span className="text-gray-600">{formatDate(appointment.appointmentDate)}</span>
+        </div>
+        
+        <div className="flex items-center space-x-3">
+          <FaClock className="text-gray-400" size={16} />
+          <span className="text-gray-600">{formatTime(appointment.appointmentTime)}</span>
+        </div>
+
+        {/* Reason */}
+        <div className="p-3 bg-gray-50 rounded-lg">
+          <p className="text-sm text-gray-600">
+            <span className="font-medium">Reason:</span> {appointment.reason}
+          </p>
+        </div>
+
+        {/* Created Date */}
         <p className="text-gray-500 text-sm">
           <span className="font-medium">Created:</span>{' '}
           {formatDate(appointment.createdAt)}
         </p>
       </div>
+
+      {/* Action Buttons */}
+      {showActions && (
+        <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
+          <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+            <FaEye size={14} />
+            <span>View Details</span>
+          </button>
+          
+          {canCancel && (
+            <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+              <FaTimes size={14} />
+              <span>Cancel Appointment</span>
+            </button>
+          )}
+          
+          {isUpcoming && (
+            <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors">
+              <FaEdit size={14} />
+              <span>Reschedule</span>
+            </button>
+          )}
+        </div>
+      )}
     </div>
   )
 }

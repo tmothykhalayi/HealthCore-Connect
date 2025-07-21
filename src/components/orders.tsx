@@ -16,13 +16,15 @@ import {
   useCreatePharmacyOrder,
   useUpdatePharmacyOrder,
 } from '@/hooks/orders'
+import useAuthStore from '@/store/auth'
 
-export const PharmacyOrdersTable = () => {
+export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
   const [search, setSearch] = useState('')
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   })
+  const user = useAuthStore((state) => state.user)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [selectedOrder, setSelectedOrder] = useState<TPharmacyOrder | null>(null)
@@ -37,10 +39,13 @@ export const PharmacyOrdersTable = () => {
     OrderId: '',
   })
 
+  const effectivePatientId = patientId || user?.user_id
+
   const { data, isLoading, isError } = useGetPharmacyOrdersQuery(
     pagination.pageIndex + 1,
     pagination.pageSize,
     search,
+    effectivePatientId,
   )
 
   console.log('[DEBUG] PharmacyOrdersTable - data:', data);
@@ -53,7 +58,7 @@ export const PharmacyOrdersTable = () => {
 
   const handleCreateOrder = () => {
     const orderData = {
-      patientId: parseInt(formData.patientId),
+      patientId: effectivePatientId ? Number(effectivePatientId) : parseInt(formData.patientId),
       pharmacyId: parseInt(formData.pharmacyId),
       medicineId: parseInt(formData.medicineId),
       quantity: parseInt(formData.quantity),
@@ -84,7 +89,7 @@ export const PharmacyOrdersTable = () => {
     if (!selectedOrder) return
 
     const orderData = {
-      patientId: parseInt(formData.patientId),
+      patientId: effectivePatientId ? Number(effectivePatientId) : parseInt(formData.patientId),
       pharmacyId: parseInt(formData.pharmacyId),
       medicineId: parseInt(formData.medicineId),
       quantity: parseInt(formData.quantity),
@@ -406,15 +411,8 @@ export const PharmacyOrdersTable = () => {
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-bold mb-4">Create New Order</h2>
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Patient ID</label>
-                <input
-                  type="number"
-                  value={formData.patientId}
-                  onChange={(e) => setFormData({ ...formData, patientId: e.target.value })}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+              {/* Patient ID is set automatically and hidden */}
+              <input type="hidden" value={effectivePatientId || ''} readOnly />
               <div>
                 <label className="block text-sm font-medium text-gray-700">Pharmacy ID</label>
                 <input
@@ -509,15 +507,8 @@ export const PharmacyOrdersTable = () => {
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-bold mb-4">Edit Order</h2>
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Patient ID</label>
-                <input
-                  type="number"
-                  value={formData.patientId}
-                  onChange={(e) => setFormData({ ...formData, patientId: e.target.value })}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+              {/* Patient ID is set automatically and hidden */}
+              <input type="hidden" value={effectivePatientId || ''} readOnly />
               <div>
                 <label className="block text-sm font-medium text-gray-700">Pharmacy ID</label>
                 <input

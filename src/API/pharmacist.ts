@@ -135,7 +135,7 @@ export const getPatientsWithOrders = async (pharmacyId: number) => {
   // Extract unique patients from orders
   const patientIds = [...new Set(orders.map((order: any) => order.patientId))] as number[]
   
-  // Fetch patient details for each unique patient
+  // Fetch patient details and appointments for each unique patient
   const patients = await Promise.all(
     patientIds.map(async (patientId: number) => {
       const patientResponse = await fetch(`${API_BASE_URL}/patients/${patientId}`, {
@@ -144,8 +144,25 @@ export const getPatientsWithOrders = async (pharmacyId: number) => {
           Authorization: `Bearer ${token}`,
         },
       })
+      let patient = null
       if (patientResponse.ok) {
-        return await patientResponse.json()
+        patient = await patientResponse.json()
+      }
+      if (patient) {
+        // Fetch appointments for this patient
+        const appointmentsResponse = await fetch(`${API_BASE_URL}/appointments/patient/${patientId}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        let appointments = []
+        if (appointmentsResponse.ok) {
+          const appointmentsData = await appointmentsResponse.json()
+          appointments = appointmentsData.data || appointmentsData
+        }
+        // Attach appointments to patient object
+        return { ...patient, appointments }
       }
       return null
     })
