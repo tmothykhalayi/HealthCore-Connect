@@ -38,7 +38,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
             <div className="flex-1 flex justify-between items-center">
               <h1 className="text-xl font-semibold text-gray-800">
-                Hospital Management
+                Health Management
               </h1>
               <div className="flex items-center space-x-4">
                 <button className="p-1 text-gray-500 hover:text-gray-700 relative">

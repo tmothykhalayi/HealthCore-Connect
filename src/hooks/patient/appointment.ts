@@ -28,29 +28,26 @@ export const useCreateAppointment = () => {
   })
 }
 
-export const useGetAppointmentsByIdQuery = (patientId: number) => {
+export const useGetAppointmentsByIdQuery = (patientId: number | undefined) => {
   return useQuery({
     queryKey: ['appointments', patientId],
-    queryFn: () => getAppointmentsFn(patientId),
+    queryFn: () => patientId ? getAppointmentsFn(patientId) : Promise.resolve([]),
+    enabled: !!patientId,
   })
 }
 
 // New hook that gets patient ID first, then appointments
 export const useGetPatientAppointmentsQuery = () => {
   const userId = getUserIdHelper()
-  
   return useQuery({
     queryKey: ['patient-appointments', userId],
     queryFn: async () => {
-      // First get the patient profile for the current user
       const patient = await getPatientByUserIdFn(Number(userId))
-      console.log('Patient profile:', patient)
-      
-      // Then get appointments for that patient
+      if (!patient?.id) return []
       const appointments = await getAppointmentsByPatientIdFn(patient.id)
-      console.log('Patient appointments:', appointments)
-      
-      return appointments
+      if (Array.isArray(appointments)) return appointments
+      if (appointments?.data && Array.isArray(appointments.data)) return appointments.data
+      return []
     },
     enabled: !!userId,
   })

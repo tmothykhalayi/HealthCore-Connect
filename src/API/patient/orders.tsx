@@ -2,7 +2,8 @@ import { API_BASE_URL } from '../BaseUrl'
 import { getAccessTokenHelper } from '@/lib/auth'
 
 export const getPharmacyOrdersFn = async (patientId: number) => {
-  const fullUrl = `${API_BASE_URL}/patients/pharmacy_orders/${patientId}`
+  // Use the correct backend endpoint
+  const fullUrl = `${API_BASE_URL}/orders/patient/${patientId}`
   const token = getAccessTokenHelper()
 
   const response = await fetch(fullUrl, {
@@ -18,7 +19,8 @@ export const getPharmacyOrdersFn = async (patientId: number) => {
   }
 
   const data = await response.json()
-  return Array.isArray(data) ? data : [data] // Ensure we return an array
+  // Return the data array from the backend response
+  return data.data || []
 }
 
 export const createPharmacyOrderFn = async (orderData: any) => {

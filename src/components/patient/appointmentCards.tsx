@@ -1,38 +1,52 @@
 import { useGetAppointmentsByIdQuery } from '@/hooks/patient/appointment'
 import { useGetDoctorById } from '@/hooks/doctor'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { FaCalendarAlt, FaClock, FaUserMd, FaTimes, FaEdit, FaEye } from 'react-icons/fa'
 
+interface Appointment {
+  id: number
+  patientId: number
+  doctorId: number
+  appointmentDate: string
+  appointmentTime: string
+  status: string
+  reason: string
+  createdAt: string
+}
+
+interface Doctor {
+  id: number
+  firstName: string
+  lastName: string
+  specialization: string
+}
+
 interface AppointmentCardProps {
-  appointment: {
-    id: number
-    patientId: number
-    doctorId: number
-    appointmentDate: string
-    appointmentTime: string
-    status: string
-    reason: string
-    createdAt: string
-  }
+  appointment: Appointment
 }
 
 const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
   const [showActions, setShowActions] = useState(false)
   
-  // Fetch doctor information
-  const { data: doctor, isLoading: doctorLoading } = useGetDoctorById(appointment.doctorId)
+  // Fetch doctor information with proper typing
+  const { data: doctor, isLoading: doctorLoading, error: doctorError } = useGetDoctorById(appointment.doctorId)
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
+    try {
+      const date = new Date(dateString)
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+    } catch (error) {
+      console.error('Invalid date string:', dateString)
+      return 'Invalid date'
+    }
   }
 
   const formatTime = (timeString: string) => {
-    return timeString
+    return timeString || 'Time not specified'
   }
 
   const getStatusColor = (status: string | undefined) => {
@@ -56,8 +70,15 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
     }
   }
 
-  const isUpcoming = new Date(appointment.appointmentDate) > new Date() && appointment.status !== 'cancelled'
-  const canCancel = isUpcoming && ['scheduled', 'confirmed', 'pending'].includes(appointment.status.toLowerCase())
+  const isUpcoming = () => {
+    try {
+      return new Date(appointment.appointmentDate) > new Date() && appointment.status !== 'cancelled'
+    } catch {
+      return false
+    }
+  }
+
+  const canCancel = isUpcoming() && ['scheduled', 'confirmed', 'pending'].includes(appointment.status.toLowerCase())
 
   return (
     <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-gray-200">
@@ -76,6 +97,7 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
           <button
             onClick={() => setShowActions(!showActions)}
             className="p-1 text-gray-400 hover:text-gray-600"
+            aria-label="Toggle actions"
           >
             <FaEdit size={16} />
           </button>
@@ -89,6 +111,8 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
           <div className="flex-1">
             {doctorLoading ? (
               <p className="text-sm text-gray-600">Loading doctor info...</p>
+            ) : doctorError ? (
+              <p className="text-sm text-red-600">Failed to load doctor</p>
             ) : doctor ? (
               <div>
                 <p className="font-medium text-gray-800">
@@ -114,11 +138,13 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
         </div>
 
         {/* Reason */}
-        <div className="p-3 bg-gray-50 rounded-lg">
-          <p className="text-sm text-gray-600">
-            <span className="font-medium">Reason:</span> {appointment.reason}
-          </p>
-        </div>
+        {appointment.reason && (
+          <div className="p-3 bg-gray-50 rounded-lg">
+            <p className="text-sm text-gray-600">
+              <span className="font-medium">Reason:</span> {appointment.reason}
+            </p>
+          </div>
+        )}
 
         {/* Created Date */}
         <p className="text-gray-500 text-sm">
@@ -142,7 +168,7 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
             </button>
           )}
           
-          {isUpcoming && (
+          {isUpcoming() && (
             <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors">
               <FaEdit size={14} />
               <span>Reschedule</span>
@@ -154,16 +180,38 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
   )
 }
 
-export const PatientAppointments = ({ patientId }: { patientId: number }) => {
+interface PatientAppointmentsProps {
+  patientId: number | null | undefined
+}
+
+export const PatientAppointments = ({ patientId }: PatientAppointmentsProps) => {
   const {
     data: appointments,
     isLoading,
     isError,
     error,
-  } = useGetAppointmentsByIdQuery(patientId)
+  } = useGetAppointmentsByIdQuery(patientId ?? 0) // Provide fallback for undefined/null
 
-  console.log('Appointments Data:', appointments)
-  console.log('Patient ID:', patientId)
+  useEffect(() => {
+    if (patientId) {
+      console.log('Fetching appointments for patient:', patientId)
+    }
+  }, [patientId])
+
+  if (!patientId) {
+    return (
+      <div className="text-center py-12">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 max-w-md mx-auto">
+          <h3 className="text-lg font-medium text-yellow-800 mb-2">
+            Patient Not Selected
+          </h3>
+          <p className="text-yellow-700 text-sm">
+            Please select a patient to view appointments
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   if (isLoading) {
     return (
@@ -192,10 +240,14 @@ export const PatientAppointments = ({ patientId }: { patientId: number }) => {
     )
   }
 
-  // Check if appointments exists and is an array
-  const appointmentsArray = Array.isArray(appointments) ? appointments : appointments ? [appointments] : []
+  // Safely handle appointments data
+  const appointmentsArray: Appointment[] = appointments
+    ? Array.isArray(appointments)
+      ? appointments
+      : [appointments]
+    : []
 
-  if (!appointmentsArray || appointmentsArray.length === 0) {
+  if (appointmentsArray.length === 0) {
     return (
       <div className="text-center py-12">
         <div className="text-gray-500 mb-4">
@@ -205,10 +257,7 @@ export const PatientAppointments = ({ patientId }: { patientId: number }) => {
         </div>
         <h3 className="text-lg font-medium text-gray-900 mb-2">No Appointments Found</h3>
         <p className="text-gray-500 mb-4">
-          You don't have any appointments scheduled at the moment.
-        </p>
-        <p className="text-gray-400 text-sm">
-          Contact your doctor to schedule an appointment or check back later.
+          No appointments scheduled for this patient
         </p>
       </div>
     )
@@ -219,10 +268,10 @@ export const PatientAppointments = ({ patientId }: { patientId: number }) => {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-lg font-semibold text-gray-800">
-            Your Appointments ({appointmentsArray.length})
+            Appointments ({appointmentsArray.length})
           </h2>
           <p className="text-sm text-gray-600">
-            Manage and view your scheduled appointments
+            Manage and view scheduled appointments
           </p>
         </div>
       </div>
@@ -230,7 +279,7 @@ export const PatientAppointments = ({ patientId }: { patientId: number }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {appointmentsArray.map((appointment) => (
           <AppointmentCard
-            key={appointment.id}
+            key={`${appointment.id}-${appointment.patientId}`}
             appointment={appointment}
           />
         ))}

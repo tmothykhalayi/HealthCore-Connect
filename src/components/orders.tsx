@@ -17,6 +17,9 @@ import {
   useUpdatePharmacyOrder,
 } from '@/hooks/orders'
 import useAuthStore from '@/store/auth'
+import { getUserIdHelper } from '@/lib/auth'
+import { getPatientByUserIdFn } from '@/api/patient/patient'
+import { useEffect } from 'react'
 
 export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
   const [search, setSearch] = useState('')
@@ -38,8 +41,22 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
     totalAmount: '',
     OrderId: '',
   })
+  const [effectivePatientId, setEffectivePatientId] = useState<number | null>(null)
 
-  const effectivePatientId = patientId || user?.user_id
+  useEffect(() => {
+    const fetchPatientId = async () => {
+      let id = patientId
+      if (!id) {
+        const userId = getUserIdHelper()
+        if (userId) {
+          const patient = await getPatientByUserIdFn(Number(userId))
+          id = patient?.id
+        }
+      }
+      setEffectivePatientId(id ? Number(id) : null)
+    }
+    fetchPatientId()
+  }, [patientId])
 
   const { data, isLoading, isError } = useGetPharmacyOrdersQuery(
     pagination.pageIndex + 1,
@@ -57,13 +74,17 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
   const updateMutation = useUpdatePharmacyOrder()
 
   const handleCreateOrder = () => {
+    if (!effectivePatientId) {
+      alert('Patient ID not found. Please log in again.');
+      return;
+    }
     const orderData = {
-      patientId: effectivePatientId ? Number(effectivePatientId) : parseInt(formData.patientId),
+      patientId: effectivePatientId,
       pharmacyId: parseInt(formData.pharmacyId),
       medicineId: parseInt(formData.medicineId),
       quantity: parseInt(formData.quantity),
       orderDate: formData.orderDate,
-      status: formData.status,
+      orderStatus: formData.status, // <-- use orderStatus for backend
       totalAmount: parseFloat(formData.totalAmount),
       OrderId: formData.OrderId,
     }
@@ -86,15 +107,15 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
   }
 
   const handleUpdateOrder = () => {
-    if (!selectedOrder) return
+    if (!selectedOrder || !effectivePatientId) return
 
     const orderData = {
-      patientId: effectivePatientId ? Number(effectivePatientId) : parseInt(formData.patientId),
+      patientId: effectivePatientId,
       pharmacyId: parseInt(formData.pharmacyId),
       medicineId: parseInt(formData.medicineId),
       quantity: parseInt(formData.quantity),
       orderDate: formData.orderDate,
-      status: formData.status,
+      orderStatus: formData.status, 
       totalAmount: parseFloat(formData.totalAmount),
       OrderId: formData.OrderId,
     }
