@@ -5,6 +5,7 @@ import type { Role } from '@/types/alltypes'
 import SideNav from '@/components/sideNav'
 import { getUserRoleHelper } from '@/lib/auth'
 import ThemeToggle from '../ThemeToggle'
+import Chat from '@/components/chat'
 
 interface DashboardLayoutProps {
   children?: React.ReactNode
@@ -61,6 +62,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           {children || <Outlet />}
         </main>
       </div>
+      <Chat />
     </div>
   )
 }

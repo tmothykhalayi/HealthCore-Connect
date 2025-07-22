@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import DashboardLayout from '@/components/layout/DashboardLayout'
-import { Link } from '@tanstack/react-router'
+//import { Link } from '@tanstack/react-router'
 
 import { PatientAppointments } from '@/components/patient/appointmentCards'
-import { getUserIdHelper } from '@/lib/auth'
+//import { getUserIdHelper } from '@/lib/auth'
 import { useState, useEffect } from 'react'
 import { useCreateAppointment } from '@/hooks/patient/appointment'
 import useAuthStore from '@/store/auth'

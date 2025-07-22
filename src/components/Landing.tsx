@@ -6,6 +6,7 @@ import { useRouter } from '@tanstack/react-router'
 import faqData from './data/faqData'
 import doctorsData from './data/doctorsData'
 import Contact from './Contact'
+import Chat from '@/components/chat'
 
 const Landing = () => {
   const router = useRouter()
@@ -253,6 +254,7 @@ const Landing = () => {
       <section id="contact-section">
         <Contact />
       </section>
+      <Chat />
     </>
   )
 }

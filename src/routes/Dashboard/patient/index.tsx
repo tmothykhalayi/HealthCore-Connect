@@ -13,6 +13,7 @@ import { getDoctorsFn } from '@/api/patient/doctor/doctor'
 import { useGetMedicineQuery } from '@/hooks/patient/medicine'
 import { useRescheduleAppointment } from '@/hooks/patient/appointment'
 import { MedicinesTable } from '@/components/medicinesTable'
+import Chat from '@/components/chat'
 
 export const Route = createFileRoute('/Dashboard/patient/')({
   component: PatientDashboard,
@@ -414,6 +415,7 @@ function PatientDashboard() {
           <MedicinesTable />
         </div>
       </div>
+      <Chat />
     </DashboardLayout>
   )
 } 
