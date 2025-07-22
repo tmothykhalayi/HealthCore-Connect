@@ -2,6 +2,7 @@ import { useGetAppointmentsByIdQuery } from '@/hooks/patient/appointment'
 import { useGetDoctorById } from '@/hooks/doctor'
 import { useState, useEffect } from 'react'
 import { FaCalendarAlt, FaClock, FaUserMd, FaTimes, FaEdit, FaEye } from 'react-icons/fa'
+import { useUpdateAppointmentStatus } from '@/hooks/patient/appointment'
 
 interface Appointment {
   id: number
@@ -27,6 +28,8 @@ interface AppointmentCardProps {
 
 const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
   const [showActions, setShowActions] = useState(false)
+  const [editStatus, setEditStatus] = useState(appointment.status)
+  const { mutate: updateStatus, isLoading: isUpdating, isSuccess, isError, error } = useUpdateAppointmentStatus()
   
   // Fetch doctor information with proper typing
   const { data: doctor, isLoading: doctorLoading, error: doctorError } = useGetDoctorById(appointment.doctorId)
@@ -160,14 +163,41 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
             <FaEye size={14} />
             <span>View Details</span>
           </button>
-          
+
+          {/* Status Update Dropdown */}
+          <div className="flex items-center space-x-2">
+            <label htmlFor={`status-dropdown-${appointment.id}`} className="text-sm font-medium">Status:</label>
+            <select
+              id={`status-dropdown-${appointment.id}`}
+              value={editStatus}
+              onChange={e => setEditStatus(e.target.value)}
+              className="border rounded px-2 py-1"
+              disabled={isUpdating}
+            >
+              <option value="scheduled">Scheduled</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="completed">Completed</option>
+              <option value="no_show">No Show</option>
+              <option value="rescheduled">Rescheduled</option>
+            </select>
+            <button
+              className="ml-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-green-300"
+              onClick={() => updateStatus({ appointmentId: appointment.id, status: editStatus })}
+              disabled={isUpdating || editStatus === appointment.status}
+            >
+              {isUpdating ? 'Saving...' : 'Save'}
+            </button>
+          </div>
+          {isSuccess && <div className="text-green-600 text-sm">Status updated!</div>}
+          {isError && <div className="text-red-600 text-sm">{error?.message || 'Failed to update status'}</div>}
+
           {canCancel && (
             <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
               <FaTimes size={14} />
               <span>Cancel Appointment</span>
             </button>
           )}
-          
           {isUpcoming() && (
             <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors">
               <FaEdit size={14} />

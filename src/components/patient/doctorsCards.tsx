@@ -1,6 +1,8 @@
 import { Link } from '@tanstack/react-router'
 import { motion } from 'framer-motion' // Import framer-motion for animations
 import { useGetDoctorQuery } from '@/hooks/patient/doctor'
+import AppointmentForm from '@/routes/Dashboard/patient/doctors/appointmentsForm.$doctor_id'
+import { useState } from 'react'
 
 type Doctor = {
   doctor_id: number
@@ -14,6 +16,8 @@ type Doctor = {
 
 const DoctorsList = () => {
   const { data: doctors, isLoading, isError } = useGetDoctorQuery()
+  const [showModal, setShowModal] = useState(false)
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null)
   console.log('Doctors data:', doctors)
 
   if (isLoading) {
@@ -63,14 +67,28 @@ const DoctorsList = () => {
         animate="show"
       >
         {doctors?.map((doctor: Doctor, index: number) => (
-          <DoctorCard key={doctor.doctor_id} doctor={doctor} index={index} />
+          <DoctorCard key={doctor.doctor_id} doctor={doctor} index={index} onBook={() => { setSelectedDoctor(doctor); setShowModal(true); }} />
         ))}
       </motion.div>
+      {showModal && selectedDoctor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full relative">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
+              onClick={() => setShowModal(false)}
+              aria-label="Close"
+            >
+              &times;
+            </button>
+            <AppointmentForm doctorId={selectedDoctor.doctor_id} onSuccess={() => setShowModal(false)} />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
 
-const DoctorCard = ({ doctor, index }: { doctor: Doctor; index: number }) => {
+const DoctorCard = ({ doctor, index, onBook }: { doctor: Doctor; index: number; onBook: () => void }) => {
   // Use the image from the API if available, otherwise use placeholder
   const imageUrl =
     doctor.img ||
@@ -84,7 +102,7 @@ const DoctorCard = ({ doctor, index }: { doctor: Doctor; index: number }) => {
       y: 0,
       transition: {
         duration: 0.5,
-        ease: ['easeOut'],
+        ease: 'easeOut',
       },
     },
     hover: {
@@ -102,23 +120,6 @@ const DoctorCard = ({ doctor, index }: { doctor: Doctor; index: number }) => {
       animate="show"
       transition={{ delay: index * 0.1 }}
     >
-      <motion.div
-        className="h-48 bg-gray-200 overflow-hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: index * 0.1 + 0.3 }}
-      >
-        <img
-          src={imageUrl}
-          alt={doctor.name}
-          className="w-full h-fit object-cover"
-          onError={(e) => {
-            // Fallback to placeholder if image fails to load
-            e.currentTarget.src =
-              'https://i.pinimg.com/736x/8e/5b/6a/8e5b6a2191656c1ac5d4571577870170.jpg'
-          }}
-        />
-      </motion.div>
 
       <div className="p-6">
         <motion.h2
@@ -196,13 +197,12 @@ const DoctorCard = ({ doctor, index }: { doctor: Doctor; index: number }) => {
           </span>
 
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link
-              to="/dashboard/patient/doctors/appointmentsForm/$doctor_id"
-              params={{ doctor_id: Number(doctor.doctor_id) }}
+            <button
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              onClick={onBook}
             >
               Book Appointment
-            </Link>
+            </button>
           </motion.div>
         </motion.div>
       </div>

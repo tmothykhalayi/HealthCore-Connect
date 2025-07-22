@@ -202,6 +202,17 @@ export default function SideNav({ role, onNavigate }: SideNavProps) {
               )}
             </li>
           ))}
+          <li>
+            <button
+              onClick={() => {
+                useAuthStore.getState().logout();
+                window.location.href = '/login';
+              }}
+              className="w-full mt-2 py-2 bg-red-500 text-white rounded-full hover:bg-red-600 flex justify-center text-center"
+            >
+              Logout
+            </button>
+          </li>
         </ul>
       </div>
     </nav>

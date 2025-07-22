@@ -2,6 +2,8 @@ import { createFileRoute } from '@tanstack/react-router'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import { PatientMedicalRecordsTable } from '@/components/patient/medicalRecordsTable'
 import { getUserIdHelper } from '@/lib/auth'
+import { useEffect, useState } from 'react'
+import { getPatientByUserIdFn } from '@/api/patient/patient'
 
 export const Route = createFileRoute('/Dashboard/patient/medical-records')({
   component: MedicalRecordsPage,
@@ -9,13 +11,35 @@ export const Route = createFileRoute('/Dashboard/patient/medical-records')({
 
 function MedicalRecordsPage() {
   const userId = Number(getUserIdHelper())
+  const [patientId, setPatientId] = useState<number | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  // For testing, use a valid patient ID that has records in the database
-  // In a real app, you would get the patient ID from the user's profile
-  const patientId = 1 // Using patient ID 1 which has records in the sample data
+  useEffect(() => {
+    async function fetchPatient() {
+      setLoading(true)
+      try {
+        if (userId) {
+          const patientProfile = await getPatientByUserIdFn(userId)
+          setPatientId(patientProfile?.id || null)
+        } else {
+          setPatientId(null)
+        }
+      } catch (err) {
+        setPatientId(null)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchPatient()
+  }, [userId])
 
-  console.log('User ID:', userId)
-  console.log('Using Patient ID:', patientId)
+  if (loading) {
+    return <div className="p-4">Loading medical records...</div>
+  }
+
+  if (!patientId) {
+    return <div className="p-4 text-red-500">Patient profile not found. Please complete your profile or contact support.</div>
+  }
 
   return (
     <DashboardLayout>

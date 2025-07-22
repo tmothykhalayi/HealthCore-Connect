@@ -89,3 +89,24 @@ export const rescheduleAppointmentFn = async (
     throw new Error('Failed to reschedule appointment')
   }
 }
+
+export const updateAppointmentStatusFn = async (
+  appointmentId: number,
+  status: string
+): Promise<void> => {
+  const fullUrl = `${API_BASE_URL}/appointments/${appointmentId}`
+  const token = getAccessTokenHelper()
+
+  const response = await fetch(fullUrl, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ status }),
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to update appointment status')
+  }
+}

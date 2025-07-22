@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { createFileRoute, useParams } from '@tanstack/react-router'
 import { useCreateAppointment } from '@/hooks/patient/appointment'
 import useAuthStore from '@/store/auth'
+import { getPatientByUserIdFn } from '@/api/patient/patient'
+import { useEffect } from 'react'
 
 export const Route = createFileRoute(
   '/Dashboard/patient/doctors/appointmentsForm/$doctor_id',
@@ -9,7 +11,11 @@ export const Route = createFileRoute(
   component: AppointmentForm,
 })
 
-function AppointmentForm() {
+interface AppointmentFormProps {
+  doctorId?: number;
+  onSuccess?: () => void;
+}
+function AppointmentForm({ doctorId, onSuccess }: AppointmentFormProps) {
   const {
     mutate: submitAppointment,
     isPending,
@@ -17,15 +23,41 @@ function AppointmentForm() {
     isSuccess,
   } = useCreateAppointment()
   const { doctor_id } = useParams({ strict: false })
-  const doctorIdNumber = Number(doctor_id)
+  const doctorIdNumber = typeof doctorId === 'number' ? doctorId : Number(doctor_id)
   const patient_id = useAuthStore((state) => state.user?.user_id)
   const user = useAuthStore((state) => state.user)
 
+  const [patientId, setPatientId] = useState<number | null>(null)
+  const [loadingPatient, setLoadingPatient] = useState(true)
+
+  useEffect(() => {
+    async function fetchPatient() {
+      setLoadingPatient(true)
+      try {
+        if (user?.user_id) {
+          const patientProfile = await getPatientByUserIdFn(Number(user.user_id))
+          setPatientId(patientProfile?.id || null)
+        } else {
+          setPatientId(null)
+        }
+      } catch (err) {
+        setPatientId(null)
+      } finally {
+        setLoadingPatient(false)
+      }
+    }
+    fetchPatient()
+  }, [user?.user_id])
+
+  const patientEmail = user?.email || '';
+
   const [formData, setFormData] = useState({
-    appointment_time: '', // Changed from appointmentDate
+    appointment_time: '',
     reason: '',
-    status: 'scheduled', // Added status to form state
+    status: 'scheduled',
   })
+
+  const [error, setError] = useState<string | null>(null)
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -39,25 +71,38 @@ function AppointmentForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Submitting appointment with data:', formData)
-
+    setError(null)
+    if (loadingPatient) {
+      setError('Loading patient profile. Please wait.')
+      return
+    }
+    if (typeof patientId !== 'number' || isNaN(patientId)) {
+      setError('Patient profile not found. Please complete your profile or contact support.')
+      return
+    }
     // Parse date and time from datetime-local input
     const [date, time] = formData.appointment_time.split('T')
+    const appointmentDateISO = formData.appointment_time
+      ? new Date(formData.appointment_time).toISOString()
+      : ''
     const finalData = {
       doctorId: doctorIdNumber,
-      patientId: Number(patient_id),
-      appointmentDate: formData.appointment_time, // ISO string
+      patientId: patientId,
+      appointmentDate: appointmentDateISO,
       appointmentTime: time || '',
-      patientEmail: user?.email || '',
-      duration: 30, // default duration, or add to form if needed
+      patientEmail: patientEmail,
+      duration: 30,
       reason: formData.reason,
       status: formData.status,
       date: date || '',
       time: time || '',
-      title: formData.reason, // or add a separate title field
+      title: 'Consultation',
     }
-
-    submitAppointment(finalData)
+    submitAppointment(finalData, {
+      onSuccess: () => {
+        if (onSuccess) onSuccess()
+      },
+    })
   }
 
   return (
@@ -79,6 +124,12 @@ function AppointmentForm() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {loadingPatient && (
+          <div className="mb-2 p-2 bg-yellow-100 text-yellow-700 rounded">Loading patient profile...</div>
+        )}
+        {error && (
+          <div className="mb-2 p-2 bg-red-100 text-red-700 rounded">{error}</div>
+        )}
         <div>
           <label
             htmlFor="reason"

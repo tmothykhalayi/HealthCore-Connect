@@ -27,7 +27,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* Sidebar */}
       <div
-        className={`fixed md:static z-40 w-64 h-full transition-all duration-300 ease-in-out 
+        className={`fixed md:static z-60 w-64 h-full transition-all duration-300 ease-in-out 
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
       >
         <SideNav role={role} onNavigate={() => setSidebarOpen(false)} />

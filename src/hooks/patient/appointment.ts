@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createAppointmentFn } from '@/api/patient/doctor/appointment'
 import { getAppointmentsFn } from '@/api/patient/doctor/appointment'
 import { getPatientByUserIdFn, getAppointmentsByPatientIdFn } from '@/api/patient/patient'
-import { cancelAppointmentFn, rescheduleAppointmentFn } from '@/api/patient/appointment'
+import { cancelAppointmentFn, rescheduleAppointmentFn, updateAppointmentStatusFn } from '@/api/patient/appointment'
 import { getUserIdHelper } from '@/lib/auth'
 
 export const useCreateAppointment = () => {
@@ -78,6 +78,18 @@ export const useRescheduleAppointment = () => {
       newDate: string
       newTime: string 
     }) => rescheduleAppointmentFn(appointmentId, newDate, newTime),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['appointments'] })
+      queryClient.invalidateQueries({ queryKey: ['patient-appointments'] })
+    },
+  })
+}
+
+export const useUpdateAppointmentStatus = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ appointmentId, status }: { appointmentId: number; status: string }) =>
+      updateAppointmentStatusFn(appointmentId, status),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] })
       queryClient.invalidateQueries({ queryKey: ['patient-appointments'] })
