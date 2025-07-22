@@ -7,13 +7,14 @@ import {
   useReactTable
 } from '@tanstack/react-table'
 import type {ColumnDef} from '@tanstack/react-table';
-import type { TRecord } from '@/Types/types'
-import { useGetRecordsQuery } from '@/hooks/doctor/recordHook'
+
+import type { TRecord } from '@/types/alltypes'
+import { useGetRecordsQuery } from '@/hooks/doctor/medicalrecords'
 
 export const MedicalRecordsTable = () => {
   const [search, setSearch] = useState('')
   const { data, isLoading, isError } = useGetRecordsQuery()
-  const records = data || []
+  const records = Array.isArray(data) ? data : data?.data || []
 
   // Format date to a readable format
   const formatDate = (dateString: string) => {
@@ -60,11 +61,11 @@ export const MedicalRecordsTable = () => {
       },
       {
         header: 'Created At',
-        cell: ({ row }) => formatDate(row.original.created_at),
+        cell: ({ row }) => formatDate(row.original.createdAt),
       },
       {
         header: 'Updated At',
-        cell: ({ row }) => formatDate(row.original.updated_at),
+        cell: ({ row }) => formatDate(row.original.updatedAt),
       },
     ],
     [],
@@ -156,7 +157,7 @@ export const MedicalRecordsTable = () => {
         </div>
       </div>
 
-      {records.length === 0 && !isLoading && (
+      {Array.isArray(records) && records.length === 0 && !isLoading && (
         <div className="text-center py-8 text-gray-500">
           No medical records found.
         </div>

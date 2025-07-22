@@ -1,7 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import { useState } from 'react'
-import { usePharmacistProfile, usePharmacyDetails, usePatientsWithOrders } from '@/hooks/pharmacist'
+import { usePharmacistProfile, usePharmacyDetails } from '@/hooks/pharmacist'
+import { useGetAllPatientsQuery } from '@/hooks/patient'
 import { FaSearch, FaUser, FaPhone, FaEnvelope, FaMapMarkerAlt, FaShoppingCart } from 'react-icons/fa'
 
 export const Route = createFileRoute('/Dashboard/pharmarcist/patients')({
@@ -23,6 +24,12 @@ interface Patient {
     status: string
     createdAt: string
   }>
+  user?: {
+    firstName: string
+    lastName: string
+    email: string
+  }
+  allergies?: string[]
 }
 
 function PharmacistPatients() {
@@ -31,10 +38,7 @@ function PharmacistPatients() {
   const [showDetails, setShowDetails] = useState(false)
 
   const { data: pharmacistProfile } = usePharmacistProfile()
-  const { data: pharmacyDetails } = usePharmacyDetails()
-  const pharmacyId = pharmacyDetails?.id || pharmacyDetails?.pharmacyId
-  
-  const { data: patients, isLoading, error } = usePatientsWithOrders(pharmacyId)
+  const { data: patients, isLoading, error } = useGetAllPatientsQuery()
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -61,8 +65,8 @@ function PharmacistPatients() {
   }
 
   const filteredPatients = patients?.filter((patient: Patient) => {
-    const fullName = `${patient.firstName} ${patient.lastName}`.toLowerCase()
-    const email = patient.email.toLowerCase()
+    const fullName = `${patient.user?.firstName || ''} ${patient.user?.lastName || ''}`.toLowerCase()
+    const email = (patient.user?.email || '').toLowerCase()
     const phone = patient.phoneNumber || ''
     
     return fullName.includes(searchTerm.toLowerCase()) ||
@@ -149,9 +153,13 @@ function PharmacistPatients() {
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800">
-                        {patient.firstName} {patient.lastName}
+                        {patient.user?.firstName} {patient.user?.lastName}
                       </h3>
                       <p className="text-sm text-gray-600">Patient ID: {patient.id}</p>
+                      <p className="text-sm text-gray-600">Email: {patient.user?.email || 'N/A'}</p>
+                      <p className="text-sm text-gray-600">
+                        Allergies: {patient.allergies && patient.allergies.length > 0 ? patient.allergies.join(', ') : 'None'}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -183,31 +191,6 @@ function PharmacistPatients() {
                     </span>
                   </div>
 
-                  {patient.orders && patient.orders.length > 0 && (
-                    <div className="pt-3 border-t border-gray-200">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-gray-700">
-                          Orders: {patient.orders.length}
-                        </span>
-                        <FaShoppingCart className="text-green-500" size={16} />
-                      </div>
-                      <div className="mt-2 space-y-1">
-                        {patient.orders.slice(0, 2).map((order) => (
-                          <div key={order.id} className="flex justify-between items-center text-xs">
-                            <span>Order #{order.id}</span>
-                            <span className={`px-2 py-1 rounded-full ${getStatusColor(order.status)}`}>
-                              {order.status}
-                            </span>
-                          </div>
-                        ))}
-                        {patient.orders.length > 2 && (
-                          <p className="text-xs text-gray-500">
-                            +{patient.orders.length - 2} more orders
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  )}
                 </div>
 
                 <div className="mt-4 pt-4 border-t border-gray-200">
@@ -242,7 +225,7 @@ function PharmacistPatients() {
             <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold">
-                  Patient Details: {selectedPatient.firstName} {selectedPatient.lastName}
+                  Patient Details: {selectedPatient.user?.firstName} {selectedPatient.user?.lastName}
                 </h2>
                 <button
                   onClick={() => setShowDetails(false)}
@@ -260,11 +243,11 @@ function PharmacistPatients() {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-600">Full Name</p>
-                    <p className="text-lg">{selectedPatient.firstName} {selectedPatient.lastName}</p>
+                    <p className="text-lg">{selectedPatient.user?.firstName} {selectedPatient.user?.lastName}</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-600">Email</p>
-                    <p className="text-lg">{selectedPatient.email}</p>
+                    <p className="text-lg">{selectedPatient.user?.email}</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-600">Phone</p>
@@ -289,59 +272,6 @@ function PharmacistPatients() {
                   </div>
                 )}
                 
-                {selectedPatient.orders && selectedPatient.orders.length > 0 && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-600 mb-2">Order History</p>
-                    <div className="space-y-2">
-                      {selectedPatient.orders.map((order) => (
-                        <div key={order.id} className="flex justify-between items-center p-3 bg-gray-50 rounded">
-                          <div>
-                            <span className="font-medium">Order #{order.id}</span>
-                            <p className="text-sm text-gray-600">{formatDate(order.createdAt)}</p>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-medium">${order.totalAmount || 0}</p>
-                            <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(order.status)}`}>
-                              {order.status}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                {selectedPatient.appointments && selectedPatient.appointments.length > 0 && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-600 mb-2">Appointments</p>
-                    <div className="space-y-2">
-                      {selectedPatient.appointments.map((appointment: any) => (
-                        <div key={appointment.id || appointment.appointment_id} className="flex justify-between items-center p-3 bg-blue-50 rounded">
-                          <div>
-                            <span className="font-medium">Appointment #{appointment.id || appointment.appointment_id}</span>
-                            <p className="text-sm text-gray-600">
-                              {appointment.date || appointment.appointment_date || appointment.dateOfAppointment || 'N/A'}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
-                              {appointment.status || 'N/A'}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                <div className="flex justify-end space-x-2 pt-4 border-t">
-                  <button
-                    onClick={() => setShowDetails(false)}
-                    className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
-                  >
-                    Close
-                  </button>
-                </div>
               </div>
             </div>
           </div>

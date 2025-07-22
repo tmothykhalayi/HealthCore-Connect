@@ -34,18 +34,7 @@ function SettingsPage() {
   const finalPatientData = patientData || fallbackPatientData
   const finalPatientId = patientId || fallbackPatientData?.id || currentUserId
 
-  console.log('=== DEBUG INFO ===')
-  console.log('User Profile Data:', userProfileData)
-  console.log('Patient Data from Profile:', patientData)
-  console.log('User Data:', userData)
-  console.log('User ID:', userId)
-  console.log('Patient ID from Profile:', patientId)
-  console.log('Fallback Patient Data:', fallbackPatientData)
-  console.log('Fallback Patient ID:', fallbackPatientData?.id)
-  console.log('Final Patient Data:', finalPatientData)
-  console.log('Final Patient ID:', finalPatientId)
-  console.log('Current User ID from auth:', currentUserId)
-  console.log('==================')
+  
 
   const updatePatientMutation = useUpdatePatient()
 

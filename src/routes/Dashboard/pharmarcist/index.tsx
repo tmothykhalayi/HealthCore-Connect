@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import { Link } from '@tanstack/react-router'
 import { usePharmacistProfile, usePharmacyDetails, usePharmacyOrders } from '@/hooks/pharmacist'
-import { FaPills, FaShoppingCart, FaUsers, FaFileMedical, FaMoneyBillWave, FaChartBar } from 'react-icons/fa'
+import { FaPills, FaShoppingCart, FaUsers, FaFileMedical, FaMoneyBillWave, FaChartBar, FaCog } from 'react-icons/fa'
 import { RecordsTable } from '@/components/recordsTable'
 
 export const Route = createFileRoute('/Dashboard/pharmarcist/')({
@@ -36,7 +36,7 @@ function PharmacistDashboard() {
     {
       title: 'Pending Orders',
       value: pendingOrders,
-      icon: FaPills,
+      icon: FaShoppingCart,
       color: 'bg-yellow-500',
       link: '/Dashboard/pharmarcist/pharmacy_orders'
     },
@@ -59,17 +59,10 @@ function PharmacistDashboard() {
   const quickActions = [
     {
       title: 'View Orders',
-      description: 'Manage pharmacy orders and prescriptions',
+      description: 'Manage pharmacy orders',
       icon: FaShoppingCart,
       link: '/Dashboard/pharmarcist/pharmacy_orders',
       color: 'bg-blue-500 hover:bg-blue-600'
-    },
-    {
-      title: 'Prescriptions',
-      description: 'View and process prescriptions',
-      icon: FaPills,
-      link: '/Dashboard/pharmarcist/prescriptions',
-      color: 'bg-green-500 hover:bg-green-600'
     },
     {
       title: 'Patients',
@@ -91,6 +84,13 @@ function PharmacistDashboard() {
       icon: FaChartBar,
       link: '/Dashboard/pharmarcist/records',
       color: 'bg-red-500 hover:bg-red-600'
+    },
+    {
+      title: 'General Settings',
+      description: 'Update your profile and preferences',
+      icon: FaCog,
+      link: '/Dashboard/pharmarcist/settings',
+      color: 'bg-gray-500 hover:bg-gray-600'
     }
   ]
 

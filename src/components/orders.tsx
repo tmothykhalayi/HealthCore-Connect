@@ -84,8 +84,8 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
       pharmacyId: parseInt(formData.pharmacyId),
       medicineId: formData.medicineId ? parseInt(formData.medicineId) : undefined,
       quantity: formData.quantity ? parseInt(formData.quantity) : undefined,
-      orderDate: formData.orderDate,
-      status: formData.status, // <-- use status, not orderStatus
+      orderDate: formData.orderDate ? new Date(formData.orderDate).toISOString() : new Date().toISOString(),
+      status: formData.status,
       totalAmount: parseFloat(formData.totalAmount),
       OrderId: formData.OrderId,
     }

@@ -11,8 +11,10 @@ import {
   FaUserFriends,
   FaUserInjured,
   FaUserMd,
+  FaCog,
 } from 'react-icons/fa'
 import { MdDashboard, MdLocalPharmacy } from 'react-icons/md'
+import useAuthStore from '@/store/auth'
 
 interface SideNavProps {
   role: 'admin' | 'doctor' | 'patient' | 'pharmacist'
@@ -145,11 +147,6 @@ export default function SideNav({ role, onNavigate }: SideNavProps) {
         to: '/Dashboard/pharmarcist/pharmacy_orders',
       },
       {
-        icon: <FaPrescriptionBottleAlt size={18} />,
-        label: 'Prescriptions',
-        to: '/Dashboard/pharmarcist/prescriptions',
-      },
-      {
         icon: <FaHospitalUser size={18} />,
         label: 'Patients',
         to: '/Dashboard/pharmarcist/patients',
@@ -164,13 +161,18 @@ export default function SideNav({ role, onNavigate }: SideNavProps) {
         label: 'Payments',
         to: '/Dashboard/pharmarcist/payments',
       },
+      {
+        icon: <FaCog size={18} />,
+        label: 'General Settings',
+        to: '/Dashboard/pharmarcist/settings',
+      },
     ],
   }
 
   const navItems = [...(roleNavItems[role] || [])]
 
   return (
-    <nav className="sticky top-0 h-screen z-30 bg-white shadow">
+    <nav className="sticky top-0 h-screen z-30 bg-white shadow flex flex-col">
       <div className="flex-1 overflow-y-auto py-4">
         <ul className="space-y-1 px-2">
           {navItems.map((item, index) => (
@@ -186,6 +188,18 @@ export default function SideNav({ role, onNavigate }: SideNavProps) {
                 </span>
                 <span>{item.label}</span>
               </Link>
+              {/* Place logout button right after General Settings for pharmacist */}
+              {role === 'pharmacist' && item.label === 'General Settings' && (
+                <button
+                  onClick={() => {
+                    useAuthStore.getState().logout();
+                    window.location.href = '/login';
+                  }}
+                  className="w-full mt-2 py-2 bg-red-500 text-white rounded-full hover:bg-red-600 flex justify-center text-center"
+                >
+                  Logout
+                </button>
+              )}
             </li>
           ))}
         </ul>

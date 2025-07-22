@@ -15,6 +15,7 @@ import {
   useGetRecordsQuery,
   useUpdateRecord,
 } from '@/hooks/medicalrecords'
+import { getUserRoleHelper } from '@/lib/auth'
 
 export const RecordsTable = () => {
   const [search, setSearch] = useState('')
@@ -305,23 +306,29 @@ export const RecordsTable = () => {
       },
       {
         header: 'Actions',
-        cell: ({ row }) => (
-          <div className="flex space-x-2">
-            <button
-              onClick={() => handleEdit(row.original)}
-              className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => handleDelete(row.original.id)}
-              className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
-              disabled={deleteMutation.isPending}
-            >
-              {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
-            </button>
-          </div>
-        ),
+        cell: ({ row }) => {
+          const userRole = getUserRoleHelper();
+          if (userRole === 'pharmacist') {
+            return null;
+          }
+          return (
+            <div className="flex space-x-2">
+              <button
+                onClick={() => handleEdit(row.original)}
+                className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDelete(row.original.id)}
+                className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
+                disabled={deleteMutation.isPending}
+              >
+                {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          );
+        },
         size: 150,
       },
     ],
