@@ -4,6 +4,7 @@ import { useState } from 'react'
 import type { Role } from '@/types/alltypes'
 import SideNav from '@/components/sideNav'
 import { getUserRoleHelper } from '@/lib/auth'
+import ThemeToggle from '../ThemeToggle'
 
 interface DashboardLayoutProps {
   children?: React.ReactNode
@@ -28,7 +29,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         className={`fixed md:static z-40 w-64 h-full transition-all duration-300 ease-in-out 
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
       >
-        <SideNav role={role} />
+        <SideNav role={role} onNavigate={() => setSidebarOpen(false)} />
       </div>
 
       {/* Main content */}
@@ -41,6 +42,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 Health Management
               </h1>
               <div className="flex items-center space-x-4">
+                <ThemeToggle />
                 <button className="p-1 text-gray-500 hover:text-gray-700 relative">
                   <FaBell size={20} />
                   <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>

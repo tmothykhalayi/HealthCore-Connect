@@ -72,6 +72,8 @@ export const getPharmacyOrdersFn = async (
 export const createPharmacyOrderFn = async (orderData: {
   patientId: number;
   pharmacyId: number;
+  medicineId?: number;
+  quantity?: number;
   orderDate: string;
   status: string;
   totalAmount: number;
@@ -113,6 +115,8 @@ export const updatePharmacyOrderFn = async (
   orderData: {
     patientId?: number;
     pharmacyId?: number;
+    medicineId?: number;
+    quantity?: number;
     orderDate?: string;
     status?: string;
     totalAmount?: number;

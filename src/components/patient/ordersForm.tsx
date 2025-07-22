@@ -34,16 +34,18 @@ const OrderMedicineModal = ({
 
     try {
       const orderData = {
-        patient_id: patientId,
-        medication_name: medicine.name,
-        dosage: '', // Provide appropriate dosage if available
+        patientId, // from props
+        pharmacyId: 1, // TODO: Replace with actual pharmacy selection if needed
+        medicineId: medicine.medicine_id,
         quantity,
+        orderDate: new Date().toISOString(),
         status: 'pending',
-        created_at: new Date(),
+        totalAmount: medicine.price * quantity,
+        OrderId: `ORD-${Date.now()}`,
       }
 
       const result = await createOrderMutation.mutateAsync(orderData)
-      onSuccess(result) // Pass the created order data back
+      onSuccess(result)
       onClose()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to place order')

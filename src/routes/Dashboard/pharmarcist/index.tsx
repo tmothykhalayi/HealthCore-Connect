@@ -3,6 +3,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout'
 import { Link } from '@tanstack/react-router'
 import { usePharmacistProfile, usePharmacyDetails, usePharmacyOrders } from '@/hooks/pharmacist'
 import { FaPills, FaShoppingCart, FaUsers, FaFileMedical, FaMoneyBillWave, FaChartBar } from 'react-icons/fa'
+import { RecordsTable } from '@/components/recordsTable'
 
 export const Route = createFileRoute('/Dashboard/pharmarcist/')({
   component: PharmacistDashboard,
@@ -230,6 +231,10 @@ function PharmacistDashboard() {
               ))}
             </div>
           </div>
+        </div>
+        {/* Add records table for all medical records */}
+        <div className="mt-8">
+          <RecordsTable />
         </div>
       </div>
     </DashboardLayout>

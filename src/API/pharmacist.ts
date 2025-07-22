@@ -171,6 +171,27 @@ export const getPatientsWithOrders = async (pharmacyId: number) => {
   return patients.filter(Boolean)
 }
 
+// Get all orders (global)
+export const getAllOrders = async () => {
+  const fullUrl = `${API_BASE_URL}/orders`
+  const token = getAccessTokenHelper()
+
+  const response = await fetch(fullUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch all orders')
+  }
+
+  const data = await response.json()
+  return data.data || data
+}
+
 // Admin API functions for managing pharmacists
 export const getAllPharmacists = async (page = 1, limit = 10, search = '') => {
   const fullUrl = `${API_BASE_URL}/pharmacists?page=${page}&limit=${limit}&search=${search}`

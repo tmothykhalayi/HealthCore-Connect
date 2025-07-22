@@ -3,7 +3,7 @@ import { getAccessTokenHelper } from '@/lib/auth'
 
 export const getPatientPrescriptionsByIdFn = async (patientId: number) => {
   // Use the correct endpoint for fetching a patient's prescriptions
-  const fullUrl = `${API_BASE_URL}/patients/${patientId}/prescriptions`
+  const fullUrl = `${API_BASE_URL}/prescriptions/patient/${patientId}`
   const token = getAccessTokenHelper()
 
   const response = await fetch(fullUrl, {

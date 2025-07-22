@@ -16,9 +16,10 @@ import { MdDashboard, MdLocalPharmacy } from 'react-icons/md'
 
 interface SideNavProps {
   role: 'admin' | 'doctor' | 'patient' | 'pharmacist'
+  onNavigate?: () => void
 }
 
-export default function SideNav({ role }: SideNavProps) {
+export default function SideNav({ role, onNavigate }: SideNavProps) {
   // Role-specific navigation items
   const roleNavItems = {
     admin: [
@@ -178,6 +179,7 @@ export default function SideNav({ role }: SideNavProps) {
                 to={item.to}
                 className="flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-blue-50 group"
                 activeProps={{ className: 'bg-blue-100 text-blue-600' }}
+                onClick={onNavigate}
               >
                 <span className="text-gray-500 group-hover:text-blue-600 mr-3">
                   {item.icon}

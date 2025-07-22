@@ -24,7 +24,7 @@ export const getPharmacyOrdersFn = async (patientId: number) => {
 }
 
 export const createPharmacyOrderFn = async (orderData: any) => {
-  const fullUrl = `${API_BASE_URL}/patients/pharmacy_orders`
+  const fullUrl = `${API_BASE_URL}/orders`
   const token = getAccessTokenHelper()
 
   const response = await fetch(fullUrl, {

@@ -17,12 +17,14 @@ export const useCreatePharmacyOrder = () => {
 
   return useMutation({
     mutationFn: (orderData: {
-      patient_id: number
-      medication_name: string
-      dosage: string
-      quantity: number
-      status: string
-      created_at: Date
+      patientId: number;
+      pharmacyId: number;
+      medicineId: number;
+      quantity: number;
+      orderDate: string;
+      status: string;
+      totalAmount: number;
+      OrderId: string;
     }) => createPharmacyOrderFn(orderData),
     onSuccess: () => {
       // Invalidate and refetch

@@ -4,9 +4,10 @@ import { Link } from '@tanstack/react-router'
 
 import { PatientAppointments } from '@/components/patient/appointmentCards'
 import { getUserIdHelper } from '@/lib/auth'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useCreateAppointment } from '@/hooks/patient/appointment'
 import useAuthStore from '@/store/auth'
+import { getPatientByUserIdFn } from '@/api/patient/patient'
 
 export const Route = createFileRoute('/Dashboard/patient/appointments')({
   component: PatientAppointmentsPage,
@@ -21,20 +22,43 @@ function PatientAppointmentsPage() {
     status: 'scheduled',
   })
   const user = useAuthStore((state) => state.user)
-  const patientId = user?.user_id
   const { mutate: submitAppointment, isPending, isError, isSuccess } = useCreateAppointment()
+  const [patientId, setPatientId] = useState<number | null>(null)
+
+  useEffect(() => {
+    const fetchPatientId = async () => {
+      const userId = user?.user_id
+      if (userId) {
+        const patient = await getPatientByUserIdFn(Number(userId))
+        setPatientId(patient?.id || null)
+      }
+    }
+    fetchPatientId()
+  }, [user])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    // Fetch patient profile for the logged-in user
+    const userId = user?.user_id
+    if (!userId) {
+      alert('User not logged in.');
+      return;
+    }
+    const patient = await getPatientByUserIdFn(Number(userId))
+    const patientId = patient?.id
+    if (!patientId) {
+      alert('Patient profile not found.');
+      return;
+    }
     const [date, time] = formData.appointment_time.split('T')
     const finalData = {
       doctorId: Number(formData.doctorId),
-      patientId: Number(patientId),
+      patientId,
       appointmentDate: formData.appointment_time,
       appointmentTime: time || '',
       patientEmail: user?.email || '',
@@ -120,7 +144,7 @@ function PatientAppointmentsPage() {
             </div>
           </div>
         )}
-        <PatientAppointments />
+        <PatientAppointments patientId={patientId} />
       </div>
     </DashboardLayout>
   )

@@ -48,7 +48,7 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
       let id = patientId
       if (!id) {
         const userId = getUserIdHelper()
-        if (userId) {
+        if (userId && user?.role === 'patient') {
           const patient = await getPatientByUserIdFn(Number(userId))
           id = patient?.id
         }
@@ -56,13 +56,13 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
       setEffectivePatientId(id ? Number(id) : null)
     }
     fetchPatientId()
-  }, [patientId])
+  }, [patientId, user])
 
   const { data, isLoading, isError } = useGetPharmacyOrdersQuery(
     pagination.pageIndex + 1,
     pagination.pageSize,
     search,
-    effectivePatientId,
+    effectivePatientId === null ? undefined : effectivePatientId,
   )
 
   console.log('[DEBUG] PharmacyOrdersTable - data:', data);
@@ -74,17 +74,18 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
   const updateMutation = useUpdatePharmacyOrder()
 
   const handleCreateOrder = () => {
-    if (!effectivePatientId) {
+    // Only require patientId if user is a patient
+    if (user?.role === 'patient' && !effectivePatientId) {
       alert('Patient ID not found. Please log in again.');
       return;
     }
     const orderData = {
-      patientId: effectivePatientId,
+      patientId: user?.role === 'patient' ? effectivePatientId : (formData.patientId ? parseInt(formData.patientId) : undefined),
       pharmacyId: parseInt(formData.pharmacyId),
-      medicineId: parseInt(formData.medicineId),
-      quantity: parseInt(formData.quantity),
+      medicineId: formData.medicineId ? parseInt(formData.medicineId) : undefined,
+      quantity: formData.quantity ? parseInt(formData.quantity) : undefined,
       orderDate: formData.orderDate,
-      orderStatus: formData.status, // <-- use orderStatus for backend
+      status: formData.status, // <-- use status, not orderStatus
       totalAmount: parseFloat(formData.totalAmount),
       OrderId: formData.OrderId,
     }
@@ -112,10 +113,10 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
     const orderData = {
       patientId: effectivePatientId,
       pharmacyId: parseInt(formData.pharmacyId),
-      medicineId: parseInt(formData.medicineId),
-      quantity: parseInt(formData.quantity),
+      medicineId: formData.medicineId ? parseInt(formData.medicineId) : undefined,
+      quantity: formData.quantity ? parseInt(formData.quantity) : undefined,
       orderDate: formData.orderDate,
-      orderStatus: formData.status, 
+      status: formData.status, // <-- use status, not orderStatus
       totalAmount: parseFloat(formData.totalAmount),
       OrderId: formData.OrderId,
     }
@@ -432,8 +433,18 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-bold mb-4">Create New Order</h2>
             <div className="space-y-4">
-              {/* Patient ID is set automatically and hidden */}
-              <input type="hidden" value={effectivePatientId || ''} readOnly />
+              {/* Patient ID field only for pharmacists */}
+              {user?.role !== 'patient' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Patient ID</label>
+                  <input
+                    type="number"
+                    value={formData.patientId}
+                    onChange={(e) => setFormData({ ...formData, patientId: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              )}
               <div>
                 <label className="block text-sm font-medium text-gray-700">Pharmacy ID</label>
                 <input

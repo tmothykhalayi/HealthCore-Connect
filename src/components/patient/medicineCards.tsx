@@ -15,7 +15,8 @@ type Medicine = {
 }
 
 const MedicinesList = () => {
-  const { data, isLoading, isError, error } = useGetMedicineQuery()
+  const userId = Number(getUserIdHelper())
+  const { data, isLoading, isError, error } = useGetMedicineQuery(1, 10, '', userId)
   const medicines: Medicine[] = Array.isArray(data) ? data : []
 
   if (isLoading) {
@@ -63,7 +64,7 @@ const MedicinesList = () => {
       >
         {medicines?.map((medicine: Medicine, index: number) => (
           <MedicineCard
-            key={medicine.medicine_id}
+            key={medicine.medicine_id ?? index}
             medicine={medicine}
             index={index}
           />
@@ -95,7 +96,6 @@ const MedicineCard = ({
       y: 0,
       transition: {
         duration: 0.5,
-        ease: 'easeOut',
       },
     },
     hover: {
@@ -115,9 +115,6 @@ const MedicineCard = ({
     },
   )
 
-  const imageUrl =
-    medicine.img || 'https://via.placeholder.com/300x200?text=Medicine'
-
   return (
     <>
       <motion.div
@@ -128,18 +125,6 @@ const MedicineCard = ({
         animate="show"
         transition={{ delay: index * 0.1 }}
       >
-        <div className="h-48 bg-gray-100 overflow-hidden">
-          <img
-            src={imageUrl}
-            alt={medicine.name}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              e.currentTarget.src =
-                'https://via.placeholder.com/300x200?text=Medicine'
-            }}
-          />
-        </div>
-
         <div className="p-6">
           <motion.h2
             className="text-xl font-bold text-gray-800 mb-2"
@@ -212,7 +197,7 @@ const MedicineCard = ({
             transition={{ delay: index * 0.1 + 0.5 }}
           >
             <span className="text-lg font-bold text-blue-600">
-              Ksh {medicine.price.toFixed(2)}
+              Ksh {Number(medicine.price).toFixed(2)}
             </span>
 
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>

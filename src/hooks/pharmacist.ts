@@ -10,7 +10,8 @@ import {
   getPharmacistById,
   createPharmacist,
   updatePharmacist,
-  deletePharmacist
+  deletePharmacist,
+  getAllOrders
 } from '@/api/pharmacist'
 import { getUserIdHelper } from '@/lib/auth'
 
@@ -126,5 +127,13 @@ export const useDeletePharmacist = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pharmacists'] })
     },
+  })
+} 
+
+// Hook to get all orders (global)
+export const useGetAllOrders = () => {
+  return useQuery({
+    queryKey: ['all-orders'],
+    queryFn: getAllOrders,
   })
 } 

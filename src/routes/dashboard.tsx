@@ -4,11 +4,11 @@ import { useState } from 'react'
 import type { Role } from '@/types/alltypes'
 import SideNav from '@/components/sideNav'
 import { getUserRoleHelper } from '@/lib/auth'
+import ThemeToggle from '@/components/ThemeToggle';
 
 export const Route = createFileRoute('/dashboard')({
   component: DashboardLayout,
 })
-
 function DashboardLayout() {
   // getUserRole
   // const role = 'admin' // This should be dynamically set based on user role
@@ -43,6 +43,7 @@ function DashboardLayout() {
                 Hospital Management
               </h1>
               <div className="flex items-center space-x-4">
+                <ThemeToggle />
                 <button className="p-1 text-gray-500 hover:text-gray-700 relative">
                   <FaBell size={20} />
                   <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
@@ -64,3 +65,4 @@ function DashboardLayout() {
     </div>
   )
 }
+

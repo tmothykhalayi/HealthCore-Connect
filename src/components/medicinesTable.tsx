@@ -1,5 +1,5 @@
 // components/MedicinesTable.tsx
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import {
   flexRender,
   getCoreRowModel,
@@ -11,6 +11,8 @@ import type {ColumnDef} from '@tanstack/react-table';
 import type { TMedicine } from '@/types/alltypes'
 import { useDeleteMedicine, useGetMedicineQuery, useCreateMedicine, useUpdateMedicine } from '@/hooks/medicine'
 import type { CreateMedicineData, UpdateMedicineData } from '@/api/medicine'
+import { getUserIdHelper } from '@/lib/auth'
+import { getPatientByUserIdFn } from '@/api/patient/patient'
 
 export const MedicinesTable = () => {
   const [search, setSearch] = useState('')
@@ -36,12 +38,31 @@ export const MedicinesTable = () => {
     stockQuantity: 0,
     minimumStockLevel: 10,
   })
+  const [userId, setUserId] = useState<number | null>(null)
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const authUserId = getUserIdHelper()
+      if (authUserId) {
+        const patient = await getPatientByUserIdFn(Number(authUserId))
+        setUserId(patient?.id || null)
+      }
+    }
+    fetchUserId()
+  }, [])
 
   const { data, isLoading, isError } = useGetMedicineQuery(
     pagination.pageIndex + 1,
     pagination.pageSize,
     search,
+    userId || undefined
   )
+
+  useEffect(() => {
+    if (userId) {
+      console.log('Fetching medicines for userId:', userId)
+    }
+  }, [userId])
 
   const createMutation = useCreateMedicine()
   const updateMutation = useUpdateMedicine()
