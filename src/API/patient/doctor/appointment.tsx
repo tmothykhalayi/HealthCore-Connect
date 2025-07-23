@@ -16,7 +16,10 @@ export const createAppointmentFn = async (appointmentData: {
 }) => {
   const fullUrl = `${API_BASE_URL}/appointments`
 
-  console.log('Creating appointment with data:', appointmentData)
+  // Exclude appointmentDate from the payload
+  const { appointmentDate, ...payload } = appointmentData;
+
+  console.log('Creating appointment with data:', payload)
 
   const response = await fetch(fullUrl, {
     method: 'POST',
@@ -24,7 +27,7 @@ export const createAppointmentFn = async (appointmentData: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${getAccessTokenHelper()}`,
     },
-    body: JSON.stringify(appointmentData),
+    body: JSON.stringify(payload),
   })
 
   if (!response.ok) {

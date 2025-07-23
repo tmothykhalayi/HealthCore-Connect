@@ -80,7 +80,20 @@ const DoctorsList = () => {
             >
               &times;
             </button>
-            <AppointmentForm doctorId={selectedDoctor.doctor_id} onSuccess={() => setShowModal(false)} />
+            {/* Doctor Info at top of modal */}
+            <div className="flex items-center mb-4">
+              <img
+                src={selectedDoctor.img || 'https://i.pinimg.com/736x/8e/5b/6a/8e5b6a2191656c1ac5d4571577870170.jpg'}
+                alt={selectedDoctor.name}
+                className="w-16 h-16 rounded-full object-cover mr-4 border"
+              />
+              <div>
+                <div className="font-bold text-lg text-gray-800">{selectedDoctor.name}</div>
+                <div className="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-semibold mt-1">{selectedDoctor.specialization}</div>
+                <div className="text-gray-500 text-sm">{selectedDoctor.email}</div>
+              </div>
+            </div>
+            <AppointmentForm doctorId={selectedDoctor.doctor_id} onSuccess={() => setShowModal(false)} doctor={selectedDoctor} />
           </div>
         </div>
       )}
@@ -89,12 +102,9 @@ const DoctorsList = () => {
 }
 
 const DoctorCard = ({ doctor, index, onBook }: { doctor: Doctor; index: number; onBook: () => void }) => {
-  // Use the image from the API if available, otherwise use placeholder
   const imageUrl =
     doctor.img ||
     'https://i.pinimg.com/736x/8e/5b/6a/8e5b6a2191656c1ac5d4571577870170.jpg'
-
-  // Animation variants for each card
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
     show: {
@@ -110,7 +120,6 @@ const DoctorCard = ({ doctor, index, onBook }: { doctor: Doctor; index: number; 
       transition: { duration: 0.2 },
     },
   }
-
   return (
     <motion.div
       className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
@@ -120,7 +129,12 @@ const DoctorCard = ({ doctor, index, onBook }: { doctor: Doctor; index: number; 
       animate="show"
       transition={{ delay: index * 0.1 }}
     >
-
+      {/* Doctor Photo */}
+      <img
+        src={imageUrl}
+        alt={doctor.name}
+        className="w-full h-40 object-cover object-center"
+      />
       <div className="p-6">
         <motion.h2
           className="text-xl font-semibold text-gray-800 mb-2"
@@ -130,16 +144,10 @@ const DoctorCard = ({ doctor, index, onBook }: { doctor: Doctor; index: number; 
         >
           {doctor.name}
         </motion.h2>
-
-        <motion.p
-          className="text-blue-600 font-medium mb-1"
-          initial={{ x: -10, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: index * 0.1 + 0.45 }}
-        >
+        {/* Specialty Badge */}
+        <span className="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-semibold mb-2">
           {doctor.specialization}
-        </motion.p>
-
+        </span>
         <div className="mt-4 space-y-2 text-gray-600">
           <motion.p
             className="flex items-center"
@@ -162,7 +170,6 @@ const DoctorCard = ({ doctor, index, onBook }: { doctor: Doctor; index: number; 
             </svg>
             {doctor.email}
           </motion.p>
-
           <motion.p
             className="flex items-center"
             initial={{ x: -10, opacity: 0 }}
@@ -185,7 +192,6 @@ const DoctorCard = ({ doctor, index, onBook }: { doctor: Doctor; index: number; 
             {doctor.availability}
           </motion.p>
         </div>
-
         <motion.div
           className="mt-6 flex justify-between items-center"
           initial={{ y: 10, opacity: 0 }}
@@ -195,10 +201,9 @@ const DoctorCard = ({ doctor, index, onBook }: { doctor: Doctor; index: number; 
           <span className="text-lg font-bold text-gray-900">
             Ksh {doctor.consultation_fee?.toLocaleString() ?? 'Not specified'}
           </span>
-
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
             <button
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              className="px-6 py-2 bg-blue-700 text-white rounded-lg font-bold text-base shadow hover:bg-blue-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
               onClick={onBook}
             >
               Book Appointment

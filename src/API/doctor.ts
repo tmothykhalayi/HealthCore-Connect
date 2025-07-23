@@ -144,17 +144,23 @@ export const updateDoctorFn = async (doctorId: number, doctorData: any): Promise
   const fullUrl = `${API_BASE_URL}/doctors/${doctorId}`;
   const token = getAccessTokenHelper();
 
-  console.log('Frontend sending doctor data:', doctorData);
-
-  // Map frontend fields (snake_case) to backend fields (camelCase)
-  const payload = {
+  // Map all possible fields from the form/state to backend fields
+  const payload: any = {
     specialization: doctorData.specialization,
     licenseNumber: doctorData.license_number,
     consultationFee: doctorData.consultation_fee,
     availableDays: doctorData.availability ? doctorData.availability.split(',').map((s: string) => s.trim()) : undefined,
+    phoneNumber: doctorData.phoneNumber,
+    officeAddress: doctorData.officeAddress,
+    yearsOfExperience: doctorData.yearsOfExperience,
+    education: doctorData.education,
+    availableHours: doctorData.availableHours,
+    status: doctorData.status,
+    // add any other fields you want to update
   };
 
-  console.log('Mapped payload for backend:', payload);
+  // Remove undefined fields (optional, but cleaner)
+  Object.keys(payload).forEach(key => payload[key] === undefined && delete payload[key]);
 
   const response = await fetch(fullUrl, {
     method: 'PATCH',

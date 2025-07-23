@@ -20,6 +20,7 @@ import useAuthStore from '@/store/auth'
 import { getUserIdHelper } from '@/lib/auth'
 import { getPatientByUserIdFn } from '@/api/patient/patient'
 import { useEffect } from 'react'
+import { useToast } from '@/components/utils/toast-context'
 
 export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
   const [search, setSearch] = useState('')
@@ -42,6 +43,7 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
     OrderId: '',
   })
   const [effectivePatientId, setEffectivePatientId] = useState<number | null>(null)
+  const toast = useToast()
 
   useEffect(() => {
     const fetchPatientId = async () => {
@@ -75,12 +77,16 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
 
   const handleCreateOrder = () => {
     // Only require patientId if user is a patient
-    if (user?.role === 'patient' && !effectivePatientId) {
+    if (user?.role === 'patient' && (typeof effectivePatientId !== 'number' || isNaN(effectivePatientId))) {
       alert('Patient ID not found. Please log in again.');
       return;
     }
+    if (user?.role !== 'patient' && (!formData.patientId || isNaN(Number(formData.patientId)))) {
+      alert('Patient ID is required.');
+      return;
+    }
     const orderData = {
-      patientId: user?.role === 'patient' ? effectivePatientId : (formData.patientId ? parseInt(formData.patientId) : undefined),
+      patientId: user?.role === 'patient' ? (effectivePatientId as number) : parseInt(formData.patientId),
       pharmacyId: parseInt(formData.pharmacyId),
       medicineId: formData.medicineId ? parseInt(formData.medicineId) : undefined,
       quantity: formData.quantity ? parseInt(formData.quantity) : undefined,
@@ -157,6 +163,17 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
     setShowEditModal(true)
   }
 
+  const handleCancelOrder = (orderId: number) => {
+    updateMutation.mutate(
+      { orderId, orderData: { status: 'cancelled' } },
+      {
+        onSuccess: () => {
+          if (toast) toast.open('Order cancelled successfully!')
+        },
+      },
+    )
+  }
+
   // Format date to Kenyan format
   const formatDateTime = (dateTimeString: string) => {
     const date = new Date(dateTimeString)
@@ -204,9 +221,9 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
       },
       {
         header: 'Total Amount',
-        accessorKey: 'quantity',
+        accessorKey: 'total_amount',
         cell: ({ row }) => (
-          <span className="font-medium">${row.original.quantity}</span>
+          <span className="font-medium">Ksh {Number(row.original.total_amount).toFixed(2)}</span>
         ),
       },
       {
@@ -234,26 +251,30 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
         header: 'Actions',
         cell: ({ row }) => (
           <div className="flex gap-2">
-            <button
-              onClick={() => handleEditOrder(row.original)}
-              className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
-            >
-              Edit
-            </button>
+            {/* Only show Edit for non-patients */}
+            {user?.role !== 'patient' && (
+              <button
+                onClick={() => handleEditOrder(row.original)}
+                className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
+              >
+                Edit
+              </button>
+            )}
             <button
               onClick={() => {
                 if (
+                  row.original.status !== 'cancelled' &&
                   confirm(
-                    `Are you sure you want to delete order #${row.original.pharmacy_order_id}?`,
+                    `Are you sure you want to cancel order #${row.original.pharmacy_order_id}?`,
                   )
                 ) {
-                  deleteMutation.mutate(row.original.pharmacy_order_id)
+                  handleCancelOrder(row.original.pharmacy_order_id)
                 }
               }}
-              className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
-              disabled={deleteMutation.isPending}
+              className={`px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50 ${row.original.status === 'cancelled' ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={updateMutation.isPending || row.original.status === 'cancelled'}
             >
-              {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+              {updateMutation.isPending ? 'Cancelling...' : 'Cancel'}
             </button>
           </div>
         ),
@@ -302,12 +323,14 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
           <h1 className="text-2xl font-bold text-gray-800">
             Pharmacy Orders
           </h1>
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-          >
-            Create New Order
-          </button>
+          {user?.role !== 'patient' && (
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Create New Order
+            </button>
+          )}
         </div>
         <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
           <div className="flex-1">

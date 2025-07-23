@@ -6,14 +6,34 @@ export const Route = createFileRoute('/Dashboard/doctor/patient/$patientId')({
 })
 
 function RouteComponent() {
-  const param = useParams({ from: '/dashboard/doctor/patient/$patientId' })
+  // Use correct casing for route and type for useParams
+  const param = useParams({ from: '/Dashboard/doctor/patient/$patientId' })
   const patientId = param.patientId
-  const { data, isLoading } = useGetPatientPrescriptionsQuery(Number(patientId))
+  const { data, isLoading, isError, error } = useGetPatientPrescriptionsQuery(Number(patientId))
 
   if (isLoading)
     return (
       <div className="flex justify-center items-center h-64">Loading...</div>
     )
+
+  if (isError) {
+    // Safely handle error object
+    let errorMessage = 'Failed to load patient details.'
+    // Check for error.response?.status === 404 in a type-safe way
+    const status = (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'status' in error.response)
+      ? (error.response as { status?: number }).status
+      : undefined;
+    if (status === 404) {
+      errorMessage = 'Patient not found.'
+    }
+    return (
+      <div className="flex justify-center items-center h-64">
+        <p className="text-red-600 text-lg font-semibold">
+          {errorMessage}
+        </p>
+      </div>
+    )
+  }
 
   if (!data || data.length === 0) {
     return (

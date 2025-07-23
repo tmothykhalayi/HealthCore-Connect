@@ -52,7 +52,8 @@ export const getPharmacyOrdersFn = async (
       medicine_id: order.medicineId || 0, // Map medicineId from backend
       patient_name: order.patient ? `${order.patient.user?.firstName || ''} ${order.patient.user?.lastName || ''}`.trim() : '',
       doctor_name: order.pharmacy ? `${order.pharmacy.user?.firstName || ''} ${order.pharmacy.user?.lastName || ''}`.trim() : '', // Use pharmacy name as doctor_name
-      quantity: order.quantity || order.totalAmount || 0, // Use quantity or totalAmount
+      quantity: order.quantity || 0,
+      total_amount: order.totalAmount || 0, // Map totalAmount from backend
       status: order.status || 'pending',
       created_at: order.createdAt || order.orderDate,
       order_id: order.OrderId || '', // Map OrderId from backend

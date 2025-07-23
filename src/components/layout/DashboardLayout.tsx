@@ -4,7 +4,7 @@ import { useState } from 'react'
 import type { Role } from '@/types/alltypes'
 import SideNav from '@/components/sideNav'
 import { getUserRoleHelper } from '@/lib/auth'
-import ThemeToggle from '../ThemeToggle'
+//import ThemeToggle from '../ThemeToggle'
 import Chat from '@/components/chat'
 
 interface DashboardLayoutProps {
@@ -43,7 +43,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 Health Management
               </h1>
               <div className="flex items-center space-x-4">
-                <ThemeToggle />
+              
                 <button className="p-1 text-gray-500 hover:text-gray-700 relative">
                   <FaBell size={20} />
                   <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>

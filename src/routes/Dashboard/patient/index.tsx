@@ -114,13 +114,13 @@ function PatientDashboard() {
       link: '/Dashboard/patient/medical-records',
       color: 'bg-purple-500 hover:bg-purple-600'
     },
-    {
-      title: 'Prescriptions',
-      description: 'View and manage your prescriptions',
-      icon: FaPills,
-      link: '/Dashboard/patient/prescriptions',
-      color: 'bg-orange-500 hover:bg-orange-600'
-    },
+    // {
+    //   title: 'Prescriptions',
+    //   description: 'View and manage your prescriptions',
+    //   icon: FaPills,
+    //   link: '/Dashboard/patient/prescriptions',
+    //   color: 'bg-orange-500 hover:bg-orange-600'
+    // },
     {
       title: 'Orders',
       description: 'Track your medicine and pharmacy orders',

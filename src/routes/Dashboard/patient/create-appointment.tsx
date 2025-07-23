@@ -62,10 +62,16 @@ function CreateAppointmentPage() {
     // In a real app, you would get the patient ID from the user's profile
     const patientId = Number(getUserIdHelper())
 
+    // Combine date and time into a single string (YYYY-MM-DDTHH:mm)
+    let appointmentDate = formData.appointmentDate
+    if (formData.appointmentDate && formData.appointmentTime) {
+      appointmentDate = `${formData.appointmentDate}T${formData.appointmentTime}`
+    }
+
     const finalData = {
       doctorId: doctorId,
       patientId: patientId,
-      appointmentDate: formData.appointmentDate,
+      appointmentDate: appointmentDate, // always a string
       appointmentTime: formData.appointmentTime,
       patientEmail: 'patient@example.com', // This should come from user profile
       duration: 30, // Default duration

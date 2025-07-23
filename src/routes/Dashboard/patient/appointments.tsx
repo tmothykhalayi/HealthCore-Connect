@@ -56,10 +56,12 @@ function PatientAppointmentsPage() {
       return;
     }
     const [date, time] = formData.appointment_time.split('T')
+    // Always send appointmentDate as a string in 'YYYY-MM-DDTHH:mm' format
+    const appointmentDate = formData.appointment_time || ''
     const finalData = {
       doctorId: Number(formData.doctorId),
       patientId,
-      appointmentDate: formData.appointment_time,
+      appointmentDate: appointmentDate, // always a string
       appointmentTime: time || '',
       patientEmail: user?.email || '',
       duration: 30,

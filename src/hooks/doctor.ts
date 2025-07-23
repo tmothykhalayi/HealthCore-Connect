@@ -48,7 +48,8 @@ export const useUpdateDoctor = () => {
   return useMutation({
     mutationFn: ({ doctorId, doctorData }: { doctorId: number; doctorData: any }) => updateDoctorFn(doctorId, doctorData),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['doctors'] })
+      queryClient.invalidateQueries({ queryKey: ['doctors'], exact: false });
+      queryClient.refetchQueries({ queryKey: ['doctors'], exact: false });
     },
   })
 }

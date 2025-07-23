@@ -58,9 +58,16 @@ export const DoctorsTable = () => {
         alert('Consultation fee must be a positive number');
         return;
       }
+      // Map consultation_fee to consultationFee for backend
+      const doctorData = {
+        ...formState,
+        consultationFee: formState.consultation_fee,
+      };
+      delete doctorData.consultation_fee;
+
       updateDoctorMutation.mutate({
         doctorId: selectedDoctor.doctor_id,
-        doctorData: formState,
+        doctorData,
       }, {
         onSuccess: handleModalClose,
       });

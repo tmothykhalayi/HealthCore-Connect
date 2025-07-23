@@ -78,7 +78,25 @@ export const getPatientsFn = async (
     throw new Error('Network response was not ok')
   }
 
-  return response.json()
+  const result = await response.json()
+
+  // Map backend data to frontend expected shape
+  const mappedData = (result.data || []).map((patient: any) => ({
+    patient_id: patient.id,
+    name: patient.user
+      ? `${patient.user.firstName || ''} ${patient.user.lastName || ''}`.trim()
+      : '',
+    email: patient.user?.email || '',
+    dob: patient.dateOfBirth || '',
+    gender: patient.user?.gender || '', // If available
+    phone: patient.user?.phoneNumber || patient.phoneNumber || '',
+    address: patient.address || '',
+  }))
+
+  return {
+    data: mappedData,
+    total: result.total || mappedData.length,
+  }
 }
 
 // API/patients.ts

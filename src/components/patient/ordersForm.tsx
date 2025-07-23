@@ -1,6 +1,10 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useCreatePharmacyOrder } from '@/hooks/patient/order'
+import { useToast } from '@/components/utils/toast-context'
+import { useGetPatientByUserId } from '@/hooks/patient'
+import { getUserIdHelper } from '@/lib/auth'
+import { useGetPharmacies } from '@/hooks/pharmacyhooks'
 
 type Medicine = {
   medicine_id: number
@@ -17,25 +21,38 @@ type OrderMedicineModalProps = {
 
 const OrderMedicineModal = ({
   medicine,
-  patientId,
+  patientId: _unusedPatientId, // ignore prop, fetch real patientId
   onClose,
   onSuccess,
 }: OrderMedicineModalProps) => {
   const [quantity, setQuantity] = useState(1)
+  const [selectedPharmacyId, setSelectedPharmacyId] = useState<string>('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
-
+  const toast = useToast()
+  const userId = Number(getUserIdHelper())
+  const { data: patient, isLoading: loadingPatient, isError: errorPatient } = useGetPatientByUserId(userId)
+  const { data: pharmacies, isLoading: loadingPharmacies, isError: errorPharmacies } = useGetPharmacies()
   const createOrderMutation = useCreatePharmacyOrder()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     setError('')
-
+    if (!patient || !patient.id) {
+      setError('Patient profile not found. Please complete your profile or contact support.')
+      setIsSubmitting(false)
+      return
+    }
+    if (!selectedPharmacyId) {
+      setError('Please select a pharmacy.')
+      setIsSubmitting(false)
+      return
+    }
     try {
       const orderData = {
-        patientId, // from props
-        pharmacyId: 1, // TODO: Replace with actual pharmacy selection if needed
+        patientId: patient.id, // use real patient id
+        pharmacyId: selectedPharmacyId, // use selected pharmacy
         medicineId: medicine.medicine_id,
         quantity,
         orderDate: new Date().toISOString(),
@@ -45,6 +62,7 @@ const OrderMedicineModal = ({
       }
 
       const result = await createOrderMutation.mutateAsync(orderData)
+      if (toast) toast.open('Order placed successfully!')
       onSuccess(result)
       onClose()
     } catch (err) {
@@ -62,6 +80,13 @@ const OrderMedicineModal = ({
   const modalVariants = {
     hidden: { opacity: 0, y: -50 },
     visible: { opacity: 1, y: 0 },
+  }
+
+  if (loadingPatient || loadingPharmacies) {
+    return <div className="p-6 text-center">Loading patient and pharmacy info...</div>
+  }
+  if (errorPatient || errorPharmacies) {
+    return <div className="p-6 text-center text-red-500">Error loading patient or pharmacy info.</div>
   }
 
   return (
@@ -105,6 +130,25 @@ const OrderMedicineModal = ({
 
         <form onSubmit={handleSubmit}>
           <div className="space-y-4">
+            {/* Pharmacy selection */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Select Pharmacy
+              </label>
+              <select
+                className="w-full border rounded p-2"
+                value={selectedPharmacyId}
+                onChange={e => setSelectedPharmacyId(e.target.value)}
+                required
+              >
+                <option value="">-- Select a pharmacy --</option>
+                {Array.isArray(pharmacies) && pharmacies.map((pharmacy: any) => (
+                  <option key={pharmacy.id || pharmacy.pharmacy_id} value={pharmacy.id || pharmacy.pharmacy_id}>
+                    {pharmacy.name || pharmacy.pharmacy_name}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Quantity

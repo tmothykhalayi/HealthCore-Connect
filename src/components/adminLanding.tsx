@@ -3,26 +3,28 @@ import {
   FiCalendar,
   FiDollarSign,
   FiFileText,
-  FiPieChart,
-  FiPieChart as FiPieChartAlt,
+  //FiPieChart,
+  FiPieChart as
+  // FiPieChartAlt,
   FiShoppingCart,
-  FiUser,
+ // FiUser,
   FiUsers,
 } from 'react-icons/fi'
 import { FaPills, FaUserMd } from 'react-icons/fa'
 import { Link } from '@tanstack/react-router'
-import { useAdminDashboardStats, useRecentActivities, useSystemHealth } from '@/hooks/admin'
+import { useAdminDashboardStats, useRecentActivities,  } from '@/hooks/admin'
 import { useGetDoctorQuery } from '@/hooks/doctor'
 import { useGetAllUsersQuery } from '@/hooks/user'
 import { useGetAppointmentQuery } from '@/hooks/appointment'
 import { useGetPaymentQuery } from '@/hooks/payment'
 import { useGetMedicineQuery } from '@/hooks/medicine'
+import { DollarSignIcon } from 'lucide-react'
 
 const AdminDashboard = () => {
   // Fetch dashboard data
   const { data: stats, isLoading: statsLoading, error: statsError } = useAdminDashboardStats()
   const { data: activities, isLoading: activitiesLoading } = useRecentActivities()
-  const { data: systemHealth } = useSystemHealth()
+  //const { data: systemHealth } = useSystemHealth()
 
   // Fetch real data from working endpoints
   const { data: doctorsData } = useGetDoctorQuery(1, 1000, '')
@@ -48,7 +50,7 @@ const AdminDashboard = () => {
     {
       title: 'Patients',
       icon: <FiUsers className="h-8 w-8" />,
-      color: 'bg-blue-100 text-blue-600',
+      color: 'bg-blue-200 text-blue-600',
       route: '/dashboard/admin/patients',
       description: 'Manage patient records and information',
       count: realStats.totalUsers - realStats.totalDoctors,
@@ -56,7 +58,7 @@ const AdminDashboard = () => {
     {
       title: 'Doctors',
       icon: <FaUserMd className="h-8 w-8" />,
-      color: 'bg-teal-100 text-teal-600',
+      color: 'bg-teal-200 text-teal-600',
       route: '/dashboard/admin/doctors',
       description: 'View and manage medical staff',
       count: realStats.totalDoctors,
@@ -69,14 +71,14 @@ const AdminDashboard = () => {
       description: 'Schedule and track appointments',
       count: realStats.totalAppointments,
     },
-    {
-      title: 'Prescriptions',
-      icon: <FiFileText className="h-8 w-8" />,
-      color: 'bg-purple-100 text-purple-600',
-      route: '/dashboard/admin/prescriptions',
-      description: 'Create and manage prescriptions',
-      count: 0, // Will be updated when prescription endpoint is available
-    },
+    // {
+    //   title: 'Prescriptions',
+    //   icon: <FiFileText className="h-8 w-8" />,
+    //   color: 'bg-purple-100 text-purple-600',
+    //   route: '/dashboard/admin/prescriptions',
+    //   description: 'Create and manage prescriptions',
+    //   count: 0, // Will be updated when prescription endpoint is available
+    // },
     {
       title: 'Pharmacy Orders',
       icon: <FiShoppingCart className="h-8 w-8" />,
@@ -87,8 +89,8 @@ const AdminDashboard = () => {
     },
     {
       title: 'Payments',
-      icon: <FiDollarSign className="h-8 w-8" />,
-      color: 'bg-indigo-100 text-indigo-600',
+      icon: <DollarSignIcon className="h-8 w-8" />,
+      color: 'bg-indigo-200 text-indigo-600',
       route: '/dashboard/admin/payments',
       description: 'View payment records',
       count: realStats.totalPayments,
@@ -119,7 +121,7 @@ const AdminDashboard = () => {
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
             Welcome Admin
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-900">
             Loading dashboard data...
           </p>
         </div>
@@ -147,7 +149,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-100 p-6">
       {/* Welcome Header */}
       <div className="mb-10 text-center">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">
@@ -156,7 +158,7 @@ const AdminDashboard = () => {
         <p className="text-gray-600">
           Manage your healthcare system efficiently
         </p>
-        {systemHealth && (
+        {/* {systemHealth && (
           <div className={`mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
             systemHealth.status === 'ok' 
               ? 'bg-green-100 text-green-800' 
@@ -165,9 +167,9 @@ const AdminDashboard = () => {
             <div className={`w-2 h-2 rounded-full mr-2 ${
               systemHealth.status === 'ok' ? 'bg-green-500' : 'bg-red-500'
             }`}></div>
-            System Status: {systemHealth.status === 'ok' ? 'Healthy' : 'Issues Detected'}
-          </div>
-        )}
+            System Status: {systemHealth.status === 'ok' }
+          </div> */}
+        {/* )} */}
       </div>
 
       {/* Route Cards Grid */}

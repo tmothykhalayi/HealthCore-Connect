@@ -145,3 +145,9 @@ export const updateOrderStatus = async (
   )
   return response.data
 }
+
+// GET all pharmacies
+export const getPharmacies = async () => {
+  const response = await axios.get(`${API_BASE_URL}/pharmacy`)
+  return response.data
+}

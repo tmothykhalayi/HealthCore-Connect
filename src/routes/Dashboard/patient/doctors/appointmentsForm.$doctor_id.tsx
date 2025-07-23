@@ -14,8 +14,9 @@ export const Route = createFileRoute(
 interface AppointmentFormProps {
   doctorId?: number;
   onSuccess?: () => void;
+  doctor?: any;
 }
-function AppointmentForm({ doctorId, onSuccess }: AppointmentFormProps) {
+function AppointmentForm({ doctorId, onSuccess, doctor }: AppointmentFormProps) {
   const {
     mutate: submitAppointment,
     isPending,
@@ -56,8 +57,8 @@ function AppointmentForm({ doctorId, onSuccess }: AppointmentFormProps) {
     reason: '',
     status: 'scheduled',
   })
-
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -80,49 +81,86 @@ function AppointmentForm({ doctorId, onSuccess }: AppointmentFormProps) {
       setError('Patient profile not found. Please complete your profile or contact support.')
       return
     }
+    // Validate appointment time is in the future
+    if (formData.appointment_time) {
+      const selectedDate = new Date(formData.appointment_time)
+      if (selectedDate <= new Date()) {
+        setError('Appointment time must be in the future.')
+        return
+      }
+    }
     // Parse date and time from datetime-local input
     const [date, time] = formData.appointment_time.split('T')
+    // Always send appointmentDate as a valid ISO string (not a Date object)
     const appointmentDateISO = formData.appointment_time
       ? new Date(formData.appointment_time).toISOString()
       : ''
-    const finalData = {
-      doctorId: doctorIdNumber,
-      patientId: patientId,
-      appointmentDate: appointmentDateISO,
-      appointmentTime: time || '',
-      patientEmail: patientEmail,
-      duration: 30,
-      reason: formData.reason,
-      status: formData.status,
-      date: date || '',
-      time: time || '',
-      title: 'Consultation',
+    // Defensive: ensure it's a string and valid ISO format
+    if (!appointmentDateISO || typeof appointmentDateISO !== 'string' || appointmentDateISO === 'Invalid Date') {
+      setError('Please select a valid appointment date and time.')
+      return
     }
+    const finalData = {
+      doctorId: doctorIdNumber, // number
+      patientId: patientId,     // number
+      appointmentDate: appointmentDateISO, // ISO string (YYYY-MM-DDTHH:mm:ssZ)
+      appointmentTime: time || '',         // string "HH:mm"
+      patientEmail: user?.email || '',     // string
+      duration: 30,                        // number
+      reason: formData.reason,             // string
+      date: date || '',                    // string "YYYY-MM-DD"
+      time: time || '',                    // string "HH:mm"
+      title: 'Consultation',               // string
+      status: formData.status || 'scheduled', // string
+    }
+    console.log('Submitting backend-matching appointment payload:', finalData)
     submitAppointment(finalData, {
       onSuccess: () => {
+        setSuccess(true)
         if (onSuccess) onSuccess()
+      },
+      onError: (err: any) => {
+        setError(err?.message || 'Error submitting appointment. Please try again.')
       },
     })
   }
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+      {/* Show doctor info if available */}
+      {doctor && (
+        <div className="flex items-center mb-4">
+          <img
+            src={doctor.img || 'https://i.pinimg.com/736x/8e/5b/6a/8e5b6a2191656c1ac5d4571577870170.jpg'}
+            alt={doctor.name}
+            className="w-12 h-12 rounded-full object-cover mr-3 border"
+          />
+          <div>
+            <div className="font-bold text-base text-gray-800">{doctor.name}</div>
+            <div className="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-semibold mt-1">{doctor.specialization}</div>
+            <div className="text-gray-500 text-xs">{doctor.email}</div>
+          </div>
+        </div>
+      )}
       <h2 className="text-2xl font-bold mb-6 text-center">
         Book an Appointment
       </h2>
-
       {isError && (
         <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
           Error submitting appointment. Please try again.
         </div>
       )}
-
       {isSuccess && (
-        <div className="mb-4 p-3 bg-green-100 text-green-700 rounded">
+        <div className="mb-4 p-3 bg-green-100 text-green-700 rounded flex flex-col items-center">
           Appointment booked successfully!
+          <a
+            href="/Dashboard/patient/appointments"
+            className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+          >
+            View My Appointments
+          </a>
         </div>
       )}
-
       <form onSubmit={handleSubmit} className="space-y-4">
         {loadingPatient && (
           <div className="mb-2 p-2 bg-yellow-100 text-yellow-700 rounded">Loading patient profile...</div>
@@ -148,7 +186,6 @@ function AppointmentForm({ doctorId, onSuccess }: AppointmentFormProps) {
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
           />
         </div>
-
         <div>
           <label
             htmlFor="appointment_time"
@@ -166,7 +203,6 @@ function AppointmentForm({ doctorId, onSuccess }: AppointmentFormProps) {
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
           />
         </div>
-
         <div>
           <button
             type="submit"

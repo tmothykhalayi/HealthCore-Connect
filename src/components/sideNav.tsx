@@ -97,14 +97,10 @@ export default function SideNav({ role, onNavigate }: SideNavProps) {
         label: 'Records',
         to: '/Dashboard/doctor/records',
       },
-      {
-        icon: <FaPrescriptionBottleAlt size={18} />,
-        label: 'Prescriptions',
-        to: '/Dashboard/doctor/prescriptions',
-      },
     ],
     patient: [
-      {
+      
+     {
         icon: <FaCalendarAlt size={18} />,
         label: 'Appointments',
         to: '/Dashboard/patient/appointments',
@@ -118,11 +114,6 @@ export default function SideNav({ role, onNavigate }: SideNavProps) {
         icon: <FaPills />,
         label: 'Medicines',
         to: '/Dashboard/patient/medicines/',
-      },
-      {
-        icon: <FaPrescriptionBottleAlt size={18} />,
-        label: 'Prescriptions',
-        to: '/Dashboard/patient/prescriptions',
       },
       {
         icon: <MdLocalPharmacy size={20} />,
@@ -172,14 +163,14 @@ export default function SideNav({ role, onNavigate }: SideNavProps) {
   const navItems = [...(roleNavItems[role] || [])]
 
   return (
-    <nav className="sticky top-0 h-screen z-30 bg-white shadow flex flex-col">
+    <nav className="sticky top-0 h-screen z-30 bg-amber-100 shadow flex flex-col">
       <div className="flex-1 overflow-y-auto py-4">
         <ul className="space-y-1 px-2">
           {navItems.map((item, index) => (
             <li key={index}>
               <Link
                 to={item.to}
-                className="flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-blue-50 group"
+                className="flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-blue-500 group"
                 activeProps={{ className: 'bg-blue-100 text-blue-600' }}
                 onClick={onNavigate}
               >
@@ -191,14 +182,15 @@ export default function SideNav({ role, onNavigate }: SideNavProps) {
               {/* Place logout button right after General Settings for pharmacist */}
               {role === 'pharmacist' && item.label === 'General Settings' && (
                 <button
-                  onClick={() => {
-                    useAuthStore.getState().logout();
-                    window.location.href = '/login';
-                  }}
-                  className="w-full mt-2 py-2 bg-red-500 text-white rounded-full hover:bg-red-600 flex justify-center text-center"
-                >
-                  Logout
-                </button>
+         onClick={() => {
+       useAuthStore.getState().logout();
+    window.location.href = '/login';
+  }}
+  className="w-32 mt-2 py-2 bg-red-500 text-white rounded-full hover:bg-red-600 flex justify-center mx-auto"
+>
+  Logout
+</button>
+
               )}
             </li>
           ))}

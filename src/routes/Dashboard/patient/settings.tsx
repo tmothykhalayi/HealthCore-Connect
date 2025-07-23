@@ -205,7 +205,7 @@ function SettingsPage() {
                       </label>
                       <input
                         type="text"
-                        value={userData?.firstName || ''}
+                        value={userData?.firstName || finalPatientData?.user?.firstName || ''}
                         disabled
                         className="w-full p-3 border border-gray-300 rounded-md bg-gray-50 text-gray-500"
                       />
@@ -217,7 +217,7 @@ function SettingsPage() {
                       </label>
                       <input
                         type="text"
-                        value={userData?.lastName || ''}
+                        value={userData?.lastName || finalPatientData?.user?.lastName || ''}
                         disabled
                         className="w-full p-3 border border-gray-300 rounded-md bg-gray-50 text-gray-500"
                       />

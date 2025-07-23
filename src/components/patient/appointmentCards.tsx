@@ -34,6 +34,19 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
   // Fetch doctor information with proper typing
   const { data: doctor, isLoading: doctorLoading, error: doctorError } = useGetDoctorById(appointment.doctorId)
 
+  // Error handling for missing doctor
+  if (doctorLoading) return <div>Loading doctor details...</div>;
+  if (doctorError) {
+    let errorMessage = 'Failed to load doctor details.';
+    const status = (doctorError && typeof doctorError === 'object' && 'response' in doctorError && doctorError.response && typeof doctorError.response === 'object' && 'status' in doctorError.response)
+      ? (doctorError.response as { status?: number }).status
+      : undefined;
+    if (status === 404) {
+      errorMessage = 'Doctor not found.';
+    }
+    return <div className="text-red-600">{errorMessage}</div>;
+  }
+
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString)

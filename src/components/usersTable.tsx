@@ -92,10 +92,12 @@ export const UsersTable = () => {
     e.preventDefault()
     try {
       createMutation.mutate({
-        name: `${newUser.firstName} ${newUser.lastName}`,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
         email: newUser.email,
+        password: newUser.password,
         role: newUser.role,
-        phone: newUser.phoneNumber,
+        phoneNumber: newUser.phoneNumber,
       })
       setShowCreateForm(false)
       setNewUser({

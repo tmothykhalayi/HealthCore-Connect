@@ -34,17 +34,17 @@ export const PatientMedicalRecordsTable = ({ patientId }: PatientMedicalRecordsT
     () => [
       {
         header: 'Record ID',
-        accessorKey: 'record_id',
+        accessorKey: 'id',
         size: 100,
       },
       {
         header: 'Doctor ID',
-        accessorKey: 'doctor_id',
+        accessorKey: 'doctorId',
         size: 100,
       },
       {
-        header: 'Prescription ID',
-        accessorKey: 'prescription_id',
+        header: 'Appointment ID',
+        accessorKey: 'appointmentId',
         size: 120,
       },
       {
@@ -58,11 +58,11 @@ export const PatientMedicalRecordsTable = ({ patientId }: PatientMedicalRecordsT
       },
       {
         header: 'Created At',
-        cell: ({ row }) => formatDate(row.original.created_at),
+        cell: ({ row }) => formatDate(row.original.createdAt),
       },
       {
         header: 'Updated At',
-        cell: ({ row }) => formatDate(row.original.updated_at),
+        cell: ({ row }) => formatDate(row.original.updatedAt),
       },
     ],
     [],
