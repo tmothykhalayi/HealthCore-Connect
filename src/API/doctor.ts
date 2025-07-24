@@ -1,8 +1,27 @@
-// Interface for Doctor Profile
-// API/users.ts
-import { API_BASE_URL } from './BaseUrl'
-import type { TDoctor } from '@/types/alltypes'
-import { getAccessTokenHelper } from '@/lib/auth'
+import { API_BASE_URL } from './BaseUrl';
+import { getAccessTokenHelper } from '@/lib/auth';
+import type { TDoctor } from '@/types/alltypes';
+
+// Fetch doctor profile by user ID
+export const getDoctorByUserIdFn = async (userId: string | number): Promise<TDoctor> => {
+  const fullUrl = `${API_BASE_URL}/doctors/user/${userId}`;
+  const token = getAccessTokenHelper();
+
+  const response = await fetch(fullUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch doctor profile');
+  }
+
+  return response.json();
+};
+
 
 export interface doctor {
   userId: number

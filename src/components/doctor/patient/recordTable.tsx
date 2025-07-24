@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import {
-  
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -8,13 +7,42 @@ import {
 } from '@tanstack/react-table'
 import type {ColumnDef} from '@tanstack/react-table';
 
-import type { TRecord } from '@/types/alltypes'
+import type { TRecord, CreateRecordData } from '@/types/alltypes'
 import { useGetRecordsQuery } from '@/hooks/doctor/medicalrecords'
+import { useCreateRecord, useUpdateRecord, useDeleteRecord } from '@/hooks/medicalrecords'
+import { useGetPatientsQuery } from '@/hooks/doctor/patient'
+import { useGetDoctorQuery } from '@/hooks/doctor'
 
 export const MedicalRecordsTable = () => {
   const [search, setSearch] = useState('')
   const { data, isLoading, isError } = useGetRecordsQuery()
   const records = Array.isArray(data) ? data : data?.data || []
+
+  // CRUD hooks
+  const createMutation = useCreateRecord()
+  const updateMutation = useUpdateRecord()
+  const deleteMutation = useDeleteRecord()
+
+  // Modal and form state
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [editingRecord, setEditingRecord] = useState<TRecord | null>(null)
+  const [formData, setFormData] = useState<CreateRecordData>({
+    patientId: 1,
+    doctorId: 1,
+    recordType: 'diagnosis',
+    title: '',
+    description: '',
+    diagnosis: '',
+    treatment: '',
+    priority: 'normal',
+    status: 'active',
+  })
+
+  const { data: patientsData } = useGetPatientsQuery();
+  const { data: doctorsData } = useGetDoctorQuery(1, 100, '');
+  const patients = patientsData || [];
+  const doctors = doctorsData?.data || [];
 
   // Format date to a readable format
   const formatDate = (dateString: string) => {
@@ -30,49 +58,131 @@ export const MedicalRecordsTable = () => {
 
   const columns = useMemo<Array<ColumnDef<TRecord>>>(
     () => [
+      { header: 'Record ID', accessorKey: 'id', size: 80 },
+      { header: 'Patient ID', accessorKey: 'patientId', size: 80 },
+      { header: 'Doctor ID', accessorKey: 'doctorId', size: 80 },
+      { header: 'Appointment ID', accessorKey: 'appointmentId', size: 100 },
+      { header: 'Type', accessorKey: 'recordType', size: 100 },
+      { header: 'Title', accessorKey: 'title', size: 120 },
+      { header: 'Description', accessorKey: 'description', cell: ({ row }) => (<div className="max-w-md line-clamp-2">{row.original.description}</div>) },
+      { header: 'Diagnosis', accessorKey: 'diagnosis', size: 120 },
+      { header: 'Treatment', accessorKey: 'treatment', size: 120 },
+      { header: 'Priority', accessorKey: 'priority', size: 80 },
+      { header: 'Status', accessorKey: 'status', size: 80 },
+      { header: 'Notes', accessorKey: 'notes', size: 120 },
+      { header: 'Created At', cell: ({ row }) => formatDate(row.original.createdAt) },
+      { header: 'Updated At', cell: ({ row }) => formatDate(row.original.updatedAt) },
       {
-        header: 'Record ID',
-        accessorKey: 'record_id',
-        size: 100,
-      },
-      {
-        header: 'Patient ID',
-        accessorKey: 'patient_id',
-        size: 100,
-      },
-      {
-        header: 'Doctor ID',
-        accessorKey: 'doctor_id',
-        size: 100,
-      },
-      {
-        header: 'Prescription ID',
-        accessorKey: 'prescription_id',
-        size: 120,
-      },
-      {
-        header: 'Description',
-        accessorKey: 'description',
+        header: 'Actions',
         cell: ({ row }) => (
-          <div className="max-w-md line-clamp-2">
-            {row.original.description}
+          <div className="flex space-x-2">
+            <button
+              onClick={() => handleEdit(row.original)}
+              className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
+            >Edit</button>
+            <button
+              onClick={() => handleDelete(row.original.id)}
+              className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
+              disabled={deleteMutation.isPending}
+            >{deleteMutation.isPending ? 'Deleting...' : 'Delete'}</button>
           </div>
         ),
-      },
-      {
-        header: 'Created At',
-        cell: ({ row }) => formatDate(row.original.createdAt),
-      },
-      {
-        header: 'Updated At',
-        cell: ({ row }) => formatDate(row.original.updatedAt),
+        size: 150,
       },
     ],
-    [],
+    [deleteMutation.isPending]
   )
 
+  const handleCreateRecord = () => {
+    if (!formData.title || !formData.description || !formData.patientId || !formData.doctorId) {
+      alert('Please fill in all required fields')
+      return
+    }
+    createMutation.mutate(formData, {
+      onSuccess: () => {
+        alert('Medical record created successfully!')
+        setIsCreateModalOpen(false)
+        setFormData({
+          patientId: patients.length > 0 ? patients[0].patient_id : 1,
+          doctorId: doctors.length > 0 ? doctors[0].doctor_id : 1,
+          recordType: 'diagnosis',
+          title: '',
+          description: '',
+          diagnosis: '',
+          treatment: '',
+          priority: 'normal',
+          status: 'active',
+        })
+      },
+      onError: (error) => {
+        alert('Failed to create medical record. Please try again.')
+      }
+    })
+  }
+
+  const handleEdit = (record: TRecord) => {
+    setEditingRecord(record)
+    setFormData({
+      patientId: record.patientId,
+      doctorId: record.doctorId,
+      recordType: record.recordType,
+      title: record.title,
+      description: record.description,
+      diagnosis: record.diagnosis || '',
+      treatment: record.treatment || '',
+      priority: record.priority,
+      status: record.status,
+    })
+    setIsEditModalOpen(true)
+  }
+
+  const handleUpdateRecord = () => {
+    if (!editingRecord) return
+    if (!formData.title || !formData.description) {
+      alert('Please fill in all required fields')
+      return
+    }
+    updateMutation.mutate(
+      { recordId: editingRecord.id, recordData: formData },
+      {
+        onSuccess: () => {
+          alert('Medical record updated successfully!')
+          setIsEditModalOpen(false)
+          setEditingRecord(null)
+          setFormData({
+            patientId: patients.length > 0 ? patients[0].patient_id : 1,
+            doctorId: doctors.length > 0 ? doctors[0].doctor_id : 1,
+            recordType: 'diagnosis',
+            title: '',
+            description: '',
+            diagnosis: '',
+            treatment: '',
+            priority: 'normal',
+            status: 'active',
+          })
+        },
+        onError: (error) => {
+          alert('Failed to update medical record. Please try again.')
+        }
+      }
+    )
+  }
+
+  const handleDelete = (recordId: number) => {
+    if (confirm('Are you sure you want to delete this medical record?')) {
+      deleteMutation.mutate(recordId, {
+        onSuccess: () => {
+          alert('Medical record deleted successfully!')
+        },
+        onError: (error) => {
+          alert('Failed to delete medical record. Please try again.')
+        }
+      })
+    }
+  }
+
   const table = useReactTable({
-    data: data || [],
+    data: records,
     columns,
     state: {
       globalFilter: search,
@@ -104,7 +214,7 @@ export const MedicalRecordsTable = () => {
         <h1 className="text-2xl font-bold text-gray-800 mb-4">
           Medical Records
         </h1>
-        <div className="mb-4">
+        <div className="mb-4 flex justify-between items-center">
           <input
             type="text"
             placeholder="Search records by description, IDs..."
@@ -112,9 +222,16 @@ export const MedicalRecordsTable = () => {
             onChange={(e) => setSearch(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="ml-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          >
+            + Create Record
+          </button>
         </div>
       </div>
 
+      {/* Table and modals */}
       <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -160,6 +277,172 @@ export const MedicalRecordsTable = () => {
       {Array.isArray(records) && records.length === 0 && !isLoading && (
         <div className="text-center py-8 text-gray-500">
           No medical records found.
+        </div>
+      )}
+
+      {/* Create Modal */}
+      {isCreateModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+            <h2 className="text-xl font-semibold mb-4">Create Medical Record</h2>
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                handleCreateRecord();
+              }}
+            >
+              <select
+                value={formData.patientId}
+                onChange={e => setFormData({ ...formData, patientId: Number(e.target.value) })}
+                className="w-full mb-2 p-2 border rounded"
+                required
+              >
+                <option value="">Select Patient</option>
+                {patients.map(p => (
+                  <option key={p.patient_id} value={p.patient_id}>
+                    {p.name} (ID: {p.patient_id})
+                  </option>
+                ))}
+              </select>
+              <select
+                value={formData.doctorId}
+                onChange={e => setFormData({ ...formData, doctorId: Number(e.target.value) })}
+                className="w-full mb-2 p-2 border rounded"
+                required
+              >
+                <option value="">Select Doctor</option>
+                {doctors.map(d => (
+                  <option key={d.doctor_id} value={d.doctor_id}>
+                    {d.name} (ID: {d.doctor_id})
+                  </option>
+                ))}
+              </select>
+              <input
+                type="text"
+                placeholder="Title"
+                value={formData.title}
+                onChange={e => setFormData({ ...formData, title: e.target.value })}
+                className="w-full mb-2 p-2 border rounded"
+                required
+              />
+              <textarea
+                placeholder="Description"
+                value={formData.description}
+                onChange={e => setFormData({ ...formData, description: e.target.value })}
+                className="w-full mb-2 p-2 border rounded"
+                required
+              />
+              <input
+                type="text"
+                placeholder="Diagnosis"
+                value={formData.diagnosis}
+                onChange={e => setFormData({ ...formData, diagnosis: e.target.value })}
+                className="w-full mb-2 p-2 border rounded"
+              />
+              <input
+                type="text"
+                placeholder="Treatment"
+                value={formData.treatment}
+                onChange={e => setFormData({ ...formData, treatment: e.target.value })}
+                className="w-full mb-2 p-2 border rounded"
+              />
+              <div className="flex justify-end gap-2 mt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsCreateModalOpen(false)}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+                >Cancel</button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                  disabled={createMutation.isPending}
+                >{createMutation.isPending ? 'Saving...' : 'Save'}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+            <h2 className="text-xl font-semibold mb-4">Edit Medical Record</h2>
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                handleUpdateRecord();
+              }}
+            >
+              <select
+                value={formData.patientId}
+                onChange={e => setFormData({ ...formData, patientId: Number(e.target.value) })}
+                className="w-full mb-2 p-2 border rounded"
+                required
+              >
+                <option value="">Select Patient</option>
+                {patients.map(p => (
+                  <option key={p.patient_id} value={p.patient_id}>
+                    {p.name} (ID: {p.patient_id})
+                  </option>
+                ))}
+              </select>
+              <select
+                value={formData.doctorId}
+                onChange={e => setFormData({ ...formData, doctorId: Number(e.target.value) })}
+                className="w-full mb-2 p-2 border rounded"
+                required
+              >
+                <option value="">Select Doctor</option>
+                {doctors.map(d => (
+                  <option key={d.doctor_id} value={d.doctor_id}>
+                    {d.name} (ID: {d.doctor_id})
+                  </option>
+                ))}
+              </select>
+              <input
+                type="text"
+                placeholder="Title"
+                value={formData.title}
+                onChange={e => setFormData({ ...formData, title: e.target.value })}
+                className="w-full mb-2 p-2 border rounded"
+                required
+              />
+              <textarea
+                placeholder="Description"
+                value={formData.description}
+                onChange={e => setFormData({ ...formData, description: e.target.value })}
+                className="w-full mb-2 p-2 border rounded"
+                required
+              />
+              <input
+                type="text"
+                placeholder="Diagnosis"
+                value={formData.diagnosis}
+                onChange={e => setFormData({ ...formData, diagnosis: e.target.value })}
+                className="w-full mb-2 p-2 border rounded"
+              />
+              <input
+                type="text"
+                placeholder="Treatment"
+                value={formData.treatment}
+                onChange={e => setFormData({ ...formData, treatment: e.target.value })}
+                className="w-full mb-2 p-2 border rounded"
+              />
+              <div className="flex justify-end gap-2 mt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+                >Cancel</button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                  disabled={updateMutation.isPending}
+                >{updateMutation.isPending ? 'Saving...' : 'Save'}</button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>

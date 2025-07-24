@@ -5,7 +5,7 @@ import { getAccessTokenHelper } from '@/lib/auth'
 export const getRecordsFn = async (): Promise<{
   data: Array<TRecord>
 }> => {
-  const fullUrl = `${API_BASE_URL}/records`
+  const fullUrl = `${API_BASE_URL}/medical-records`
   const token = getAccessTokenHelper()
 
   const response = await fetch(fullUrl, {

@@ -24,6 +24,7 @@ import { Route as DashboardPharmarcistPrescriptionsRouteImport } from './routes/
 import { Route as DashboardPharmarcistPharmacy_ordersRouteImport } from './routes/Dashboard/pharmarcist/pharmacy_orders'
 import { Route as DashboardPharmarcistPaymentsRouteImport } from './routes/Dashboard/pharmarcist/payments'
 import { Route as DashboardPharmarcistPatientsRouteImport } from './routes/Dashboard/pharmarcist/patients'
+import { Route as DashboardPharmarcistMedicinesRouteImport } from './routes/Dashboard/pharmarcist/medicines'
 import { Route as DashboardPatientSettingsRouteImport } from './routes/Dashboard/patient/settings'
 import { Route as DashboardPatientPrescriptionsRouteImport } from './routes/Dashboard/patient/prescriptions'
 import { Route as DashboardPatientPharmacy_ordersRouteImport } from './routes/Dashboard/patient/pharmacy_orders'
@@ -132,6 +133,12 @@ const DashboardPharmarcistPatientsRoute =
   DashboardPharmarcistPatientsRouteImport.update({
     id: '/Dashboard/pharmarcist/patients',
     path: '/Dashboard/pharmarcist/patients',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DashboardPharmarcistMedicinesRoute =
+  DashboardPharmarcistMedicinesRouteImport.update({
+    id: '/Dashboard/pharmarcist/medicines',
+    path: '/Dashboard/pharmarcist/medicines',
     getParentRoute: () => rootRouteImport,
   } as any)
 const DashboardPatientSettingsRoute =
@@ -317,6 +324,7 @@ export interface FileRoutesByFullPath {
   '/Dashboard/patient/pharmacy_orders': typeof DashboardPatientPharmacy_ordersRoute
   '/Dashboard/patient/prescriptions': typeof DashboardPatientPrescriptionsRoute
   '/Dashboard/patient/settings': typeof DashboardPatientSettingsRoute
+  '/Dashboard/pharmarcist/medicines': typeof DashboardPharmarcistMedicinesRoute
   '/Dashboard/pharmarcist/patients': typeof DashboardPharmarcistPatientsRoute
   '/Dashboard/pharmarcist/payments': typeof DashboardPharmarcistPaymentsRoute
   '/Dashboard/pharmarcist/pharmacy_orders': typeof DashboardPharmarcistPharmacy_ordersRoute
@@ -361,6 +369,7 @@ export interface FileRoutesByTo {
   '/Dashboard/patient/pharmacy_orders': typeof DashboardPatientPharmacy_ordersRoute
   '/Dashboard/patient/prescriptions': typeof DashboardPatientPrescriptionsRoute
   '/Dashboard/patient/settings': typeof DashboardPatientSettingsRoute
+  '/Dashboard/pharmarcist/medicines': typeof DashboardPharmarcistMedicinesRoute
   '/Dashboard/pharmarcist/patients': typeof DashboardPharmarcistPatientsRoute
   '/Dashboard/pharmarcist/payments': typeof DashboardPharmarcistPaymentsRoute
   '/Dashboard/pharmarcist/pharmacy_orders': typeof DashboardPharmarcistPharmacy_ordersRoute
@@ -406,6 +415,7 @@ export interface FileRoutesById {
   '/Dashboard/patient/pharmacy_orders': typeof DashboardPatientPharmacy_ordersRoute
   '/Dashboard/patient/prescriptions': typeof DashboardPatientPrescriptionsRoute
   '/Dashboard/patient/settings': typeof DashboardPatientSettingsRoute
+  '/Dashboard/pharmarcist/medicines': typeof DashboardPharmarcistMedicinesRoute
   '/Dashboard/pharmarcist/patients': typeof DashboardPharmarcistPatientsRoute
   '/Dashboard/pharmarcist/payments': typeof DashboardPharmarcistPaymentsRoute
   '/Dashboard/pharmarcist/pharmacy_orders': typeof DashboardPharmarcistPharmacy_ordersRoute
@@ -452,6 +462,7 @@ export interface FileRouteTypes {
     | '/Dashboard/patient/pharmacy_orders'
     | '/Dashboard/patient/prescriptions'
     | '/Dashboard/patient/settings'
+    | '/Dashboard/pharmarcist/medicines'
     | '/Dashboard/pharmarcist/patients'
     | '/Dashboard/pharmarcist/payments'
     | '/Dashboard/pharmarcist/pharmacy_orders'
@@ -496,6 +507,7 @@ export interface FileRouteTypes {
     | '/Dashboard/patient/pharmacy_orders'
     | '/Dashboard/patient/prescriptions'
     | '/Dashboard/patient/settings'
+    | '/Dashboard/pharmarcist/medicines'
     | '/Dashboard/pharmarcist/patients'
     | '/Dashboard/pharmarcist/payments'
     | '/Dashboard/pharmarcist/pharmacy_orders'
@@ -540,6 +552,7 @@ export interface FileRouteTypes {
     | '/Dashboard/patient/pharmacy_orders'
     | '/Dashboard/patient/prescriptions'
     | '/Dashboard/patient/settings'
+    | '/Dashboard/pharmarcist/medicines'
     | '/Dashboard/pharmarcist/patients'
     | '/Dashboard/pharmarcist/payments'
     | '/Dashboard/pharmarcist/pharmacy_orders'
@@ -585,6 +598,7 @@ export interface RootRouteChildren {
   DashboardPatientPharmacy_ordersRoute: typeof DashboardPatientPharmacy_ordersRoute
   DashboardPatientPrescriptionsRoute: typeof DashboardPatientPrescriptionsRoute
   DashboardPatientSettingsRoute: typeof DashboardPatientSettingsRoute
+  DashboardPharmarcistMedicinesRoute: typeof DashboardPharmarcistMedicinesRoute
   DashboardPharmarcistPatientsRoute: typeof DashboardPharmarcistPatientsRoute
   DashboardPharmarcistPaymentsRoute: typeof DashboardPharmarcistPaymentsRoute
   DashboardPharmarcistPharmacy_ordersRoute: typeof DashboardPharmarcistPharmacy_ordersRoute
@@ -705,6 +719,13 @@ declare module '@tanstack/react-router' {
       path: '/Dashboard/pharmarcist/patients'
       fullPath: '/Dashboard/pharmarcist/patients'
       preLoaderRoute: typeof DashboardPharmarcistPatientsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Dashboard/pharmarcist/medicines': {
+      id: '/Dashboard/pharmarcist/medicines'
+      path: '/Dashboard/pharmarcist/medicines'
+      fullPath: '/Dashboard/pharmarcist/medicines'
+      preLoaderRoute: typeof DashboardPharmarcistMedicinesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/Dashboard/patient/settings': {
@@ -930,6 +951,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardPatientPharmacy_ordersRoute: DashboardPatientPharmacy_ordersRoute,
   DashboardPatientPrescriptionsRoute: DashboardPatientPrescriptionsRoute,
   DashboardPatientSettingsRoute: DashboardPatientSettingsRoute,
+  DashboardPharmarcistMedicinesRoute: DashboardPharmarcistMedicinesRoute,
   DashboardPharmarcistPatientsRoute: DashboardPharmarcistPatientsRoute,
   DashboardPharmarcistPaymentsRoute: DashboardPharmarcistPaymentsRoute,
   DashboardPharmarcistPharmacy_ordersRoute:

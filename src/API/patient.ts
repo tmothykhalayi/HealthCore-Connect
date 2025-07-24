@@ -46,7 +46,20 @@ export const getAllPatientsFn = async (): Promise<Array<any>> => {
   }
 
   const data = await response.json()
-  return data.data || data // Handle both response formats
+  const patients = data.data || data // Handle both response formats
+
+  // Map to the shape expected by PatientsTable, without gender
+  return (patients || []).map((patient: any) => ({
+    patient_id: patient.id,
+    name: patient.user
+      ? `${patient.user.firstName || ''} ${patient.user.lastName || ''}`.trim()
+      : '',
+    email: patient.user?.email || '',
+    dob: patient.dateOfBirth || '',
+    // gender: patient.user?.gender || '', // Removed
+    phone: patient.user?.phoneNumber || patient.phoneNumber || '',
+    address: patient.address || '',
+  }))
 }
 
 export const getPatientsFn = async (
@@ -246,4 +259,25 @@ export const getPatientsCount = async (): Promise<{ total: number }> => {
     },
   })
   return response.json()
+}
+
+// Fetch all patients for a specific doctor
+export const getPatientsByDoctorIdFn = async (doctorId: number): Promise<Array<any>> => {
+  const fullUrl = `${API_BASE_URL}/doctors/${doctorId}/patients`
+  const token = getAccessTokenHelper()
+
+  const response = await fetch(fullUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch patients for doctor')
+  }
+
+  const data = await response.json()
+  return data.data || data // Handle both response formats
 }

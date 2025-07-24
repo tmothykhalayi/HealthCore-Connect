@@ -14,7 +14,6 @@ export function PatientsTable() {
     name: string
     email: string
     dob: string
-    gender: string
     phone: string
     address: string
   }
@@ -34,33 +33,10 @@ export function PatientsTable() {
       header: 'Email',
     },
     {
-      accessorKey: 'gender',
-      header: 'Gender',
-    },
-    {
       accessorKey: 'phone',
       header: 'Phone',
     },
-    {
-      id: 'actions',
-      cell: ({ row }) => {
-        const patient = row.original
-        const navigate = useNavigate()
-
-        return (
-          <button
-            onClick={() =>
-              navigate({
-                to: `/dashboard/doctor/patient/${patient.patient_id}`,
-              })
-            }
-            className="px-4 py-2 bg-blue-950 text-white rounded hover:bg-blue-600"
-          >
-            View Details
-          </button>
-        )
-      },
-    },
+    // Removed actions column
   ]
   const { data, isLoading, isError } = useGetPatientsQuery()
 
@@ -80,7 +56,7 @@ export function PatientsTable() {
           <thead className="bg-gray-50">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
+                {table.getHeaderGroups().length > 0 && headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"

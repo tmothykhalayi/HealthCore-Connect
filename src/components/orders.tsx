@@ -320,9 +320,7 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
     <div className="p-4 max-w-7xl mx-auto">
       <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Pharmacy Orders
-          </h1>
+          {/* Removed duplicate Pharmacy Orders heading */}
           {user?.role !== 'patient' && (
             <button
               onClick={() => setShowCreateModal(true)}

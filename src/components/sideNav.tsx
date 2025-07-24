@@ -97,6 +97,7 @@ export default function SideNav({ role, onNavigate }: SideNavProps) {
         label: 'Records',
         to: '/Dashboard/doctor/records',
       },
+      // Removed Medicines link for doctor
     ],
     patient: [
       
@@ -148,6 +149,11 @@ export default function SideNav({ role, onNavigate }: SideNavProps) {
         to: '/Dashboard/pharmarcist/records',
       },
       {
+        icon: <FaPills />,
+        label: 'Medicines',
+        to: '/Dashboard/pharmarcist/medicines',
+      },
+      {
         icon: <FaMoneyBill size={18} />,
         label: 'Payments',
         to: '/Dashboard/pharmarcist/payments',
@@ -179,19 +185,7 @@ export default function SideNav({ role, onNavigate }: SideNavProps) {
                 </span>
                 <span>{item.label}</span>
               </Link>
-              {/* Place logout button right after General Settings for pharmacist */}
-              {role === 'pharmacist' && item.label === 'General Settings' && (
-                <button
-         onClick={() => {
-       useAuthStore.getState().logout();
-    window.location.href = '/login';
-  }}
-  className="w-32 mt-2 py-2 bg-red-500 text-white rounded-full hover:bg-red-600 flex justify-center mx-auto"
->
-  Logout
-</button>
-
-              )}
+              {/* Remove the extra logout button for pharmacist */}
             </li>
           ))}
           <li>

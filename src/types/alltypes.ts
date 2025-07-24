@@ -318,7 +318,7 @@ export interface TPharmacyOrder {
   patient_name?: string
   doctor_name?: string
   order_id?: string
-  total_amount?: number // Add this field to match API mapping
+  total_amount?: number 
 }
 
 export interface TMedicine {

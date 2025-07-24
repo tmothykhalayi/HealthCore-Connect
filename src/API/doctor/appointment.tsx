@@ -3,7 +3,8 @@ import { API_BASE_URL } from '../BaseUrl'
 import { getAccessTokenHelper } from '@/lib/auth'
 
 export const getAppointmentsFn = async (doctorId: number) => {
-  const fullUrl = `${API_BASE_URL}/doctors/${doctorId}`
+  // Corrected endpoint to fetch appointments for a doctor
+  const fullUrl = `${API_BASE_URL}/appointments/doctor/${doctorId}`
   const token = getAccessTokenHelper()
 
   const response = await fetch(fullUrl, {
