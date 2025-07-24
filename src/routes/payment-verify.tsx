@@ -31,7 +31,7 @@ export default function PaymentVerify() {
       .then(() => {
         setStatus('success');
         setMessage('Payment verified successfully! Redirecting to dashboard...');
-        setTimeout(() => navigate('/Dashboard/patient'), 3000);
+        setTimeout(() => navigate('/Dashboard/patient'), 0); // instant redirect
       })
       .catch((err) => {
         setStatus('error');
@@ -48,7 +48,7 @@ export default function PaymentVerify() {
       <div className={`text-xl font-bold mb-2 ${status === 'success' ? 'text-green-600' : status === 'error' ? 'text-red-600' : 'text-gray-800'}`}>{message}</div>
       <div className="text-gray-500 text-sm mb-4">You will be redirected shortly...</div>
       {status === 'success' && (
-        <Link to="/Dashboard/patient" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">Go to Dashboard Now</Link>
+        <Link to="/Dashboard/patient" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">Go to Dashboard</Link>
       )}
     </div>
   );
