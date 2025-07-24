@@ -63,6 +63,8 @@ export const PatientsTable = () => {
     pageIndex: 0,
     pageSize: 10,
   })
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false)
+  const [viewingPatient, setViewingPatient] = useState<Patient | null>(null)
 
   const { data: patients, isLoading, error } = useGetAllPatientsQuery()
 
@@ -268,6 +270,15 @@ export const PatientsTable = () => {
         cell: ({ row }) => (
           <div className="flex gap-2">
             <button
+              onClick={() => {
+                setViewingPatient(row.original)
+                setIsViewModalOpen(true)
+              }}
+              className="px-3 py-1 bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors"
+            >
+              View Details
+            </button>
+            <button
               onClick={() => handleEditClick(row.original)}
               className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
             >
@@ -287,7 +298,7 @@ export const PatientsTable = () => {
             </button>
           </div>
         ),
-        size: 150,
+        size: 200,
       },
     ],
     [deleteMutation],
@@ -325,8 +336,45 @@ export const PatientsTable = () => {
     )
   }
 
+  const viewDetailsModal = isViewModalOpen && viewingPatient && (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] flex flex-col">
+        <div className="p-6 border-b border-gray-200">
+          <h2 className="text-xl font-bold">Patient Details</h2>
+        </div>
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          <div><strong>Name:</strong> {viewingPatient.user?.firstName && viewingPatient.user?.lastName ? `${viewingPatient.user.firstName} ${viewingPatient.user.lastName}` : '-'}</div>
+          <div><strong>Email:</strong> {viewingPatient.user?.email || '-'}</div>
+          <div><strong>Phone Number:</strong> {viewingPatient.phoneNumber || '-'}</div>
+          <div><strong>Gender:</strong> {viewingPatient.gender || '-'}</div>
+          <div><strong>Date of Birth:</strong> {formatDate(viewingPatient.dateOfBirth)}</div>
+          <div><strong>Address:</strong> {viewingPatient.address || '-'}</div>
+          <div><strong>Emergency Contact:</strong> {viewingPatient.emergencyContact || '-'}</div>
+          <div><strong>Medical History:</strong> {viewingPatient.medicalHistory || '-'}</div>
+          <div><strong>Blood Type:</strong> {viewingPatient.bloodType || '-'}</div>
+          <div><strong>Weight:</strong> {viewingPatient.weight || '-'}</div>
+          <div><strong>Height:</strong> {viewingPatient.height || '-'}</div>
+          <div><strong>Status:</strong> {viewingPatient.status || '-'}</div>
+        </div>
+        <div className="p-6 border-t border-gray-200 bg-gray-50">
+          <button
+            type="button"
+            onClick={() => {
+              setIsViewModalOpen(false)
+              setViewingPatient(null)
+            }}
+            className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+
   return (
     <div className="p-4 max-w-7xl mx-auto">
+      {viewDetailsModal}
       {/* Add Patient Modal */}
       {isAddModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">

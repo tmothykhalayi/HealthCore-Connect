@@ -56,11 +56,6 @@ export default function SideNav({ role, onNavigate }: SideNavProps) {
         to: '/Dashboard/admin/appointments',
       },
       {
-        icon: <FaPrescriptionBottleAlt size={18} />,
-        label: 'Prescriptions',
-        to: '/Dashboard/admin/prescriptions',
-      },
-      {
         icon: <MdLocalPharmacy size={20} />,
         label: 'Pharmacy Orders',
         to: '/Dashboard/admin/pharmacy_orders',

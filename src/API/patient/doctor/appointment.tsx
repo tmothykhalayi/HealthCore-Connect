@@ -16,8 +16,11 @@ export const createAppointmentFn = async (appointmentData: {
 }) => {
   const fullUrl = `${API_BASE_URL}/appointments`
 
-  // Exclude appointmentDate from the payload
-  const { appointmentDate, ...payload } = appointmentData;
+  // Include appointmentDate in the payload
+  const payload = { ...appointmentData };
+
+  // Debug: print the payload before sending
+  console.log('DEBUG: Appointment payload being sent:', JSON.stringify(payload, null, 2));
 
   console.log('Creating appointment with data:', payload)
 

@@ -109,7 +109,7 @@ export const createAppointmentFn = async (appointmentData: any): Promise<any> =>
   const payload = {
     patientId: appointmentData.patient_id,
     doctorId: appointmentData.doctor_id,
-    appointmentDate: appointmentData.appointment_time,
+    appointmentDate: appointmentData.appointment_date, // FIXED: use the snake_case field from the form
     appointmentTime: appointmentData.appointment_time_slot,
     patientEmail: appointmentData.patient_email || '',
     duration: appointmentData.duration || 30,
@@ -152,7 +152,7 @@ export const updateAppointmentFn = async (appointmentId: number, appointmentData
 
   // Map frontend fields to backend expected fields
   const payload = {
-    appointmentDate: appointmentData.appointment_time,
+    appointmentDate: appointmentData.appointment_date, // FIXED: use the snake_case field from the form
     appointmentTime: appointmentData.appointment_time_slot,
     duration: appointmentData.duration,
     reason: appointmentData.reason,
