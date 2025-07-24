@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from '@tanstack/react-router'
 import { useToast } from '../utils/toast-context'
 
 const Footer = () => {
@@ -41,35 +41,20 @@ const Footer = () => {
             <Link to="/about" className="lg:hover:text-teal-400">
               About
             </Link>
-            <Link to="/services" className="lg:hover:text-teal-400">
+            {/* <Link to="/services" className="lg:hover:text-teal-400">
               Service
             </Link>
             <Link to="/doctors" className="lg:hover:text-teal-400">
               Partner Team
-            </Link>
-          </div>
-          <div className="flex flex-col gap-y-6 [&>*]:w-fit">
-            <span className="text-2xl font-semibold">Legal</span>
-            <a href="#" className="lg:hover:text-teal-400">
-              Privacy Policy
-            </a>
-            <a href="#" className="lg:hover:text-teal-400">
-              Terms & Conditions
-            </a>
-            <a href="#" className="lg:hover:text-teal-400">
-              Service
-            </a>
-            <a href="#" className="lg:hover:text-teal-400">
-              Blog Post
-            </a>
+            </Link> */}
           </div>
           <div className="flex flex-col gap-y-6 font-medium [&>*]:w-fit">
             <span className="text-2xl font-semibold">Contact</span>
             <p>
-              2115 Thornridge Cir. Syracuse, <br />
-              Connecticut 36421
+              123 Moi Avenue, Nairobi, <br />
+              Kenya
             </p>
-            <p>timothykhalayi@gmail.com</p>
+            <p>services@healthCore Connect.com</p>
             <p>+254959786062</p>
           </div>
         </div>

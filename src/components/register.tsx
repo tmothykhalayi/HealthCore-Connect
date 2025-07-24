@@ -268,7 +268,7 @@ export function Register() {
                   )}
                   {field.state.value && !error && (
                     <p className="mt-1 text-sm text-green-600 flex items-center">
-                      <FaCheck className="mr-1" /> Last name looks good!
+                      <FaCheck className="mr-1" /> correct
                     </p>
                   )}
                 </div>
@@ -318,7 +318,7 @@ export function Register() {
                             : 'border-green-300 focus:ring-green-500 focus:border-green-500'
                           : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
                       } rounded-md shadow-sm focus:outline-none`}
-                      placeholder="your@email.com"
+                      placeholder="timo@email.com"
                     />
                   </div>
                   {field.state.value && error && (
@@ -328,7 +328,7 @@ export function Register() {
                   )}
                   {field.state.value && !error && (
                     <p className="mt-1 text-sm text-green-600 flex items-center">
-                      <FaCheck className="mr-1" /> Email looks good!
+                      <FaCheck className="mr-1" /> correct!
                     </p>
                   )}
                 </div>
@@ -388,7 +388,7 @@ export function Register() {
                   )}
                   {field.state.value && !error && (
                     <p className="mt-1 text-sm text-green-600 flex items-center">
-                      <FaCheck className="mr-1" /> It's looks good!
+                      <FaCheck className="mr-1" /> correct!
                     </p>
                   )}
                 </div>

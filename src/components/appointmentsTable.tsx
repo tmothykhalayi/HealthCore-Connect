@@ -36,6 +36,7 @@ export const AppointmentsTable = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<TAppointment | null>(null);
   const [formState, setFormState] = useState<any>({});
+  const [isReschedule, setIsReschedule] = useState(false);
 
   function handleUpdateAppointment(appointment: TAppointment) {
     setSelectedAppointment(appointment);
@@ -66,11 +67,27 @@ export const AppointmentsTable = () => {
     setShowCreateModal(true);
   }
 
+  function handleRescheduleAppointment(appointment: TAppointment) {
+    setSelectedAppointment(appointment);
+    setFormState({
+      appointment_date: appointment.appointment_date || '',
+      appointment_time_slot: appointment.appointment_time_slot || '',
+      reason: appointment.reason || '',
+      status: 'rescheduled',
+      priority: appointment.priority || 'normal',
+      notes: appointment.notes || '',
+      duration: appointment.duration || 30,
+    });
+    setIsReschedule(true);
+    setShowModal(true);
+  }
+
   function handleModalClose() {
     setShowModal(false);
     setShowCreateModal(false);
     setSelectedAppointment(null);
     setFormState({});
+    setIsReschedule(false);
   }
 
   function handleFormChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
@@ -218,6 +235,12 @@ export const AppointmentsTable = () => {
               className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
             >
               Edit
+            </button>
+            <button
+              onClick={() => handleRescheduleAppointment(row.original)}
+              className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded text-sm"
+            >
+              Reschedule
             </button>
             <button
               onClick={() => {
@@ -418,7 +441,7 @@ export const AppointmentsTable = () => {
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4">Update Appointment</h2>
+            <h2 className="text-xl font-bold mb-4">{isReschedule ? 'Reschedule Appointment' : 'Update Appointment'}</h2>
             <form onSubmit={handleFormSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Date *</label>
@@ -508,7 +531,7 @@ export const AppointmentsTable = () => {
               <div className="flex justify-end gap-2">
                 <button type="button" onClick={handleModalClose} className="px-4 py-2 bg-gray-300 rounded">Cancel</button>
                 <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded" disabled={updateAppointmentMutation.isPending}>
-                  {updateAppointmentMutation.isPending ? 'Updating...' : 'Update'}
+                  {updateAppointmentMutation.isPending ? (isReschedule ? 'Rescheduling...' : 'Updating...') : (isReschedule ? 'Reschedule' : 'Update')}
                 </button>
               </div>
             </form>

@@ -7,6 +7,7 @@ import faqData from './data/faqData'
 import doctorsData from './data/doctorsData'
 import Contact from './Contact'
 import Chat from '@/components/chat'
+import Footer from './layout/Footer'
 
 const Landing = () => {
   const router = useRouter()
@@ -255,6 +256,7 @@ const Landing = () => {
         <Contact />
       </section>
       <Chat />
+      <Footer />
     </>
   )
 }

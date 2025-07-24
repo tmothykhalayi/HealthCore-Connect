@@ -82,11 +82,6 @@ const DoctorsList = () => {
             </button>
             {/* Doctor Info at top of modal */}
             <div className="flex items-center mb-4">
-              <img
-                src={selectedDoctor.img || 'https://i.pinimg.com/736x/8e/5b/6a/8e5b6a2191656c1ac5d4571577870170.jpg'}
-                alt={selectedDoctor.name}
-                className="w-16 h-16 rounded-full object-cover mr-4 border"
-              />
               <div>
                 <div className="font-bold text-lg text-gray-800">{selectedDoctor.name}</div>
                 <div className="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-semibold mt-1">{selectedDoctor.specialization}</div>
@@ -129,12 +124,6 @@ const DoctorCard = ({ doctor, index, onBook }: { doctor: Doctor; index: number; 
       animate="show"
       transition={{ delay: index * 0.1 }}
     >
-      {/* Doctor Photo */}
-      <img
-        src={imageUrl}
-        alt={doctor.name}
-        className="w-full h-40 object-cover object-center"
-      />
       <div className="p-6">
         <motion.h2
           className="text-xl font-semibold text-gray-800 mb-2"
@@ -198,9 +187,7 @@ const DoctorCard = ({ doctor, index, onBook }: { doctor: Doctor; index: number; 
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: index * 0.1 + 0.6 }}
         >
-          <span className="text-lg font-bold text-gray-900">
-            Ksh {doctor.consultation_fee?.toLocaleString() ?? 'Not specified'}
-          </span>
+          {/* Only show the Book Appointment button */}
           <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
             <button
               className="px-6 py-2 bg-blue-700 text-white rounded-lg font-bold text-base shadow hover:bg-blue-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"

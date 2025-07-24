@@ -12,23 +12,6 @@ const Contact = () => {
 
   return (
     <>
-      {/* Header Section */}
-      <section className="py-8 px-4 bg-indigo-950 text-purple-400 text-center lg:px-16 lg:py-20">
-        <div className="mb-4 flex flex-col items-center justify-center gap-6">
-          <h1 className="text-4xl text-balance font-medium md:text-5xl">
-            Book your{' '}
-            <span className="text-teal-400 font-playfair-display italic">
-              appointment
-            </span>
-          </h1>
-
-          <p className="md:px-52 lg:px-80">
-            Explore our blog for the latest medical knowledge, patient stories,
-            and tips to lead a healthier life.
-          </p>
-        </div>
-      </section>
-
       {/* Appointment form Section */}
       <section className="py-8 px-4 text-purple-900 text-center lg:px-16 lg:py-20">
         <div className="flex flex-col items-center gap-8 lg:flex-row">
@@ -174,7 +157,7 @@ const Contact = () => {
 
         <div className="w-full flex flex-col gap-4 lg:flex-row">
           {patients.map((patient) => (
-            <div className="p-4 flex flex-col gap-y-4 bg-purple-100 font-semibold text-lg rounded-xl lg:gap-y-6">
+            <div key={patient.name} className="p-4 flex flex-col gap-y-4 bg-purple-100 font-semibold text-lg rounded-xl lg:gap-y-6">
               {/* Profile pic // Name // Rating */}
               <div className="flex items-center gap-x-6">
                 <img
