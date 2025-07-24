@@ -19,9 +19,16 @@ function AppointmentsPage() {
       if (userId) {
         try {
           const doctorProfile = await getDoctorByUserIdFn(Number(userId))
-          // If backend wraps doctor in a 'data' field, adjust accordingly
-          const doctor = doctorProfile.data ? doctorProfile.data : doctorProfile
-          setDoctorId(doctor.id)
+          const doctor = (doctorProfile as any).data ? (doctorProfile as any).data : doctorProfile;
+          console.log('doctor:', doctor);
+          console.log('doctor.id:', doctor.id);
+          const id = Number(doctor.id);
+          if (doctor && typeof id === 'number' && !isNaN(id)) {
+            setDoctorId(id);
+          } else {
+            setDoctorId(null);
+            console.error('doctor.id is invalid:', doctor.id, 'doctor:', doctor);
+          }
         } catch (e) {
           setDoctorId(null)
         }

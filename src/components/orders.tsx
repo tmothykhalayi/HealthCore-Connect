@@ -18,9 +18,13 @@ import {
 } from '@/hooks/orders'
 import useAuthStore from '@/store/auth'
 import { getUserIdHelper } from '@/lib/auth'
+import { useGetCurrentUserProfile } from '@/hooks/user'
 import { getPatientByUserIdFn } from '@/api/patient/patient'
 import { useEffect } from 'react'
 import { useToast } from '@/components/utils/toast-context'
+import { useCreatePayment } from '@/hooks/payment'
+import { PaymentStatus } from '@/api/payment'
+import { getAccessTokenHelper } from '@/lib/auth'
 
 export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
   const [search, setSearch] = useState('')
@@ -44,6 +48,20 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
   })
   const [effectivePatientId, setEffectivePatientId] = useState<number | null>(null)
   const toast = useToast()
+  const createPaymentMutation = useCreatePayment();
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  // Replace the old paymentFormData state with the correct type for the new payload
+  const [paymentFormData, setPaymentFormData] = useState({
+    fullName: '',
+    email: '',
+    phoneNumber: '',
+    amount: 0,
+    type: 'order',
+    orderId: 0,
+    notes: '',
+  });
+  const [payingOrder, setPayingOrder] = useState<TPharmacyOrder | null>(null);
+  const { data: userProfileData } = useGetCurrentUserProfile();
 
   useEffect(() => {
     const fetchPatientId = async () => {
@@ -174,6 +192,61 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
     )
   }
 
+  const handlePay = (order: TPharmacyOrder) => {
+    // Get user info from profile
+    const user = userProfileData?.data;
+    const fullName = user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : '';
+    const email = user?.email || '';
+    const phoneNumber = user?.phoneNumber || '';
+    setPayingOrder(order);
+    setPaymentFormData({
+      fullName,
+      email,
+      phoneNumber,
+      amount: Number(order.total_amount) || 0,
+      type: 'order',
+      orderId: order.pharmacy_order_id, // numeric!
+      notes: '',
+    });
+    setShowPaymentModal(true);
+  };
+  const handleSubmitPayment = async () => {
+    // Call the new endpoint directly (bypass useCreatePayment, use fetch for now)
+    try {
+      const token = getAccessTokenHelper();
+      if (!token) {
+        if (toast) toast.open('You are not logged in. Please log in and try again.');
+        return;
+      }
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'}/payments/initialize`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(paymentFormData),
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Payment failed');
+      }
+      setShowPaymentModal(false);
+      setPayingOrder(null);
+      if (toast) toast.open('Payment initialized! Please complete payment in the next step.');
+      // Optionally, handle redirect to payment gateway if response contains a URL
+      const result = await response.json();
+      if (result?.paystack_data?.authorization_url) {
+        window.open(result.paystack_data.authorization_url, '_blank');
+      } else if (result?.paystackAuthorizationUrl) {
+        window.open(result.paystackAuthorizationUrl, '_blank');
+      } else {
+        if (toast) toast.open('No payment URL returned from server.');
+      }
+    } catch (err: any) {
+      if (toast) toast.open(err?.message || 'Payment failed.');
+    }
+  };
+
   // Format date to Kenyan format
   const formatDateTime = (dateTimeString: string) => {
     const date = new Date(dateTimeString)
@@ -276,9 +349,18 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
             >
               {updateMutation.isPending ? 'Cancelling...' : 'Cancel'}
             </button>
+            {/* Pay button for patients, only if order is not completed or cancelled */}
+            {user?.role === 'patient' && row.original.status !== 'completed' && row.original.status !== 'cancelled' && (
+              <button
+                onClick={() => handlePay(row.original)}
+                className="px-3 py-1 bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors"
+              >
+                Pay
+              </button>
+            )}
           </div>
         ),
-        size: 150,
+        size: 200,
       },
     ],
     [deleteMutation],
@@ -641,6 +723,94 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
               </button>
               <button
                 onClick={() => setShowEditModal(false)}
+                className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">Pay for Order</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <input
+                  type="text"
+                  value={paymentFormData.fullName}
+                  readOnly
+                  className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input
+                  type="email"
+                  value={paymentFormData.email}
+                  readOnly
+                  className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                <input
+                  type="text"
+                  value={paymentFormData.phoneNumber}
+                  readOnly
+                  className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                <input
+                  type="number"
+                  value={paymentFormData.amount}
+                  readOnly
+                  className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Payment Type</label>
+                <input
+                  type="text"
+                  value={paymentFormData.type}
+                  readOnly
+                  className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Order ID</label>
+                <input
+                  type="text"
+                  value={paymentFormData.orderId}
+                  readOnly
+                  className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Notes (optional)</label>
+                <input
+                  type="text"
+                  value={paymentFormData.notes}
+                  onChange={e => setPaymentFormData({ ...paymentFormData, notes: e.target.value })}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2 mt-6">
+              <button
+                onClick={handleSubmitPayment}
+                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              >
+                Pay Now
+              </button>
+              <button
+                onClick={() => setShowPaymentModal(false)}
                 className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors"
               >
                 Cancel
