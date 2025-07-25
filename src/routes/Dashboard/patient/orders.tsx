@@ -25,14 +25,8 @@ function OrdersPage() {
               Track and manage your pharmacy orders
             </p>
           </div>
-          <button
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-            onClick={() => setShowAll((prev) => !prev)}
-          >
-            {showAll ? 'Show My Orders' : 'Show All Orders'}
-          </button>
         </div>
-        <PharmacyOrdersTable patientId={showAll ? undefined : patientId} />
+        <PharmacyOrdersTable />
       </div>
     </DashboardLayout>
   )

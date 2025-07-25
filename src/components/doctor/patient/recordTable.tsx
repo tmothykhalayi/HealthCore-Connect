@@ -142,8 +142,20 @@ export const MedicalRecordsTable = () => {
       alert('Please fill in all required fields')
       return
     }
+    // Ensure nextAppointmentDate is a valid ISO 8601 string if present
+    let recordData = { ...formData }
+    if (recordData.nextAppointmentDate) {
+      // Try to convert to ISO string if not already
+      const date = new Date(recordData.nextAppointmentDate)
+      if (!isNaN(date.getTime())) {
+        recordData.nextAppointmentDate = date.toISOString().split('T')[0]
+      } else {
+        // If invalid, remove it to avoid backend error
+        delete recordData.nextAppointmentDate
+      }
+    }
     updateMutation.mutate(
-      { recordId: editingRecord.id, recordData: formData },
+      { recordId: editingRecord.id, recordData },
       {
         onSuccess: () => {
           alert('Medical record updated successfully!')

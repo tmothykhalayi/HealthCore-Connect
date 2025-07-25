@@ -223,21 +223,9 @@ export const PatientsTable = () => {
         ),
       },
       {
-        header: 'Gender',
-        accessorKey: 'gender',
-        cell: ({ row }) => (
-          <span className="capitalize">{row.original.gender || 'N/A'}</span>
-        ),
-      },
-      {
         header: 'Date of Birth',
         accessorKey: 'dateOfBirth',
         cell: ({ row }) => formatDate(row.original.dateOfBirth),
-      },
-      {
-        header: 'Blood Type',
-        accessorKey: 'bloodType',
-        cell: ({ row }) => row.original.bloodType || 'N/A',
       },
       {
         header: 'Address',

@@ -36,8 +36,14 @@ export function PatientsTable() {
       accessorKey: 'phone',
       header: 'Phone',
     },
-    // Removed actions column
+    {
+      accessorKey: 'address',
+      header: 'Address',
+    },
   ]
+
+  // TODO: Replace with actual doctorId from auth context or props
+  const doctorId = 1 // <-- Replace with real doctor ID
   const { data, isLoading, isError } = useGetPatientsQuery()
 
   const table = useReactTable({

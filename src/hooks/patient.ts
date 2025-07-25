@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createPatientFn, deletePatientFn, getPatientsFn, updatePatientFn, getPatientByIdFn, getPatientByUserIdFn, getAllPatientsFn } from '@/api/patient'
-import type { patient } from '@/api/patient'
+import { createPatientFn, deletePatientFn, getPatientsFn, updatePatientFn, getPatientByIdFn, getPatientByUserIdFn, getAllPatientsFn } from '@/API/patient'
+import type { patient } from '@/API/patient'
 
 // Hook to get all patients without pagination
 export const useGetAllPatientsQuery = () => {

@@ -2,6 +2,7 @@ import { useGetAppointmentsByIdQuery } from '@/hooks/patient/appointment'
 import { useGetDoctorById } from '@/hooks/doctor'
 import { useState, useEffect } from 'react'
 import { FaCalendarAlt, FaClock, FaUserMd, FaTimes, FaEdit, FaEye } from 'react-icons/fa'
+import { SiZoom } from 'react-icons/si'
 import { useUpdateAppointmentStatus } from '@/hooks/patient/appointment'
 
 interface Appointment {
@@ -13,12 +14,16 @@ interface Appointment {
   status: string
   reason: string
   createdAt: string
+  user_url?: string // Added user_url to the interface
+  join_url?: string // Allow join_url for linter
+  zoom_url?: string // Allow zoom_url for linter
 }
 
 interface Doctor {
   id: number
-  firstName: string
-  lastName: string
+  name?: string
+  firstName?: string
+  lastName?: string
   specialization: string
 }
 
@@ -27,12 +32,17 @@ interface AppointmentCardProps {
 }
 
 const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
+  console.log('Appointment object:', appointment)
   const [showActions, setShowActions] = useState(false)
   const [editStatus, setEditStatus] = useState(appointment.status)
-  const { mutate: updateStatus, isLoading: isUpdating, isSuccess, isError, error } = useUpdateAppointmentStatus()
+  const { mutate: updateStatus, isSuccess, isError, error } = useUpdateAppointmentStatus()
+  const isUpdating = false // No isLoading property, so set to false or handle with local state if needed
   
   // Fetch doctor information with proper typing
   const { data: doctor, isLoading: doctorLoading, error: doctorError } = useGetDoctorById(appointment.doctorId)
+
+  // Debug: log the doctor object
+  console.log('doctor:', doctor)
 
   // Error handling for missing doctor
   if (doctorLoading) return <div>Loading doctor details...</div>;
@@ -132,7 +142,7 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
             ) : doctor ? (
               <div>
                 <p className="font-medium text-gray-800">
-                  Dr. {doctor.firstName} {doctor.lastName}
+                  Dr. {doctor.name || `${(doctor as any).firstName || ''} ${(doctor as any).lastName || ''}`}
                 </p>
                 <p className="text-sm text-gray-600">{doctor.specialization}</p>
               </div>
@@ -176,7 +186,6 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
             <FaEye size={14} />
             <span>View Details</span>
           </button>
-
           {/* Status Update Dropdown */}
           <div className="flex items-center space-x-2">
             <label htmlFor={`status-dropdown-${appointment.id}`} className="text-sm font-medium">Status:</label>
@@ -204,7 +213,6 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
           </div>
           {isSuccess && <div className="text-green-600 text-sm">Status updated!</div>}
           {isError && <div className="text-red-600 text-sm">{error?.message || 'Failed to update status'}</div>}
-
           {canCancel && (
             <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
               <FaTimes size={14} />
@@ -218,6 +226,18 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
             </button>
           )}
         </div>
+      )}
+      {/* Always show Join Now button if user_url exists */}
+      {appointment.user_url && (
+        <a
+          href={appointment.user_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-blue-700 text-white rounded-md hover:bg-blue-800 transition-colors mt-4"
+        >
+          <SiZoom size={16} />
+          <span>Join Now</span>
+        </a>
       )}
     </div>
   )

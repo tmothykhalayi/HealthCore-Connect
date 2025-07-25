@@ -218,13 +218,16 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
         if (toast) toast.open('You are not logged in. Please log in and try again.');
         return;
       }
+      // Add returnUrl to paymentFormData
+      const returnUrl = `${window.location.origin}/payment/verify?prev=${encodeURIComponent(window.location.pathname)}`;
+      const paymentDataWithReturnUrl = { ...paymentFormData, returnUrl };
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'}/payments/initialize`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(paymentFormData),
+        body: JSON.stringify(paymentDataWithReturnUrl),
       });
       if (!response.ok) {
         const errorText = await response.text();

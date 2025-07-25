@@ -30,8 +30,9 @@ export const DoctorsAppointmentsTable = ({
   // Remove all UI for Add New Appointment and the form/modal
 
   const { data: doctorData, isLoading, isError, refetch } = useGetAppointmentsByIdQuery(doctorId)
+  // Handle both array and object response formats
+  const appointments = Array.isArray(doctorData) ? doctorData : doctorData?.data || []
   console.log('doctorData:', doctorData)
-  const appointments = doctorData?.data || []
 
   const deleteMutation = useDeleteAppointment()
   const createMutation = useCreateAppointment()

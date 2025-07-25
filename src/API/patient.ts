@@ -48,7 +48,7 @@ export const getAllPatientsFn = async (): Promise<Array<any>> => {
   const data = await response.json()
   const patients = data.data || data // Handle both response formats
 
-  // Map to the shape expected by PatientsTable, without gender
+  // Map to the shape expected by doctor's PatientsTable
   return (patients || []).map((patient: any) => ({
     patient_id: patient.id,
     name: patient.user
@@ -56,7 +56,6 @@ export const getAllPatientsFn = async (): Promise<Array<any>> => {
       : '',
     email: patient.user?.email || '',
     dob: patient.dateOfBirth || '',
-    // gender: patient.user?.gender || '', // Removed
     phone: patient.user?.phoneNumber || patient.phoneNumber || '',
     address: patient.address || '',
   }))

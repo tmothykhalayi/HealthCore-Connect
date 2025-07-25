@@ -3,6 +3,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout'
 import { Link } from '@tanstack/react-router'
 import { useGetPatientAppointmentsQuery } from '@/hooks/patient/appointment'
 import { FaCalendarAlt, FaUserMd, FaPills, FaFileMedical, FaShoppingCart, FaCog } from 'react-icons/fa'
+import { SiZoom } from 'react-icons/si'
 import { useEffect, useState } from 'react'
 import { getUserIdHelper } from '@/lib/auth'
 import { getPatientByUserIdFn } from '@/api/patient/patient'
@@ -134,6 +135,13 @@ function PatientDashboard() {
       icon: FaCog,
       link: '/Dashboard/patient/settings',
       color: 'bg-gray-500 hover:bg-gray-600'
+    },
+    {
+      title: 'Join Zoom Meeting',
+      description: 'Join your scheduled Zoom meeting',
+      icon: SiZoom,
+      link: 'https://zoom.us/j/your-meeting-id',
+      color: 'bg-blue-700 hover:bg-blue-800'
     }
   ]
 

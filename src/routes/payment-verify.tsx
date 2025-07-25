@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function PaymentVerify() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('Verifying payment...');
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const reference = params.get('reference');
+    const prevPage = params.get('prev') || '/Dashboard/patient';
+    console.log('Redirecting to:', prevPage);
     if (!reference) {
       setStatus('error');
       setMessage('No payment reference found in URL.');
@@ -31,14 +35,30 @@ export default function PaymentVerify() {
       .then(() => {
         setStatus('success');
         setMessage('Payment verified successfully! Redirecting to dashboard...');
-        setTimeout(() => navigate('/Dashboard/patient'), 0); // instant redirect
+        // Optimistically update orders/payment status in cache
+        queryClient.setQueryData(['orders'], (oldData: any) => {
+          if (!oldData) return oldData;
+          // Try to update all orders with status 'pending' to 'confirmed' if they match the reference
+          // (Assumes you have access to the reference in the order/payment object)
+          return {
+            ...oldData,
+            data: oldData.data.map((order: any) =>
+              order.paystackReference === params.get('reference') || order.reference === params.get('reference')
+                ? { ...order, status: 'confirmed' }
+                : order
+            ),
+          };
+        });
+        // Invalidate orders query so it refetches on next mount
+        queryClient.invalidateQueries({ queryKey: ['orders'], exact: false });
+        setTimeout(() => navigate(prevPage), 0);
       })
       .catch((err) => {
         setStatus('error');
         setMessage('Payment verification failed. ' + (err.message || ''));
-        setTimeout(() => navigate('/Dashboard/patient'), 5000);
+        setTimeout(() => navigate(prevPage), 5000);
       });
-  }, [navigate]);
+  }, [navigate, queryClient]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">

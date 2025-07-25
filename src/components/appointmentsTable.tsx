@@ -41,13 +41,16 @@ export const AppointmentsTable = () => {
   function handleUpdateAppointment(appointment: TAppointment) {
     setSelectedAppointment(appointment);
     setFormState({
-      appointment_date: appointment.appointment_date || '',
-      appointment_time_slot: appointment.appointment_time_slot || '',
+      appointmentId: appointment.appointment_id,
+      patientId: appointment.patient_id,
+      doctorId: appointment.doctor_id,
+      appointmentDate: appointment.appointment_date || '',
+      appointmentTime: appointment.appointment_time_slot || '',
+      duration: appointment.duration || 30,
       reason: appointment.reason || '',
       status: appointment.status || 'scheduled',
       priority: appointment.priority || 'normal',
       notes: appointment.notes || '',
-      duration: appointment.duration || 30,
     });
     setShowModal(true);
   }
@@ -70,13 +73,16 @@ export const AppointmentsTable = () => {
   function handleRescheduleAppointment(appointment: TAppointment) {
     setSelectedAppointment(appointment);
     setFormState({
-      appointment_date: appointment.appointment_date || '',
-      appointment_time_slot: appointment.appointment_time_slot || '',
+      appointmentId: appointment.appointment_id,
+      patientId: appointment.patient_id,
+      doctorId: appointment.doctor_id,
+      appointmentDate: appointment.appointment_date || '',
+      appointmentTime: appointment.appointment_time_slot || '',
+      duration: appointment.duration || 30,
       reason: appointment.reason || '',
       status: 'rescheduled',
       priority: appointment.priority || 'normal',
       notes: appointment.notes || '',
-      duration: appointment.duration || 30,
     });
     setIsReschedule(true);
     setShowModal(true);
@@ -101,10 +107,25 @@ export const AppointmentsTable = () => {
   function handleFormSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (selectedAppointment) {
-      // Update existing appointment
+      // Map formState to backend's expected camelCase fields
+      const mappedPayload = {
+        patientId: formState.patientId,
+        doctorId: formState.doctorId,
+        appointmentDate: formState.appointmentDate,
+        appointmentTime: formState.appointmentTime,
+        duration: formState.duration,
+        reason: formState.reason,
+        status: formState.status,
+        priority: formState.priority,
+        notes: formState.notes,
+        title: formState.reason, // Use reason as title
+        date: formState.appointmentDate ? formState.appointmentDate.split('T')[0] : '',
+        time: formState.appointmentTime || (formState.appointmentDate ? formState.appointmentDate.split('T')[1]?.substring(0,5) : ''),
+        patientEmail: '', // If you have the email, set it here
+      };
       updateAppointmentMutation.mutate({
         appointmentId: selectedAppointment.appointment_id,
-        appointmentData: formState,
+        appointmentData: mappedPayload,
       }, {
         onSuccess: handleModalClose,
       });
@@ -235,12 +256,6 @@ export const AppointmentsTable = () => {
               className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
             >
               Edit
-            </button>
-            <button
-              onClick={() => handleRescheduleAppointment(row.original)}
-              className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded text-sm"
-            >
-              Reschedule
             </button>
             <button
               onClick={() => {
