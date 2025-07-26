@@ -17,6 +17,13 @@ interface Appointment {
   user_url?: string // Added user_url to the interface
   join_url?: string // Allow join_url for linter
   zoom_url?: string // Allow zoom_url for linter
+  doctor?: { // Added doctor to the interface
+    id: number;
+    name?: string;
+    firstName?: string;
+    lastName?: string;
+    specialization: string;
+  };
 }
 
 interface Doctor {
@@ -38,11 +45,31 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
   const { mutate: updateStatus, isSuccess, isError, error } = useUpdateAppointmentStatus()
   const isUpdating = false // No isLoading property, so set to false or handle with local state if needed
   
-  // Fetch doctor information with proper typing
-  const { data: doctor, isLoading: doctorLoading, error: doctorError } = useGetDoctorById(appointment.doctorId)
+  // Prefer doctor from appointment object if present
+  const doctorFromAppointment: {
+    id?: number;
+    doctor_id?: number;
+    name?: string;
+    firstName?: string;
+    lastName?: string;
+    specialization?: string;
+    email?: string;
+  } | undefined = appointment.doctor;
 
-  // Debug: log the doctor object
-  console.log('doctor:', doctor)
+  // Only fetch if not present
+  const shouldFetch = !doctorFromAppointment && typeof appointment.doctorId === 'number';
+  const { data: doctorFetched, isLoading: doctorLoading, error: doctorError } = useGetDoctorById(
+    shouldFetch ? appointment.doctorId : 0
+  );
+  const doctor = doctorFromAppointment || doctorFetched;
+
+  // Debug: log the doctor object and error
+  useEffect(() => {
+    console.log('Doctor used for appointment', appointment.id, ':', doctor)
+    if (doctorError) {
+      console.error('Doctor fetch error for appointment', appointment.id, ':', doctorError)
+    }
+  }, [doctor, doctorError, appointment.id])
 
   // Error handling for missing doctor
   if (doctorLoading) return <div>Loading doctor details...</div>;
@@ -135,16 +162,21 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
         <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
           <FaUserMd className="text-blue-600" size={20} />
           <div className="flex-1">
-            {doctorLoading ? (
+            {doctorLoading && !doctor ? (
               <p className="text-sm text-gray-600">Loading doctor info...</p>
-            ) : doctorError ? (
+            ) : doctorError && !doctor ? (
               <p className="text-sm text-red-600">Failed to load doctor</p>
             ) : doctor ? (
               <div>
                 <p className="font-medium text-gray-800">
-                  Dr. {doctor.name || `${(doctor as any).firstName || ''} ${(doctor as any).lastName || ''}`}
+                  Dr. {doctor.name ||
+                    ('firstName' in doctor && 'lastName' in doctor
+                      ? `${(doctor as any).firstName || ''} ${(doctor as any).lastName || ''}`.trim()
+                      : '') ||
+                    doctor.email ||
+                    'Unknown'}
                 </p>
-                <p className="text-sm text-gray-600">{doctor.specialization}</p>
+                <p className="text-sm text-gray-600">{doctor.specialization || ''}</p>
               </div>
             ) : (
               <p className="text-sm text-gray-600">Doctor ID: {appointment.doctorId}</p>
