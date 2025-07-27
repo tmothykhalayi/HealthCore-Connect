@@ -219,7 +219,7 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
         return;
       }
       // Add returnUrl to paymentFormData
-      const returnUrl = `${window.location.origin}/payment/verify?prev=${encodeURIComponent(window.location.pathname)}`;
+      const returnUrl = `${window.location.origin}/payment-verify?prev=${encodeURIComponent(window.location.pathname)}`;
       const paymentDataWithReturnUrl = { ...paymentFormData, returnUrl };
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'}/payments/initialize`, {
         method: 'POST',
@@ -236,13 +236,28 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
       setShowPaymentModal(false);
       setPayingOrder(null);
       if (toast) toast.open('Payment initialized! Please complete payment in the next step.');
-      // Optionally, handle redirect to payment gateway if response contains a URL
+      
+      // Debug: Log the response
+      console.log('=== PAYMENT INITIALIZATION RESPONSE ===');
+      console.log('Response status:', response.status);
       const result = await response.json();
+      console.log('Response data:', result);
+      console.log('Paystack authorization URL:', result?.paystack_data?.authorization_url);
+      console.log('Paystack access code:', result?.paystack_data?.access_code);
+      console.log('Payment reference:', result?.paystackReference);
+      
+      // Handle redirect to payment gateway
       if (result?.paystack_data?.authorization_url) {
+        console.log('Opening Paystack URL:', result.paystack_data.authorization_url);
+        console.log('Payment reference:', result.paystack_data.reference);
+        if (toast) toast.open('Redirecting to Paystack. Please complete your payment and wait for redirect.');
         window.open(result.paystack_data.authorization_url, '_blank');
       } else if (result?.paystackAuthorizationUrl) {
+        console.log('Opening Paystack URL (alternative):', result.paystackAuthorizationUrl);
+        if (toast) toast.open('Redirecting to Paystack. Please complete your payment and wait for redirect.');
         window.open(result.paystackAuthorizationUrl, '_blank');
       } else {
+        console.error('No payment URL found in response:', result);
         if (toast) toast.open('No payment URL returned from server.');
       }
     } catch (err: any) {

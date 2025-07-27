@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
-import { getAllPatientsFn } from '@/api/patient'
+import { getAllPatientsSimplifiedFn } from '@/API/patient'
 
 export const useGetPatientsQuery = () => {
   return useQuery({
-    queryKey: ['all-patients'],
-    queryFn: getAllPatientsFn,
+    queryKey: ['all-patients-simplified'],
+    queryFn: getAllPatientsSimplifiedFn,
   })
 }

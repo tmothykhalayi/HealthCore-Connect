@@ -42,8 +42,7 @@ export function PatientsTable() {
     },
   ]
 
-  // TODO: Replace with actual doctorId from auth context or props
-  const doctorId = 1 // <-- Replace with real doctor ID
+  // Get doctor ID from auth context
   const { data, isLoading, isError } = useGetPatientsQuery()
 
   const table = useReactTable({

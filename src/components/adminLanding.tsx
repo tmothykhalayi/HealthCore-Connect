@@ -15,8 +15,9 @@ import { Link } from '@tanstack/react-router'
 import { useAdminDashboardStats, useRecentActivities,  } from '@/hooks/admin'
 import { useGetDoctorQuery } from '@/hooks/doctor'
 import { useGetAllUsersQuery } from '@/hooks/user'
+import { useGetAllPatientsQuery } from '@/hooks/patient'
 import { useGetAppointmentQuery } from '@/hooks/appointment'
-import { useGetPaymentQuery } from '@/hooks/payment'
+import { useGetAllPaymentsQuery } from '@/hooks/payment'
 import { useGetMedicineQuery } from '@/hooks/medicine'
 import { DollarSignIcon } from 'lucide-react'
 
@@ -29,16 +30,18 @@ const AdminDashboard = () => {
   // Fetch real data from working endpoints
   const { data: doctorsData } = useGetDoctorQuery(1, 1000, '')
   const { data: usersData } = useGetAllUsersQuery()
+  const { data: patientsData } = useGetAllPatientsQuery()
   const { data: appointmentsData } = useGetAppointmentQuery(1, 1000, '')
-  const { data: paymentsData } = useGetPaymentQuery(1, 1000, '')
+  const { data: paymentsData } = useGetAllPaymentsQuery()
   const { data: medicinesData } = useGetMedicineQuery(1, 1000, '')
 
   // Calculate real statistics from actual data
   const realStats = {
     totalDoctors: doctorsData?.total || 0,
     totalUsers: usersData?.length || 0,
+    totalPatients: patientsData?.length || 0,
     totalAppointments: appointmentsData?.total || 0,
-    totalPayments: paymentsData?.total || 0,
+    totalPayments: paymentsData?.length || 0,
     totalMedicines: medicinesData?.total || 0,
     totalPharmacists: 0, // Will be updated when pharmacist endpoint is available
     activeUsers: usersData?.filter((user: any) => user.isActive)?.length || 0,
@@ -53,7 +56,7 @@ const AdminDashboard = () => {
       color: 'bg-blue-200 text-blue-600',
       route: '/dashboard/admin/patients',
       description: 'Manage patient records and information',
-      count: realStats.totalUsers - realStats.totalDoctors,
+      count: realStats.totalPatients,
     },
     {
       title: 'Doctors',
@@ -218,7 +221,7 @@ const AdminDashboard = () => {
             <p className="text-sm text-purple-600 mb-1">Total Payments</p>
             <p className="text-2xl font-bold">{realStats.totalPayments}</p>
             <p className="text-xs text-purple-500">
-              {paymentsData?.data?.filter((payment: any) => payment.status === 'completed')?.length || 0} completed
+              {paymentsData?.filter((payment: any) => payment.status === 'completed')?.length || 0} completed
             </p>
           </div>
           <div className="bg-yellow-50 p-4 rounded-lg text-center">

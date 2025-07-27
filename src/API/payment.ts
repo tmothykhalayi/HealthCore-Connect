@@ -91,6 +91,27 @@ export const getPaymentsFn = async (
   }
 }
 
+// Get all payments for admin dashboard
+export const getAllPaymentsFn = async (): Promise<Array<any>> => {
+  const fullUrl = `${API_BASE_URL}/payments/admin/all`
+  const token = getAccessTokenHelper()
+
+  const response = await fetch(fullUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch all payments')
+  }
+
+  const data = await response.json()
+  return data.data || data || []
+}
+
 export const createPaymentFn = async (paymentData: CreatePaymentData): Promise<Payment> => {
   const fullUrl = `${API_BASE_URL}/payments`
   const token = getAccessTokenHelper()
@@ -138,6 +159,22 @@ export const updatePaymentFn = async (
 
 export const deletePaymentsFn = async (paymentId: number): Promise<void> => {
   const fullUrl = `${API_BASE_URL}/payments/${paymentId}`
+
+  const response = await fetch(fullUrl, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAccessTokenHelper()}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to delete payment')
+  }
+}
+
+export const deletePaymentAdminFn = async (paymentId: string): Promise<void> => {
+  const fullUrl = `${API_BASE_URL}/payments/admin/${paymentId}`
 
   const response = await fetch(fullUrl, {
     method: 'DELETE',

@@ -9,7 +9,7 @@ import {
   useReactTable
 } from '@tanstack/react-table'
 import type {ColumnDef} from '@tanstack/react-table';
-import type { TAppointment } from '@/Types/types'
+import type { TAppointment } from '@/types/alltypes'
 import {
   useCreateAppointment,
   useDeleteAppointment,
@@ -22,6 +22,7 @@ export const DoctorsAppointmentsTable = ({
   doctorId: number
 }) => {
   const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -33,6 +34,13 @@ export const DoctorsAppointmentsTable = ({
   // Handle both array and object response formats
   const appointments = Array.isArray(doctorData) ? doctorData : doctorData?.data || []
   console.log('doctorData:', doctorData)
+  console.log('appointments:', appointments)
+
+  // Filter appointments by status
+  const filteredAppointments = appointments.filter((appointment: any) => {
+    if (statusFilter === 'all') return true
+    return appointment.status === statusFilter
+  })
 
   const deleteMutation = useDeleteAppointment()
   const createMutation = useCreateAppointment()
@@ -70,17 +78,26 @@ export const DoctorsAppointmentsTable = ({
         header: 'Status',
         accessorKey: 'status',
         cell: ({ row }) => (
-          <span
-            className={`px-2 py-1 rounded-full text-xs ${
+          <select
+            value={row.original.status}
+            onChange={(e) => {
+              // TODO: Add status update mutation
+              console.log('Status changed to:', e.target.value, 'for appointment:', row.original.appointment_id)
+            }}
+            className={`px-2 py-1 rounded-full text-xs border-0 focus:ring-2 focus:ring-blue-500 ${
               row.original.status === 'scheduled'
                 ? 'bg-blue-100 text-blue-800'
                 : row.original.status === 'completed'
                   ? 'bg-green-100 text-green-800'
-                  : 'bg-gray-100 text-gray-800'
+                  : row.original.status === 'cancelled'
+                    ? 'bg-red-100 text-red-800'
+                    : 'bg-gray-100 text-gray-800'
             }`}
           >
-            {row.original.status}
-          </span>
+            <option value="scheduled">Scheduled</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
         ),
       },
       {
@@ -99,30 +116,41 @@ export const DoctorsAppointmentsTable = ({
       {
         header: 'Actions',
         cell: ({ row }) => (
-          <button
-            onClick={() => {
-              if (
-                confirm(`Are you sure you want to delete this appointment?`)
-              ) {
-                deleteMutation.mutate(row.original.appointment_id)
-              }
-            }}
-            className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
-            disabled={deleteMutation.isPending}
-          >
-            {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                // Navigate to patient details
+                window.location.href = `/Dashboard/doctor/patient/${row.original.patient_id}`
+              }}
+              className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
+            >
+              View Patient
+            </button>
+            <button
+              onClick={() => {
+                if (
+                  confirm(`Are you sure you want to delete this appointment?`)
+                ) {
+                  deleteMutation.mutate(row.original.appointment_id)
+                }
+              }}
+              className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+            </button>
+          </div>
         ),
-        size: 100,
+        size: 150,
       },
     ],
     [deleteMutation],
   )
 
   const table = useReactTable({
-    data: appointments,
+    data: filteredAppointments,
     columns,
-    pageCount: Math.ceil(appointments.length / pagination.pageSize),
+    pageCount: Math.ceil(filteredAppointments.length / pagination.pageSize),
     state: {
       pagination,
       globalFilter: search,
@@ -161,6 +189,22 @@ export const DoctorsAppointmentsTable = ({
     )
   }
 
+  if (!filteredAppointments.length && appointments.length > 0) {
+    return (
+      <div className="text-center p-4">
+        <div className="text-gray-500 mb-4">
+          No appointments match the current filters.
+        </div>
+        <button
+          onClick={() => setStatusFilter('all')}
+          className="text-blue-600 hover:text-blue-700 underline"
+        >
+          Clear filters
+        </button>
+      </div>
+    )
+  }
+
   return (
     <div className="p-4 max-w-7xl mx-auto">
       <div className="mb-6">
@@ -168,19 +212,43 @@ export const DoctorsAppointmentsTable = ({
           <h1 className="text-2xl font-bold text-gray-800">
             Doctor's Appointments
           </h1>
+          <button
+            onClick={() => refetch()}
+            disabled={isLoading}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 flex items-center gap-2"
+          >
+            {isLoading ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
+                Refreshing...
+              </>
+            ) : (
+              'Refresh'
+            )}
+          </button>
         </div>
         <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
-          <div className="flex-1">
+          <div className="flex-1 flex gap-4">
             <input
               type="text"
               placeholder="Search appointments by status, reason..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">All Status</option>
+              <option value="scheduled">Scheduled</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
           </div>
           <div className="text-sm text-gray-600 whitespace-nowrap">
-            Showing {table.getRowModel().rows.length} of {appointments.length}{' '}
+            Showing {table.getRowModel().rows.length} of {filteredAppointments.length}{' '}
             appointments
           </div>
         </div>

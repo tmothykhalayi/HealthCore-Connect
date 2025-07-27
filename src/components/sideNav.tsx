@@ -78,6 +78,11 @@ export default function SideNav({ role, onNavigate }: SideNavProps) {
     ],
     doctor: [
       {
+        icon: <MdDashboard size={20} />,
+        label: 'Dashboard',
+        to: '/Dashboard/doctor',
+      },
+      {
         icon: <FaCalendarAlt size={18} />,
         label: 'Appointments',
         to: '/Dashboard/doctor/appointments',
@@ -92,7 +97,11 @@ export default function SideNav({ role, onNavigate }: SideNavProps) {
         label: 'Records',
         to: '/Dashboard/doctor/records',
       },
-      // Removed Medicines link for doctor
+      {
+        icon: <FaFileMedical size={18} />,
+        label: 'Medical Records',
+        to: '/Dashboard/doctor/records',
+      },
     ],
     patient: [
       

@@ -9,8 +9,8 @@ import {
 } from '@tanstack/react-table'
 import type {ColumnDef} from '@tanstack/react-table';
 import type { TPayment } from '@/types/alltypes'
-import { useDeletePayment, useGetPaymentQuery, useCreatePayment, useUpdatePayment } from '@/hooks/payment'
-import { PaymentStatus } from '@/api/payment'
+import { useDeletePaymentAdmin, useGetAllPaymentsQuery, useCreatePayment, useUpdatePayment } from '@/hooks/payment'
+import { PaymentStatus } from '@/API/payment'
 
 interface PaymentFormData {
   userId: number
@@ -43,15 +43,50 @@ export const PaymentsTable = () => {
     transactionId: '',
   })
 
-  const { data, isLoading, isError } = useGetPaymentQuery(
-    pagination.pageIndex + 1,
-    pagination.pageSize,
-    search,
-  )
+  const { data: allPayments, isLoading, isError } = useGetAllPaymentsQuery()
+
+  // Debug logging
+  console.log('All payments data:', allPayments)
+  if (allPayments && allPayments.length > 0) {
+    console.log('Sample payment:', {
+      id: allPayments[0].id,
+      fullName: allPayments[0].fullName,
+      email: allPayments[0].email,
+      user: allPayments[0].user,
+      hasUser: !!allPayments[0].user,
+      userFirstName: allPayments[0].user?.firstName,
+      userLastName: allPayments[0].user?.lastName,
+    })
+  }
 
   const createMutation = useCreatePayment()
   const updateMutation = useUpdatePayment()
-  const deleteMutation = useDeletePayment()
+  const deleteMutation = useDeletePaymentAdmin()
+
+  // Filter and paginate payments
+  const filteredPayments = useMemo(() => {
+    if (!allPayments) return []
+    
+    return allPayments.filter((payment: any) => {
+      const searchLower = search.toLowerCase()
+      const fullName = `${payment.user?.firstName || ''} ${payment.user?.lastName || ''}`.toLowerCase()
+      const email = payment.user?.email?.toLowerCase() || ''
+      const paymentId = payment.id?.toString() || ''
+      
+      return (
+        fullName.includes(searchLower) ||
+        email.includes(searchLower) ||
+        paymentId.includes(searchLower) ||
+        payment.paystackReference?.toLowerCase().includes(searchLower)
+      )
+    })
+  }, [allPayments, search])
+
+  const paginatedPayments = useMemo(() => {
+    const start = pagination.pageIndex * pagination.pageSize
+    const end = start + pagination.pageSize
+    return filteredPayments.slice(start, end)
+  }, [filteredPayments, pagination.pageIndex, pagination.pageSize])
 
   // Format currency to Kenyan Shillings
   const formatToKES = (amount: number) => {
@@ -120,54 +155,65 @@ export const PaymentsTable = () => {
     )
   }
 
-  const handleEdit = (payment: TPayment) => {
+  const handleEdit = (payment: any) => {
     setEditingPayment(payment)
     setFormData({
-      userId: payment.patient_id,
-      orderId: payment.pharmacy_order_id.toString(),
-      amount: payment.amount,
-      paymentMethod: payment.payment_method,
+      userId: payment.userId || 0,
+      orderId: payment.order?.id?.toString() || '',
+      amount: parseFloat(payment.amount),
+      paymentMethod: 'paystack',
       status: payment.status as PaymentStatus,
-      relatedEntityType: 'Order',
-      relatedEntityId: payment.appointment_id,
-      transactionId: `TXN${payment.payment_id}`,
+      relatedEntityType: payment.type === 'order' ? 'Order' : 'Appointment',
+      relatedEntityId: payment.order?.id || 0,
+      transactionId: payment.paystackReference || '',
     })
     setIsEditModalOpen(true)
   }
 
-  const columns = useMemo<ColumnDef<TPayment>[]>(
+  const columns = useMemo<ColumnDef<any>[]>(
     () => [
       {
         header: 'Payment ID',
-        accessorKey: 'payment_id',
+        accessorKey: 'id',
         size: 100,
       },
       {
-        header: 'Appointment ID',
-        accessorKey: 'appointment_id',
-        size: 120,
-      },
-      {
-        header: 'Patient ID',
-        accessorKey: 'patient_id',
-        size: 100,
-      },
-      {
-        header: 'Method',
-        accessorKey: 'payment_method',
+        header: 'Patient Name',
+        accessorFn: (row) => {
+          if (row.user?.firstName && row.user?.lastName) {
+            return `${row.user.firstName} ${row.user.lastName}`
+          }
+          return row.fullName || 'N/A'
+        },
         cell: ({ row }) => (
-          <span className="capitalize">{row.original.payment_method}</span>
+          <span className="font-medium">
+            {row.original.user?.firstName && row.original.user?.lastName 
+              ? `${row.original.user.firstName} ${row.original.user.lastName}`
+              : row.original.fullName || 'N/A'
+            }
+          </span>
         ),
+        size: 150,
       },
       {
-        header: 'Order ID',
-        accessorKey: 'pharmacy_order_id',
+        header: 'Email',
+        accessorFn: (row) => row.user?.email || row.email,
+        cell: ({ row }) => row.original.user?.email || row.original.email || 'N/A',
+        size: 200,
+      },
+      {
+        header: 'Type',
+        accessorKey: 'type',
+        cell: ({ row }) => (
+          <span className="capitalize">{row.original.type}</span>
+        ),
         size: 100,
       },
       {
         header: 'Amount',
         accessorKey: 'amount',
-        cell: ({ row }) => formatToKES(row.original.amount),
+        cell: ({ row }) => formatToKES(parseFloat(row.original.amount)),
+        size: 120,
       },
       {
         header: 'Status',
@@ -181,16 +227,28 @@ export const PaymentsTable = () => {
                   ? 'bg-red-100 text-red-800'
                   : row.original.status === 'refunded'
                     ? 'bg-blue-100 text-blue-800'
-                    : 'bg-yellow-100 text-yellow-800'
+                  : row.original.status === 'pending'
+                    ? 'bg-yellow-100 text-yellow-800'
+                    : 'bg-gray-100 text-gray-800'
             }`}
           >
             {row.original.status}
           </span>
         ),
+        size: 100,
+      },
+      {
+        header: 'Reference',
+        accessorKey: 'paystackReference',
+        cell: ({ row }) => (
+          <span className="font-mono text-xs">{row.original.paystackReference || 'N/A'}</span>
+        ),
+        size: 150,
       },
       {
         header: 'Created At',
-        cell: ({ row }) => formatDateTime(row.original.created_at),
+        cell: ({ row }) => formatDateTime(row.original.createdAt),
+        size: 150,
       },
       {
         header: 'Actions',
@@ -205,9 +263,9 @@ export const PaymentsTable = () => {
             <button
               onClick={() => {
                 if (
-                  confirm(`Delete payment record #${row.original.payment_id}?`)
+                  confirm(`Delete payment record #${row.original.id}?`)
                 ) {
-                  deleteMutation.mutate(row.original.payment_id)
+                  deleteMutation.mutate(row.original.id)
                 }
               }}
               className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
@@ -224,9 +282,9 @@ export const PaymentsTable = () => {
   )
 
   const table = useReactTable({
-    data: data?.data || [],
+    data: paginatedPayments || [],
     columns,
-    pageCount: Math.ceil((data?.total || 0) / pagination.pageSize),
+    pageCount: Math.ceil(filteredPayments.length / pagination.pageSize),
     state: {
       pagination,
       globalFilter: search,
@@ -236,7 +294,7 @@ export const PaymentsTable = () => {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    manualPagination: true,
+    manualPagination: false,
   } as any)
 
   if (isLoading) {
@@ -277,7 +335,7 @@ export const PaymentsTable = () => {
             />
           </div>
           <div className="text-sm text-gray-600 whitespace-nowrap">
-            Showing {table.getRowModel().rows.length} of {data?.total} payments
+            Showing {table.getRowModel().rows.length} of {filteredPayments.length} payments
           </div>
         </div>
       </div>

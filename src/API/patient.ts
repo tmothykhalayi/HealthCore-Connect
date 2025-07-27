@@ -48,6 +48,30 @@ export const getAllPatientsFn = async (): Promise<Array<any>> => {
   const data = await response.json()
   const patients = data.data || data // Handle both response formats
 
+  // Return the complete patient data as received from backend
+  return patients || []
+}
+
+// Get all patients in simplified format for doctor's PatientsTable
+export const getAllPatientsSimplifiedFn = async (): Promise<Array<any>> => {
+  const fullUrl = `${API_BASE_URL}/patients`
+  const token = getAccessTokenHelper()
+
+  const response = await fetch(fullUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch patients')
+  }
+
+  const data = await response.json()
+  const patients = data.data || data // Handle both response formats
+
   // Map to the shape expected by doctor's PatientsTable
   return (patients || []).map((patient: any) => ({
     patient_id: patient.id,

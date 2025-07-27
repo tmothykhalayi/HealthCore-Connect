@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import { Link } from '@tanstack/react-router'
 import { useGetPatientAppointmentsQuery } from '@/hooks/patient/appointment'
-import { FaCalendarAlt, FaUserMd, FaPills, FaFileMedical, FaShoppingCart, FaCog } from 'react-icons/fa'
+import { FaCalendarAlt, FaUserMd, FaPills, FaFileMedical, FaShoppingCart, FaCog, FaCreditCard } from 'react-icons/fa'
 import { SiZoom } from 'react-icons/si'
 import { useEffect, useState } from 'react'
 import { getUserIdHelper } from '@/lib/auth'
@@ -115,19 +115,19 @@ function PatientDashboard() {
       link: '/Dashboard/patient/medical-records',
       color: 'bg-purple-500 hover:bg-purple-600'
     },
-    // {
-    //   title: 'Prescriptions',
-    //   description: 'View and manage your prescriptions',
-    //   icon: FaPills,
-    //   link: '/Dashboard/patient/prescriptions',
-    //   color: 'bg-orange-500 hover:bg-orange-600'
-    // },
     {
       title: 'Orders',
       description: 'Track your medicine and pharmacy orders',
       icon: FaShoppingCart,
       link: '/Dashboard/patient/orders',
       color: 'bg-red-500 hover:bg-red-600'
+    },
+    {
+      title: 'Payments',
+      description: 'View your payment history and manage payments',
+      icon: FaCreditCard,
+      link: '/Dashboard/patient/payments',
+      color: 'bg-indigo-500 hover:bg-indigo-600'
     },
     {
       title: 'Settings',
