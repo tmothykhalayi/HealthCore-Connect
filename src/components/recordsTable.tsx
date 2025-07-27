@@ -368,12 +368,9 @@ export const RecordsTable = () => {
   }
 
   return (
-    <div className="p-4 max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Medical Records
-          </h1>
           <button
             onClick={() => setIsCreateModalOpen(true)}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"

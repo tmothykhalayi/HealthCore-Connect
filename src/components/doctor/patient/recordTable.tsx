@@ -233,26 +233,21 @@ export const MedicalRecordsTable = ({ doctorId }: MedicalRecordsTableProps) => {
   }
 
   return (
-    <div className="p-4 max-w-7xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">
-          Medical Records
-        </h1>
-        <div className="mb-4 flex justify-between items-center">
-          <input
-            type="text"
-            placeholder="Search records by description, IDs..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            onClick={() => setIsCreateModalOpen(true)}
-            className="ml-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-          >
-            + Create Record
-          </button>
-        </div>
+    <div className="max-w-7xl mx-auto">
+      <div className="mb-4 flex justify-between items-center">
+        <input
+          type="text"
+          placeholder="Search records by description, IDs..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <button
+          onClick={() => setIsCreateModalOpen(true)}
+          className="ml-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+        >
+          + Create Record
+        </button>
       </div>
 
       {/* Table and modals */}

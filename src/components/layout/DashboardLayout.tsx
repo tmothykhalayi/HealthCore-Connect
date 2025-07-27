@@ -1,5 +1,5 @@
 import { Outlet } from '@tanstack/react-router'
-import { FaBars, FaBell, FaTimes, FaUserCircle } from 'react-icons/fa'
+import { FaBars, FaTimes, FaUserCircle } from 'react-icons/fa'
 import { useState } from 'react'
 import type { Role } from '@/types/alltypes'
 import SideNav from '@/components/sideNav'
@@ -43,11 +43,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 Health Management
               </h1>
               <div className="flex items-center space-x-4">
-              
-                <button className="p-1 text-gray-500 hover:text-gray-700 relative">
-                  <FaBell size={20} />
-                  <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
-                </button>
                 <div className="flex items-center space-x-2">
                   <FaUserCircle size={24} className="text-gray-400" />
                   <span className="text-sm font-medium">{role}</span>

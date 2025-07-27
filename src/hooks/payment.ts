@@ -6,6 +6,7 @@ import {
   createPaymentFn, 
   updatePaymentFn,
   getAllPaymentsFn,
+  getPharmacistPaymentsFn,
   type CreatePaymentData,
   type UpdatePaymentData
 } from '@/API/payment'
@@ -26,6 +27,15 @@ export const useGetAllPaymentsQuery = () => {
   return useQuery({
     queryKey: ['all-payments'],
     queryFn: getAllPaymentsFn,
+    refetchInterval: 30000, // Refetch every 30 seconds
+  })
+}
+
+// Hook for pharmacist to get payments
+export const useGetPharmacistPaymentsQuery = () => {
+  return useQuery({
+    queryKey: ['pharmacist-payments'],
+    queryFn: getPharmacistPaymentsFn,
     refetchInterval: 30000, // Refetch every 30 seconds
   })
 }

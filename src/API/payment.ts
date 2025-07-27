@@ -1,6 +1,6 @@
 import { API_BASE_URL } from './BaseUrl'
 
-import { getAccessTokenHelper } from '@/lib/auth'
+import { getAccessTokenHelper, getUserIdHelper } from '@/lib/auth'
 
 export enum PaymentStatus {
   PENDING = 'pending',
@@ -109,6 +109,53 @@ export const getAllPaymentsFn = async (): Promise<Array<any>> => {
   }
 
   const data = await response.json()
+  return data.data || data || []
+}
+
+// Get payments for pharmacist (pharmacy-specific endpoint)
+export const getPharmacistPaymentsFn = async (): Promise<Array<any>> => {
+  const token = getAccessTokenHelper()
+  
+  // First, get the current user's pharmacy details
+  const userId = getUserIdHelper()
+  if (!userId) {
+    throw new Error('User not authenticated')
+  }
+
+  // Get pharmacy details for the current user
+  const pharmacyResponse = await fetch(`${API_BASE_URL}/pharmacy/user/${userId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!pharmacyResponse.ok) {
+    throw new Error('Failed to fetch pharmacy details')
+  }
+
+  const pharmacyData = await pharmacyResponse.json()
+  const pharmacyId = pharmacyData.id || pharmacyData.data?.id
+
+  if (!pharmacyId) {
+    throw new Error('Pharmacy ID not found')
+  }
+
+  // Now fetch payments for this specific pharmacy
+  const paymentsResponse = await fetch(`${API_BASE_URL}/payments/pharmacy/${pharmacyId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!paymentsResponse.ok) {
+    throw new Error('Failed to fetch pharmacist payments')
+  }
+
+  const data = await paymentsResponse.json()
   return data.data || data || []
 }
 

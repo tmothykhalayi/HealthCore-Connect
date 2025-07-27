@@ -12,7 +12,7 @@ import {
   updatePharmacist,
   deletePharmacist,
   getAllOrders
-} from '@/api/pharmacist'
+} from '@/API/pharmacist'
 import { getUserIdHelper } from '@/lib/auth'
 
 // Hook to get pharmacist profile
@@ -23,6 +23,10 @@ export const usePharmacistProfile = () => {
     queryKey: ['pharmacist-profile', userId],
     queryFn: () => getPharmacistByUserId(Number(userId)),
     enabled: !!userId,
+    staleTime: 0, // Always consider data stale to force refresh
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
   })
 }
 
@@ -34,6 +38,10 @@ export const usePharmacyDetails = () => {
     queryKey: ['pharmacy-details', userId],
     queryFn: () => getPharmacyByUserId(Number(userId)),
     enabled: !!userId,
+    staleTime: 0, // Always consider data stale to force refresh
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
   })
 }
 
@@ -44,6 +52,10 @@ export const usePharmacyOrders = (pharmacyId: number) => {
     queryFn: () => getPharmacyOrdersForPharmacist(pharmacyId),
     enabled: !!pharmacyId,
     refetchInterval: 30000, // Refetch every 30 seconds
+    staleTime: 0, // Always consider data stale to force refresh
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
   })
 }
 

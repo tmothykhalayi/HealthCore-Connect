@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import {
   FaCalendarAlt,
+  FaChartBar,
   FaChartLine,
   FaFileMedical,
   FaHospitalUser,
@@ -137,6 +138,11 @@ export default function SideNav({ role, onNavigate }: SideNavProps) {
       },
     ],
     pharmacist: [
+      {
+        icon: <FaChartBar size={18} />,
+        label: 'General System Overview',
+        to: '/Dashboard/pharmarcist/',
+      },
       {
         icon: <MdLocalPharmacy size={20} />,
         label: 'Pharmacy Orders',

@@ -1,122 +1,93 @@
 import { createFileRoute } from '@tanstack/react-router'
 import DashboardLayout from '@/components/layout/DashboardLayout'
+import { usePharmacistProfile, usePharmacyDetails } from '@/hooks/pharmacist'
+import { useGetPharmacistPaymentsQuery } from '@/hooks/payment'
+import { FaClipboardList, FaUsers, FaPills, FaCog, FaShoppingCart } from 'react-icons/fa'
+import { useQueryClient } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
-import { usePharmacistProfile, usePharmacyDetails, usePharmacyOrders } from '@/hooks/pharmacist'
-import { FaPills, FaShoppingCart, FaUsers, FaFileMedical, FaMoneyBillWave, FaChartBar, FaCog } from 'react-icons/fa'
-import { RecordsTable } from '@/components/recordsTable'
 
 export const Route = createFileRoute('/Dashboard/pharmarcist/')({
   component: PharmacistDashboard,
 })
 
 function PharmacistDashboard() {
-  const { data: pharmacistProfile, isLoading: profileLoading } = usePharmacistProfile()
-  const { data: pharmacyDetails, isLoading: pharmacyLoading } = usePharmacyDetails()
+  const queryClient = useQueryClient()
+  const { data: pharmacistProfile, isLoading: profileLoading, refetch: refetchProfile, error: profileError } = usePharmacistProfile()
+  const { data: pharmacyDetails, isLoading: pharmacyLoading, refetch: refetchPharmacy, error: pharmacyError } = usePharmacyDetails()
+  
+  // Fetch payments data
+  const { data: paymentsData, isLoading: paymentsLoading } = useGetPharmacistPaymentsQuery()
   
   // Get pharmacy ID from pharmacy details
-  const pharmacyId = pharmacyDetails?.id || pharmacyDetails?.pharmacyId
+  const pharmacyId = pharmacyDetails?.id || pharmacyDetails?.pharmacyId || pharmacyDetails?.data?.id || pharmacyDetails?.data?.pharmacyId
   
-  const { data: orders, isLoading: ordersLoading } = usePharmacyOrders(pharmacyId)
+  // Process payments data
+  const payments = Array.isArray(paymentsData) ? paymentsData : []
   
-  // Calculate stats
-  const totalOrders = orders?.length || 0
-  const pendingOrders = orders?.filter(order => order.status === 'pending').length || 0
-  const completedOrders = orders?.filter(order => order.status === 'completed').length || 0
-  const totalRevenue = orders?.filter(order => order.status === 'completed')
-    .reduce((sum, order) => sum + (order.totalAmount || 0), 0) || 0
+  // Calculate payment statistics
+  const totalPayments = payments.length
+  const completedPayments = payments.filter((payment: any) => payment.status === 'completed').length
+  const pendingPayments = payments.filter((payment: any) => payment.status === 'pending').length
+  const totalRevenue = payments
+    .filter((payment: any) => payment.status === 'completed')
+    .reduce((sum: number, payment: any) => sum + (payment.amount || 0), 0)
+  
+  // Debug logging
+  console.log('Pharmacist Dashboard Debug:', {
+    pharmacistProfile: pharmacistProfile ? 'Loaded' : 'null',
+    pharmacyDetails: pharmacyDetails ? 'Loaded' : 'null',
+    pharmacyId,
+    profileLoading,
+    pharmacyLoading,
+    profileError: profileError ? profileError.message : 'null',
+    pharmacyError: pharmacyError ? pharmacyError.message : 'null',
+    paymentsCount: payments.length,
+    totalRevenue
+  })
 
-  const dashboardCards = [
-    {
-      title: 'Total Orders',
-      value: totalOrders,
-      icon: FaShoppingCart,
-      color: 'bg-blue-500',
-      link: '/Dashboard/pharmarcist/pharmacy_orders'
-    },
-    {
-      title: 'Pending Orders',
-      value: pendingOrders,
-      icon: FaShoppingCart,
-      color: 'bg-yellow-500',
-      link: '/Dashboard/pharmarcist/pharmacy_orders'
-    },
-    {
-      title: 'Completed Orders',
-      value: completedOrders,
-      icon: FaFileMedical,
-      color: 'bg-green-500',
-      link: '/Dashboard/pharmarcist/pharmacy_orders'
-    },
-    {
-      title: 'Total Revenue',
-      value: `$${totalRevenue.toFixed(2)}`,
-      icon: FaMoneyBillWave,
-      color: 'bg-purple-500',
-      link: '/Dashboard/pharmarcist/payments'
-    }
-  ]
+  // Additional debugging for pharmacy ID extraction
+  console.log('Pharmacy ID Debug:', {
+    'pharmacyDetails?.id': pharmacyDetails?.id,
+    'Final pharmacyId': pharmacyId,
+  })
 
   const quickActions = [
     {
-      title: 'View Orders',
-      description: 'Manage pharmacy orders',
-      icon: FaShoppingCart,
+      title: 'Manage Orders',
+      description: 'View and process pharmacy orders',
+      icon: FaClipboardList,
       link: '/Dashboard/pharmarcist/pharmacy_orders',
       color: 'bg-blue-500 hover:bg-blue-600'
     },
     {
-      title: 'Patients',
-      description: 'View patients with orders',
+      title: 'Patient Records',
+      description: 'Access patient information and history',
       icon: FaUsers,
       link: '/Dashboard/pharmarcist/patients',
-      color: 'bg-purple-500 hover:bg-purple-600'
+      color: 'bg-green-500 hover:bg-green-600'
+    },
+    {
+      title: 'Medicines',
+      description: 'Manage medicine inventory',
+      icon: FaPills,
+      link: '/Dashboard/pharmarcist/medicines',
+      color: 'bg-indigo-500 hover:bg-indigo-600'
     },
     {
       title: 'Payments',
-      description: 'Track payments and revenue',
-      icon: FaMoneyBillWave,
+      description: `Track payment transactions (${totalPayments} total)`,
+      icon: FaShoppingCart,
       link: '/Dashboard/pharmarcist/payments',
       color: 'bg-orange-500 hover:bg-orange-600'
     },
     {
-      title: 'Records',
-      description: 'View pharmacy records and reports',
-      icon: FaChartBar,
-      link: '/Dashboard/pharmarcist/records',
-      color: 'bg-red-500 hover:bg-red-600'
-    },
-    {
-      title: 'General Settings',
-      description: 'Update your profile and preferences',
+      title: 'Settings',
+      description: 'Update pharmacy settings',
       icon: FaCog,
       link: '/Dashboard/pharmarcist/settings',
       color: 'bg-gray-500 hover:bg-gray-600'
     }
   ]
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    })
-  }
-
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800'
-      case 'processing':
-        return 'bg-blue-100 text-blue-800'
-      case 'completed':
-        return 'bg-green-100 text-green-800'
-      case 'cancelled':
-        return 'bg-red-100 text-red-800'
-      default:
-        return 'bg-gray-100 text-gray-800'
-    }
-  }
 
   if (profileLoading || pharmacyLoading) {
     return (
@@ -131,110 +102,90 @@ function PharmacistDashboard() {
     )
   }
 
+  // Show errors if any
+  if (profileError || pharmacyError) {
+    return (
+      <DashboardLayout>
+        <div className="space-y-6">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+            <h2 className="text-lg font-semibold text-red-800 mb-4">Error Loading Dashboard</h2>
+            {profileError && (
+              <div className="mb-4">
+                <p className="text-red-700 font-medium">Pharmacist Profile Error:</p>
+                <p className="text-red-600 text-sm">{profileError.message}</p>
+              </div>
+            )}
+            {pharmacyError && (
+              <div className="mb-4">
+                <p className="text-red-700 font-medium">Pharmacy Details Error:</p>
+                <p className="text-red-600 text-sm">{pharmacyError.message}</p>
+              </div>
+            )}
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      </DashboardLayout>
+    )
+  }
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
         {/* Welcome Section */}
         <div className="bg-gradient-to-r from-green-500 to-blue-600 rounded-lg p-6 text-white">
-          <h1 className="text-3xl font-bold mb-2">Welcome, Pharmacist!</h1>
-          <p className="text-green-100">
-            {pharmacyDetails?.name ? `Managing ${pharmacyDetails.name}` : 'Manage your pharmacy operations'}
-          </p>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {dashboardCards.map((card, index) => (
-            <Link
-              key={index}
-              to={card.link}
-              className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">{card.title}</p>
-                  <p className="text-2xl font-bold text-gray-900">{card.value}</p>
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Welcome, Pharmacist!</h1>
+            <p className="text-green-100">
+              {pharmacyDetails?.name ? `Managing ${pharmacyDetails.name}` : 'Manage your pharmacy operations'}
+            </p>
+            {!paymentsLoading && (
+              <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-white/10 rounded-lg p-3">
+                  <p className="text-sm text-green-100">Total Payments</p>
+                  <p className="text-xl font-bold">{totalPayments}</p>
                 </div>
-                <div className={`p-3 rounded-full ${card.color} text-white`}>
-                  <card.icon size={24} />
+                <div className="bg-white/10 rounded-lg p-3">
+                  <p className="text-sm text-green-100">Completed</p>
+                  <p className="text-xl font-bold">{completedPayments}</p>
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Recent Orders */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-gray-800">Recent Orders</h2>
-              <Link
-                to="/Dashboard/pharmarcist/pharmacy_orders"
-                className="text-blue-600 hover:text-blue-700 text-sm font-medium"
-              >
-                View All
-              </Link>
-            </div>
-            
-            {ordersLoading ? (
-              <div className="flex justify-center items-center h-32">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-              </div>
-            ) : orders && orders.length > 0 ? (
-              <div className="space-y-3">
-                {orders.slice(0, 5).map((order) => (
-                  <div key={order.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-800">
-                        Order #{order.id}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {formatDate(order.createdAt)} - ${order.totalAmount || 0}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Patient ID: {order.patientId}
-                      </p>
-                    </div>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
-                      {order.status}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <FaShoppingCart className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                <p className="text-gray-500">No orders found</p>
-                <p className="text-gray-400 text-sm">Orders will appear here when patients place them</p>
+                <div className="bg-white/10 rounded-lg p-3">
+                  <p className="text-sm text-green-100">Pending</p>
+                  <p className="text-xl font-bold">{pendingPayments}</p>
+                </div>
+                <div className="bg-white/10 rounded-lg p-3">
+                  <p className="text-sm text-green-100">Revenue</p>
+                  <p className="text-xl font-bold">${totalRevenue.toFixed(2)}</p>
+                </div>
               </div>
             )}
           </div>
-
-          {/* Quick Actions */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {quickActions.map((action, index) => (
-                <Link
-                  key={index}
-                  to={action.link}
-                  className={`${action.color} text-white p-4 rounded-lg hover:shadow-md transition-all duration-200`}
-                >
-                  <div className="flex items-center space-x-3">
-                    <action.icon size={20} />
-                    <div>
-                      <p className="font-medium">{action.title}</p>
-                      <p className="text-sm opacity-90">{action.description}</p>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
         </div>
-        {/* Add records table for all medical records */}
-        <div className="mt-8">
-          <RecordsTable />
+
+        {/* Quick Actions */}
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {quickActions.map((action, index) => (
+              <Link
+                key={index}
+                to={action.link}
+                className={`${action.color} text-white p-4 rounded-lg hover:shadow-md transition-all duration-200`}
+              >
+                <div className="flex items-center space-x-3">
+                  <action.icon size={20} />
+                  <div>
+                    <p className="font-medium">{action.title}</p>
+                    <p className="text-sm opacity-90">{action.description}</p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </DashboardLayout>
