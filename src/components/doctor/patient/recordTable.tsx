@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import {
   flexRender,
   getCoreRowModel,
@@ -13,7 +13,11 @@ import { useCreateRecord, useUpdateRecord, useDeleteRecord } from '@/hooks/medic
 import { useGetPatientsQuery } from '@/hooks/doctor/patient'
 import { useGetDoctorQuery } from '@/hooks/doctor'
 
-export const MedicalRecordsTable = () => {
+interface MedicalRecordsTableProps {
+  doctorId: number
+}
+
+export const MedicalRecordsTable = ({ doctorId }: MedicalRecordsTableProps) => {
   const [search, setSearch] = useState('')
   const { data, isLoading, isError } = useGetRecordsQuery()
   const records = Array.isArray(data) ? data : data?.data || []
@@ -29,7 +33,7 @@ export const MedicalRecordsTable = () => {
   const [editingRecord, setEditingRecord] = useState<TRecord | null>(null)
   const [formData, setFormData] = useState<CreateRecordData>({
     patientId: 1,
-    doctorId: 1,
+    doctorId: doctorId,
     recordType: 'diagnosis',
     title: '',
     description: '',
@@ -43,6 +47,14 @@ export const MedicalRecordsTable = () => {
   const { data: doctorsData } = useGetDoctorQuery(1, 100, '');
   const patients = patientsData || [];
   const doctors = doctorsData?.data || [];
+
+  // Update formData when doctorId changes
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      doctorId: doctorId
+    }))
+  }, [doctorId])
 
   // Format date to a readable format
   const formatDate = (dateString: string) => {
@@ -104,7 +116,7 @@ export const MedicalRecordsTable = () => {
         setIsCreateModalOpen(false)
         setFormData({
           patientId: patients.length > 0 ? patients[0].patient_id : 1,
-          doctorId: doctors.length > 0 ? doctors[0].doctor_id : 1,
+          doctorId: doctorId,
           recordType: 'diagnosis',
           title: '',
           description: '',
@@ -124,7 +136,7 @@ export const MedicalRecordsTable = () => {
     setEditingRecord(record)
     setFormData({
       patientId: record.patientId,
-      doctorId: record.doctorId,
+      doctorId: doctorId, // Always use current doctor's ID
       recordType: record.recordType,
       title: record.title,
       description: record.description,
@@ -163,7 +175,7 @@ export const MedicalRecordsTable = () => {
           setEditingRecord(null)
           setFormData({
             patientId: patients.length > 0 ? patients[0].patient_id : 1,
-            doctorId: doctors.length > 0 ? doctors[0].doctor_id : 1,
+            doctorId: doctorId,
             recordType: 'diagnosis',
             title: '',
             description: '',
@@ -316,19 +328,10 @@ export const MedicalRecordsTable = () => {
                   </option>
                 ))}
               </select>
-              <select
-                value={formData.doctorId}
-                onChange={e => setFormData({ ...formData, doctorId: Number(e.target.value) })}
-                className="w-full mb-2 p-2 border rounded"
-                required
-              >
-                <option value="">Select Doctor</option>
-                {doctors.map(d => (
-                  <option key={d.doctor_id} value={d.doctor_id}>
-                    {d.name} (ID: {d.doctor_id})
-                  </option>
-                ))}
-              </select>
+              <div className="w-full mb-2 p-2 border rounded bg-gray-100">
+                <label className="text-sm text-gray-600">Doctor ID</label>
+                <div className="text-gray-800 font-medium">{doctorId}</div>
+              </div>
               <input
                 type="text"
                 placeholder="Title"
@@ -399,19 +402,10 @@ export const MedicalRecordsTable = () => {
                   </option>
                 ))}
               </select>
-              <select
-                value={formData.doctorId}
-                onChange={e => setFormData({ ...formData, doctorId: Number(e.target.value) })}
-                className="w-full mb-2 p-2 border rounded"
-                required
-              >
-                <option value="">Select Doctor</option>
-                {doctors.map(d => (
-                  <option key={d.doctor_id} value={d.doctor_id}>
-                    {d.name} (ID: {d.doctor_id})
-                  </option>
-                ))}
-              </select>
+              <div className="w-full mb-2 p-2 border rounded bg-gray-100">
+                <label className="text-sm text-gray-600">Doctor ID</label>
+                <div className="text-gray-800 font-medium">{doctorId}</div>
+              </div>
               <input
                 type="text"
                 placeholder="Title"

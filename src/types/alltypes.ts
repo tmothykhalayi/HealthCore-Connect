@@ -296,6 +296,10 @@ export interface TAppointment {
   priority?: string
   duration?: number
   created_at: string
+  // Zoom meeting data
+  zoomMeetingId?: string
+  user_url?: string
+  admin_url?: string
 }
 
 export interface TPrescription {

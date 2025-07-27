@@ -4,8 +4,9 @@ import { Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { getUserIdHelper } from '@/lib/auth'
 import { getDoctorByUserIdFn } from '@/API/doctor'
-import { useGetAppointmentsByIdQuery } from '@/hooks/doctor/appointment'
+import { useGetAppointmentsByDoctorIdQuery } from '@/hooks/doctor/appointment'
 import { useGetPatientsQuery } from '@/hooks/doctor/patient'
+import { addZoomMeetingToAppointmentFn } from '@/API/Appointment'
 import { 
   FaCalendarAlt, 
   FaUserInjured, 
@@ -13,7 +14,9 @@ import {
   FaChartLine,
   FaClock,
   FaCheckCircle,
-  FaExclamationTriangle
+  FaExclamationTriangle,
+  FaCog,
+  FaVideo
 } from 'react-icons/fa'
 
 export const Route = createFileRoute('/Dashboard/doctor/')({
@@ -51,7 +54,7 @@ function DoctorDashboard() {
   }, [userId])
 
   // Fetch appointments data
-  const { data: appointmentsData, isLoading: appointmentsLoading } = useGetAppointmentsByIdQuery(doctorId || 0)
+  const { data: appointmentsData, isLoading: appointmentsLoading } = useGetAppointmentsByDoctorIdQuery(doctorId || 0)
   const { data: patientsData, isLoading: patientsLoading } = useGetPatientsQuery()
 
   // Handle both array and object response formats
@@ -149,13 +152,13 @@ function DoctorDashboard() {
       link: '/Dashboard/doctor/records',
       color: 'bg-purple-500 hover:bg-purple-600'
     },
-         {
-       title: 'Medical Records',
-       description: 'View and manage medical records',
-       icon: FaFileMedical,
-       link: '/Dashboard/doctor/records',
-       color: 'bg-indigo-500 hover:bg-indigo-600'
-     }
+    {
+      title: 'Settings',
+      description: 'Update your profile and preferences',
+      icon: FaCog,
+      link: '/Dashboard/doctor/settings',
+      color: 'bg-indigo-500 hover:bg-indigo-600'
+    }
   ]
 
   const formatDate = (dateString: string) => {
@@ -177,6 +180,36 @@ function DoctorDashboard() {
         return 'bg-red-100 text-red-800'
       default:
         return 'bg-gray-100 text-gray-800'
+    }
+  }
+
+  const handleJoinMeeting = async (appointment: any) => {
+    // Check if the appointment has Zoom meeting data from backend
+    if (appointment.admin_url) {
+      // Use the admin URL (start URL) for doctors
+      console.log('Joining meeting using backend Zoom data:', appointment.admin_url)
+      window.open(appointment.admin_url, '_blank')
+    } else if (appointment.zoomMeetingId) {
+      // Fallback to meeting ID if URL is not available
+      const zoomUrl = `https://zoom.us/s/${appointment.zoomMeetingId}`
+      console.log('Joining meeting using meeting ID:', appointment.zoomMeetingId)
+      window.open(zoomUrl, '_blank')
+    } else {
+      // If no Zoom data is available, try to create one
+      try {
+        console.log('No Zoom meeting data available, creating one for appointment:', appointment.appointment_id)
+        const result = await addZoomMeetingToAppointmentFn(appointment.appointment_id)
+        
+        if (result.data && result.data.admin_url) {
+          console.log('Zoom meeting created successfully:', result.data.admin_url)
+          window.open(result.data.admin_url, '_blank')
+        } else {
+          alert('Failed to create Zoom meeting. Please contact support.')
+        }
+      } catch (error) {
+        console.error('Error creating Zoom meeting:', error)
+        alert('Failed to create Zoom meeting. Please contact support.')
+      }
     }
   }
 
@@ -283,6 +316,9 @@ function DoctorDashboard() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Reason
                     </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -303,6 +339,28 @@ function DoctorDashboard() {
                         <span className="truncate max-w-xs inline-block">
                           {appointment.reason}
                         </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <button
+                          onClick={() => handleJoinMeeting(appointment)}
+                          disabled={appointment.status === 'cancelled' || appointment.status === 'completed'}
+                          className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md ${
+                            appointment.status === 'cancelled' || appointment.status === 'completed'
+                              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                              : 'bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
+                          }`}
+                          title={
+                            appointment.status === 'cancelled' || appointment.status === 'completed'
+                              ? 'Meeting not available'
+                              : 'Join Zoom Meeting'
+                          }
+                        >
+                          <FaVideo className="mr-1" size={12} />
+                          {appointment.status === 'cancelled' || appointment.status === 'completed'
+                            ? 'Unavailable'
+                            : 'Join Meeting'
+                          }
+                        </button>
                       </td>
                     </tr>
                   ))}

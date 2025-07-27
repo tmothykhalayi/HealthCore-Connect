@@ -3,7 +3,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout'
 import { PatientsTable } from '@/components/doctor/patientTable'
 import { useEffect, useState } from 'react'
 import { getUserIdHelper } from '@/lib/auth'
-import { getDoctorByUserIdFn } from '@/api/doctor'
+import { getDoctorByUserIdFn } from '@/API/doctor'
 
 export const Route = createFileRoute('/Dashboard/doctor/patient/')({
   component: PatientsPage,

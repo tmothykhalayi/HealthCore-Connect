@@ -94,13 +94,13 @@ export default function SideNav({ role, onNavigate }: SideNavProps) {
       },
       {
         icon: <FaFileMedical size={18} />,
-        label: 'Records',
+        label: 'Medical Records',
         to: '/Dashboard/doctor/records',
       },
       {
-        icon: <FaFileMedical size={18} />,
-        label: 'Medical Records',
-        to: '/Dashboard/doctor/records',
+        icon: <FaCog size={18} />,
+        label: 'Settings',
+        to: '/Dashboard/doctor/settings',
       },
     ],
     patient: [

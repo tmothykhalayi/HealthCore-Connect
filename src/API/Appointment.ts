@@ -53,6 +53,10 @@ export const getAppointmentsFn = async (
     priority: appointment.priority || 'normal',
     duration: appointment.duration || 30,
     created_at: appointment.createdAt,
+    // Zoom meeting data
+    zoomMeetingId: appointment.zoomMeetingId,
+    user_url: appointment.user_url,
+    admin_url: appointment.admin_url,
   }))
 
   console.log('[getAppointmentsFn] Mapped data for frontend:', mappedData);
@@ -96,6 +100,10 @@ export const getAppointmentByIdFn = async (appointmentId: number): Promise<TAppo
     priority: appointment.priority || 'normal',
     duration: appointment.duration || 30,
     created_at: appointment.createdAt,
+    // Zoom meeting data
+    zoomMeetingId: appointment.zoomMeetingId,
+    user_url: appointment.user_url,
+    admin_url: appointment.admin_url,
   }
 }
 
@@ -209,4 +217,31 @@ export const deleteAppointmentFn = async (
   }
 
   console.log(`[deleteAppointmentFn] Successfully deleted appointment ${appointmentId}`);
+}
+
+export const addZoomMeetingToAppointmentFn = async (
+  appointmentId: number,
+): Promise<any> => {
+  const fullUrl = `${API_BASE_URL}/appointments/${appointmentId}/zoom`
+  const token = getAccessTokenHelper()
+
+  console.log(`[addZoomMeetingToAppointmentFn] Adding Zoom meeting to appointment ${appointmentId}`);
+
+  const response = await fetch(fullUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    console.error('Add Zoom meeting error response:', errorText)
+    throw new Error(`Failed to add Zoom meeting: ${errorText}`)
+  }
+
+  const result = await response.json()
+  console.log('Add Zoom meeting response:', result)
+  return result
 }

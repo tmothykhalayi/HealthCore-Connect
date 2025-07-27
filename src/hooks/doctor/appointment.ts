@@ -3,7 +3,7 @@ import {
   createAppointmentFn,
   deleteAppointmentFn,
   getAppointmentsFn,
-} from '@/api/doctor/appointment'
+} from '@/API/doctor/appointment'
 
 export const useGetAppointmentsQuery = (
   page: number,
@@ -16,10 +16,10 @@ export const useGetAppointmentsQuery = (
   })
 }
 
-export const useGetAppointmentsByIdQuery = (appointmentId: number) => {
+export const useGetAppointmentsByDoctorIdQuery = (doctorId: number) => {
   return useQuery({
-    queryKey: ['appointments', appointmentId],
-    queryFn: () => getAppointmentsFn(appointmentId),
+    queryKey: ['appointments', 'doctor', doctorId],
+    queryFn: () => getAppointmentsFn(doctorId),
   })
 }
 

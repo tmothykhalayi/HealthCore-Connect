@@ -1,5 +1,7 @@
 // components/DoctorsAppointmentsTable.tsx
 import { useMemo, useState } from 'react'
+import { FaVideo } from 'react-icons/fa'
+import { addZoomMeetingToAppointmentFn } from '@/API/Appointment'
 import {
   
   flexRender,
@@ -11,9 +13,7 @@ import {
 import type {ColumnDef} from '@tanstack/react-table';
 import type { TAppointment } from '@/types/alltypes'
 import {
-  useCreateAppointment,
-  useDeleteAppointment,
-  useGetAppointmentsByIdQuery,
+  useGetAppointmentsByDoctorIdQuery,
 } from '@/hooks/doctor/appointment'
 
 export const DoctorsAppointmentsTable = ({
@@ -30,11 +30,14 @@ export const DoctorsAppointmentsTable = ({
   // Remove showForm, formData, handleInputChange, handleSubmit, and useCreateAppointment
   // Remove all UI for Add New Appointment and the form/modal
 
-  const { data: doctorData, isLoading, isError, refetch } = useGetAppointmentsByIdQuery(doctorId)
+  const { data: doctorData, isLoading, isError, refetch } = useGetAppointmentsByDoctorIdQuery(doctorId)
   // Handle both array and object response formats
   const appointments = Array.isArray(doctorData) ? doctorData : doctorData?.data || []
+  console.log('doctorId:', doctorId)
   console.log('doctorData:', doctorData)
   console.log('appointments:', appointments)
+  console.log('isLoading:', isLoading)
+  console.log('isError:', isError)
 
   // Filter appointments by status
   const filteredAppointments = appointments.filter((appointment: any) => {
@@ -42,8 +45,38 @@ export const DoctorsAppointmentsTable = ({
     return appointment.status === statusFilter
   })
 
-  const deleteMutation = useDeleteAppointment()
-  const createMutation = useCreateAppointment()
+
+
+
+  const handleJoinMeeting = async (appointment: any) => {
+    // Check if the appointment has Zoom meeting data from backend
+    if (appointment.admin_url) {
+      // Use the admin URL (start URL) for doctors
+      console.log('Joining meeting using backend Zoom data:', appointment.admin_url)
+      window.open(appointment.admin_url, '_blank')
+    } else if (appointment.zoomMeetingId) {
+      // Fallback to meeting ID if URL is not available
+      const zoomUrl = `https://zoom.us/s/${appointment.zoomMeetingId}`
+      console.log('Joining meeting using meeting ID:', appointment.zoomMeetingId)
+      window.open(zoomUrl, '_blank')
+    } else {
+      // If no Zoom data is available, try to create one
+      try {
+        console.log('No Zoom meeting data available, creating one for appointment:', appointment.appointment_id)
+        const result = await addZoomMeetingToAppointmentFn(appointment.appointment_id)
+        
+        if (result.data && result.data.admin_url) {
+          console.log('Zoom meeting created successfully:', result.data.admin_url)
+          window.open(result.data.admin_url, '_blank')
+        } else {
+          alert('Failed to create Zoom meeting. Please contact support.')
+        }
+      } catch (error) {
+        console.error('Error creating Zoom meeting:', error)
+        alert('Failed to create Zoom meeting. Please contact support.')
+      }
+    }
+  }
 
   // Format date to Kenyan format
   const formatDateTime = (dateTimeString: string) => {
@@ -116,35 +149,31 @@ export const DoctorsAppointmentsTable = ({
       {
         header: 'Actions',
         cell: ({ row }) => (
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                // Navigate to patient details
-                window.location.href = `/Dashboard/doctor/patient/${row.original.patient_id}`
-              }}
-              className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
-            >
-              View Patient
-            </button>
-            <button
-              onClick={() => {
-                if (
-                  confirm(`Are you sure you want to delete this appointment?`)
-                ) {
-                  deleteMutation.mutate(row.original.appointment_id)
-                }
-              }}
-              className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
-              disabled={deleteMutation.isPending}
-            >
-              {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
-            </button>
-          </div>
+          <button
+            onClick={() => handleJoinMeeting(row.original)}
+            disabled={row.original.status === 'cancelled' || row.original.status === 'completed'}
+            className={`px-3 py-1 rounded-md transition-colors flex items-center gap-1 ${
+              row.original.status === 'cancelled' || row.original.status === 'completed'
+                ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                : 'bg-green-100 text-green-700 hover:bg-green-200'
+            }`}
+            title={
+              row.original.status === 'cancelled' || row.original.status === 'completed'
+                ? 'Meeting not available'
+                : 'Join Zoom Meeting'
+            }
+          >
+            <FaVideo size={12} />
+            {row.original.status === 'cancelled' || row.original.status === 'completed'
+              ? 'Unavailable'
+              : 'Join Meeting'
+            }
+          </button>
         ),
-        size: 150,
+        size: 120,
       },
     ],
-    [deleteMutation],
+    [],
   )
 
   const table = useReactTable({
@@ -208,24 +237,10 @@ export const DoctorsAppointmentsTable = ({
   return (
     <div className="p-4 max-w-7xl mx-auto">
       <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
+        <div className="mb-4">
           <h1 className="text-2xl font-bold text-gray-800">
             Doctor's Appointments
           </h1>
-          <button
-            onClick={() => refetch()}
-            disabled={isLoading}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 flex items-center gap-2"
-          >
-            {isLoading ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
-                Refreshing...
-              </>
-            ) : (
-              'Refresh'
-            )}
-          </button>
         </div>
         <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
           <div className="flex-1 flex gap-4">

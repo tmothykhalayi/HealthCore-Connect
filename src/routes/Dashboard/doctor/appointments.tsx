@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import { useEffect, useState } from 'react'
-import { getDoctorByUserIdFn } from '@/api/doctor'
+import { getDoctorByUserIdFn } from '@/API/doctor'
 
 // pages/appointments.tsx
 import { DoctorsAppointmentsTable } from '@/components/doctor/appointmentsTable'

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { deleteDoctorFn, getDoctorFn, getDoctorByIdFn, createDoctorFn, updateDoctorFn } from '@/api/doctor'
+import { deleteDoctorFn, getDoctorFn, getDoctorByIdFn, createDoctorFn, updateDoctorFn } from '@/API/doctor'
 
 export const useGetDoctorQuery = (
   page: number,
@@ -43,13 +43,33 @@ export const useCreateDoctor = () => {
   })
 }
 
+export const useGetDoctorByUserId = (userId: number) => {
+  return useQuery({
+    queryKey: ['doctor', 'user', userId],
+    queryFn: () => getDoctorByUserIdFn(userId),
+    enabled: !!userId,
+    staleTime: 0, // Always consider data stale to force refresh
+    refetchOnWindowFocus: true,
+  })
+}
+
 export const useUpdateDoctor = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ doctorId, doctorData }: { doctorId: number; doctorData: any }) => updateDoctorFn(doctorId, doctorData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['doctors'], exact: false });
-      queryClient.refetchQueries({ queryKey: ['doctors'], exact: false });
+    mutationFn: ({ doctorId, doctorData }: { doctorId: number; doctorData: any }) => {
+      console.log('useUpdateDoctor mutationFn called with:', { doctorId, doctorData });
+      return updateDoctorFn(doctorId, doctorData);
     },
+    onSuccess: (data, variables) => {
+      console.log('useUpdateDoctor onSuccess called with:', { data, variables });
+      // Invalidate all doctor-related queries
+      queryClient.invalidateQueries({ queryKey: ['doctors'], exact: false });
+      queryClient.invalidateQueries({ queryKey: ['doctor'], exact: false });
+      queryClient.refetchQueries({ queryKey: ['doctors'], exact: false });
+      queryClient.refetchQueries({ queryKey: ['doctor'], exact: false });
+    },
+    onError: (error, variables) => {
+      console.error('useUpdateDoctor onError called with:', { error, variables });
+    }
   })
 }
