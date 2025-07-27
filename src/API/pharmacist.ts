@@ -11,8 +11,10 @@ import { getAccessTokenHelper } from '@/lib/auth'
 
 // Get pharmacy orders for pharmacist's pharmacy
 export const getPharmacyOrdersForPharmacist = async (pharmacyId: number) => {
-  const fullUrl = `${API_BASE_URL}/orders/pharmacy/${pharmacyId}`
+  const fullUrl = `${API_BASE_URL}/orders?pharmacyId=${pharmacyId}`
   const token = getAccessTokenHelper()
+
+  console.log('Fetching pharmacy orders from:', fullUrl)
 
   const response = await fetch(fullUrl, {
     method: 'GET',
@@ -23,10 +25,13 @@ export const getPharmacyOrdersForPharmacist = async (pharmacyId: number) => {
   })
 
   if (!response.ok) {
-    throw new Error('Failed to fetch pharmacy orders')
+    const errorText = await response.text()
+    console.error('Failed to fetch pharmacy orders:', errorText)
+    throw new Error(`Failed to fetch pharmacy orders: ${errorText}`)
   }
 
   const data = await response.json()
+  console.log('Pharmacy orders response:', data)
   return data.data || data // Handle both response formats
 }
 
@@ -114,7 +119,7 @@ export const updateOrderStatus = async (orderId: number, status: string) => {
 
 // Get all patients who have orders with this pharmacy
 export const getPatientsWithOrders = async (pharmacyId: number) => {
-  const fullUrl = `${API_BASE_URL}/orders/pharmacy/${pharmacyId}`
+  const fullUrl = `${API_BASE_URL}/orders?pharmacyId=${pharmacyId}`
   const token = getAccessTokenHelper()
 
   const response = await fetch(fullUrl, {

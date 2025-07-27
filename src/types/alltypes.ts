@@ -3,17 +3,6 @@ export interface GenericsType {
   id: string
 }
 
-// Vehicle interface for vehicle management
-export interface Vehicle extends GenericsType {
-  name: string
-  type: string
-  model: string
-  year: number
-  licensePlate: string
-  status: 'active' | 'inactive' | 'maintenance'
-  createdAt: Date
-  updatedAt: Date
-}
 
 // User roles for the health system
 export enum UserRole {

@@ -7,6 +7,9 @@ export const getDoctorByUserIdFn = async (userId: string | number): Promise<TDoc
   const fullUrl = `${API_BASE_URL}/doctors/user/${userId}`;
   const token = getAccessTokenHelper();
 
+  console.log(`[getDoctorByUserIdFn] Fetching doctor profile for userId: ${userId}`);
+  console.log(`[getDoctorByUserIdFn] URL: ${fullUrl}`);
+
   const response = await fetch(fullUrl, {
     method: 'GET',
     headers: {
@@ -16,10 +19,13 @@ export const getDoctorByUserIdFn = async (userId: string | number): Promise<TDoc
   });
 
   if (!response.ok) {
+    console.error(`[getDoctorByUserIdFn] Error response: ${response.status} ${response.statusText}`);
     throw new Error('Failed to fetch doctor profile');
   }
 
-  return response.json();
+  const result = await response.json();
+  console.log(`[getDoctorByUserIdFn] Response:`, result);
+  return result;
 };
 
 
@@ -163,23 +169,37 @@ export const updateDoctorFn = async (doctorId: number, doctorData: any): Promise
   const fullUrl = `${API_BASE_URL}/doctors/${doctorId}`;
   const token = getAccessTokenHelper();
 
-  // Map all possible fields from the form/state to backend fields
-  const payload: any = {
-    specialization: doctorData.specialization,
-    licenseNumber: doctorData.license_number,
-    consultationFee: doctorData.consultation_fee,
-    availableDays: doctorData.availability ? doctorData.availability.split(',').map((s: string) => s.trim()) : undefined,
-    phoneNumber: doctorData.phoneNumber,
-    officeAddress: doctorData.officeAddress,
-    yearsOfExperience: doctorData.yearsOfExperience,
-    education: doctorData.education,
-    availableHours: doctorData.availableHours,
-    status: doctorData.status,
-    // add any other fields you want to update
-  };
+  console.log('=== UPDATE DOCTOR DEBUG ===');
+  console.log('doctorId:', doctorId);
+  console.log('Raw doctorData received:', doctorData);
+  console.log('Token available:', !!token);
 
-  // Remove undefined fields (optional, but cleaner)
-  Object.keys(payload).forEach(key => payload[key] === undefined && delete payload[key]);
+  // Map all possible fields from the form/state to backend fields
+  // Use the exact field names that the backend expects (camelCase)
+  const payload: any = {};
+  
+  // Only include fields that are actually provided and not empty
+  if (doctorData.specialization) payload.specialization = doctorData.specialization;
+  if (doctorData.licenseNumber) payload.licenseNumber = doctorData.licenseNumber;
+  if (doctorData.consultationFee !== undefined && doctorData.consultationFee !== null) payload.consultationFee = doctorData.consultationFee;
+  if (doctorData.availableDays && Array.isArray(doctorData.availableDays)) payload.availableDays = doctorData.availableDays;
+  if (doctorData.phoneNumber) payload.phoneNumber = doctorData.phoneNumber;
+  if (doctorData.officeAddress) payload.officeAddress = doctorData.officeAddress;
+  if (doctorData.yearsOfExperience !== undefined && doctorData.yearsOfExperience !== null) payload.yearsOfExperience = doctorData.yearsOfExperience;
+  if (doctorData.education) payload.education = doctorData.education;
+  if (doctorData.availableHours) payload.availableHours = doctorData.availableHours;
+  if (doctorData.status) payload.status = doctorData.status;
+  if (doctorData.bio) payload.bio = doctorData.bio;
+
+  // Additional cleanup for any remaining empty values
+  Object.keys(payload).forEach(key => {
+    if (payload[key] === undefined || payload[key] === null || payload[key] === '') {
+      delete payload[key];
+    }
+  });
+
+  console.log('Final payload after cleanup:', payload);
+  console.log('Payload JSON:', JSON.stringify(payload, null, 2));
 
   const response = await fetch(fullUrl, {
     method: 'PATCH',
@@ -193,10 +213,22 @@ export const updateDoctorFn = async (doctorId: number, doctorData: any): Promise
   if (!response.ok) {
     const errorText = await response.text();
     console.error('Update doctor error response:', errorText);
-    throw new Error(`Failed to update doctor: ${errorText}`);
+    console.error('Response status:', response.status);
+    console.error('Response headers:', Object.fromEntries(response.headers.entries()));
+    
+    // Try to parse the error response as JSON for better error messages
+    try {
+      const errorJson = JSON.parse(errorText);
+      console.error('Parsed error response:', errorJson);
+      throw new Error(`Failed to update doctor: ${JSON.stringify(errorJson, null, 2)}`);
+    } catch (parseError) {
+      throw new Error(`Failed to update doctor: ${errorText}`);
+    }
   }
 
   const result = await response.json();
-  console.log('Update doctor response:', result);
+  console.log('Update doctor success response:', result);
+  console.log('Response status was:', response.status);
+  console.log('Response headers:', Object.fromEntries(response.headers.entries()));
   return result;
 };
