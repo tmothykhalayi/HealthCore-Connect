@@ -323,6 +323,7 @@ export interface TPharmacyOrder {
   doctor_name?: string
   order_id?: string
   total_amount?: number 
+  paymentStatus?: string
 }
 
 export interface TMedicine {

@@ -87,9 +87,8 @@ function PaymentVerify() {
             ),
           };
         });
-        // Invalidate orders and payments queries so they refetch on next mount
-        console.log('Invalidating queries for fresh data...');
-        queryClient.invalidateQueries({ queryKey: ['orders'], exact: false });
+        // Invalidate all queries whose key starts with 'orders' (for all paginated/filtered orders)
+        queryClient.invalidateQueries({ predicate: (query) => Array.isArray(query.queryKey) && query.queryKey[0] === 'orders' });
         queryClient.invalidateQueries({ queryKey: ['payments'], exact: false });
         
         console.log('Scheduling redirect to:', prevPage);

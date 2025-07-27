@@ -44,7 +44,7 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
     orderDate: '',
     status: 'pending',
     totalAmount: '',
-    OrderId: '',
+    orderId: '',
   })
   const [effectivePatientId, setEffectivePatientId] = useState<number | null>(null)
   const toast = useToast()
@@ -111,7 +111,7 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
       orderDate: formData.orderDate ? new Date(formData.orderDate).toISOString() : new Date().toISOString(),
       status: formData.status,
       totalAmount: parseFloat(formData.totalAmount),
-      OrderId: formData.OrderId,
+      orderId: String(formData.orderId),
     }
 
     createMutation.mutate(orderData, {
@@ -125,7 +125,7 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
           orderDate: '',
           status: 'pending',
           totalAmount: '',
-          OrderId: '',
+          orderId: '',
         })
       },
     })
@@ -142,7 +142,7 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
       orderDate: formData.orderDate,
       status: formData.status, // <-- use status, not orderStatus
       totalAmount: parseFloat(formData.totalAmount),
-      OrderId: formData.OrderId,
+      orderId: String(formData.orderId),
     }
 
     updateMutation.mutate(
@@ -159,7 +159,7 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
             orderDate: '',
             status: 'pending',
             totalAmount: '',
-            OrderId: '',
+            orderId: '',
           })
         },
       }
@@ -176,7 +176,7 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
       orderDate: new Date(order.created_at).toISOString().split('T')[0],
       status: order.status,
       totalAmount: order.quantity.toString(), // Assuming totalAmount is quantity for now
-      OrderId: order.order_id || '',
+      orderId: order.order_id || '',
     })
     setShowEditModal(true)
   }
@@ -315,23 +315,6 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
         accessorKey: 'total_amount',
         cell: ({ row }) => (
           <span className="font-medium">Ksh {Number(row.original.total_amount).toFixed(2)}</span>
-        ),
-      },
-      {
-        header: 'Status',
-        accessorKey: 'status',
-        cell: ({ row }) => (
-          <span
-            className={`px-2 py-1 rounded-full text-xs ${
-              row.original.status === 'completed'
-                ? 'bg-green-100 text-green-800'
-                : row.original.status === 'cancelled'
-                  ? 'bg-red-100 text-red-800'
-                  : 'bg-yellow-100 text-yellow-800'
-            }`}
-          >
-            {row.original.status}
-          </span>
         ),
       },
       {
@@ -629,8 +612,8 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
                 <label className="block text-sm font-medium text-gray-700">Custom Order ID</label>
                 <input
                   type="text"
-                  value={formData.OrderId}
-                  onChange={(e) => setFormData({ ...formData, OrderId: e.target.value })}
+                  value={formData.orderId}
+                  onChange={(e) => setFormData({ ...formData, orderId: e.target.value })}
                   className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -725,8 +708,8 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
                 <label className="block text-sm font-medium text-gray-700">Custom Order ID</label>
                 <input
                   type="text"
-                  value={formData.OrderId}
-                  onChange={(e) => setFormData({ ...formData, OrderId: e.target.value })}
+                  value={formData.orderId}
+                  onChange={(e) => setFormData({ ...formData, orderId: e.target.value })}
                   className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>

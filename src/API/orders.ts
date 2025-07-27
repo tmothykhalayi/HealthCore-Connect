@@ -78,7 +78,7 @@ export const createPharmacyOrderFn = async (orderData: {
   orderDate: string;
   status: string;
   totalAmount: number;
-  OrderId: string;
+  orderId: string;
 }): Promise<any> => {
   const fullUrl = `${API_BASE_URL}/orders`
   const token = getAccessTokenHelper()
@@ -121,7 +121,7 @@ export const updatePharmacyOrderFn = async (
     orderDate?: string;
     status?: string;
     totalAmount?: number;
-    OrderId?: string;
+    orderId?: string;
   }
 ): Promise<any> => {
   const fullUrl = `${API_BASE_URL}/orders/${orderId}`

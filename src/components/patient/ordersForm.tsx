@@ -58,7 +58,7 @@ const OrderMedicineModal = ({
         orderDate: new Date().toISOString(),
         status: 'pending',
         totalAmount: medicine.price * quantity,
-        OrderId: `ORD-${Date.now()}`,
+        orderId: `ORD-${Date.now()}`,
       }
 
       const result = await createOrderMutation.mutateAsync(orderData)
