@@ -8,6 +8,7 @@ import {
 import type { ColumnDef } from '@tanstack/react-table'
 import type { TRecord } from '@/types/alltypes'
 import { useGetPatientMedicalRecordsQuery } from '@/hooks/patient/medicalRecords'
+import { FaDownload } from 'react-icons/fa'
 
 interface PatientMedicalRecordsTableProps {
   patientId: number
@@ -28,6 +29,41 @@ export const PatientMedicalRecordsTable = ({ patientId }: PatientMedicalRecordsT
       hour: '2-digit',
       minute: '2-digit',
     })
+  }
+
+  // CSV Download function
+  const downloadCSV = () => {
+    if (!records || records.length === 0) {
+      alert('No records to download')
+      return
+    }
+
+    // Define CSV headers
+    const headers = ['Record ID', 'Doctor ID', 'Appointment ID', 'Description', 'Created At', 'Updated At']
+    
+    // Convert records to CSV format
+    const csvContent = [
+      headers.join(','),
+      ...records.map((record: TRecord) => [
+        record.id,
+        record.doctorId,
+        record.appointmentId,
+        `"${record.description?.replace(/"/g, '""') || ''}"`, // Escape quotes in description
+        formatDate(record.createdAt),
+        formatDate(record.updatedAt)
+      ].join(','))
+    ].join('\n')
+
+    // Create and download file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `medical_records_${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   const columns = useMemo<Array<ColumnDef<TRecord>>>(
@@ -98,9 +134,20 @@ export const PatientMedicalRecordsTable = ({ patientId }: PatientMedicalRecordsT
   return (
     <div className="p-4 max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">
-          My Medical Records
-        </h1>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold text-gray-800">
+            My Medical Records
+          </h1>
+          {records.length > 0 && (
+            <button
+              onClick={downloadCSV}
+              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+            >
+              <FaDownload className="w-4 h-4" />
+              Download CSV
+            </button>
+          )}
+        </div>
         <div className="mb-4">
           <input
             type="text"
@@ -112,8 +159,8 @@ export const PatientMedicalRecordsTable = ({ patientId }: PatientMedicalRecordsT
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
-        <div className="overflow-x-auto">
+      {records.length > 0 ? (
+        <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               {table.getHeaderGroups().map((headerGroup) => (
@@ -152,9 +199,7 @@ export const PatientMedicalRecordsTable = ({ patientId }: PatientMedicalRecordsT
             </tbody>
           </table>
         </div>
-      </div>
-
-      {records.length === 0 && !isLoading && (
+      ) : (
         <div className="text-center py-8 text-gray-500">
           <div className="text-gray-400 mb-4">
             <svg

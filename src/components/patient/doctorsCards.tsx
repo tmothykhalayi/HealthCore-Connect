@@ -11,7 +11,6 @@ type Doctor = {
   email: string
   availability: string
   consultation_fee?: number
-  img?: string | null
 }
 
 const DoctorsList = () => {
@@ -97,9 +96,6 @@ const DoctorsList = () => {
 }
 
 const DoctorCard = ({ doctor, index, onBook }: { doctor: Doctor; index: number; onBook: () => void }) => {
-  const imageUrl =
-    doctor.img ||
-    'https://i.pinimg.com/736x/8e/5b/6a/8e5b6a2191656c1ac5d4571577870170.jpg'
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
     show: {
@@ -125,18 +121,26 @@ const DoctorCard = ({ doctor, index, onBook }: { doctor: Doctor; index: number; 
       transition={{ delay: index * 0.1 }}
     >
       <div className="p-6">
-        <motion.h2
-          className="text-xl font-semibold text-gray-800 mb-2"
-          initial={{ x: -10, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: index * 0.1 + 0.4 }}
-        >
-          {doctor.name}
-        </motion.h2>
-        {/* Specialty Badge */}
-        <span className="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-semibold mb-2">
-          {doctor.specialization}
-        </span>
+        {/* Doctor Frame */}
+        <div className="flex items-center mb-4">
+          <div className="w-16 h-16 rounded-full bg-blue-100 border-2 border-blue-300 flex items-center justify-center mr-4">
+            <span className="text-blue-600 font-semibold text-sm">Doctor</span>
+          </div>
+          <div>
+            <motion.h2
+              className="text-xl font-semibold text-gray-800 mb-2"
+              initial={{ x: -10, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: index * 0.1 + 0.4 }}
+            >
+              {doctor.name}
+            </motion.h2>
+            {/* Specialty Badge */}
+            <span className="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-semibold">
+              {doctor.specialization}
+            </span>
+          </div>
+        </div>
         <div className="mt-4 space-y-2 text-gray-600">
           <motion.p
             className="flex items-center"

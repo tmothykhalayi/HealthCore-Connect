@@ -62,7 +62,10 @@ const handleSendMessage = async () => {
           <div className="bg-blue-600 text-white p-3 rounded-t-lg flex justify-between items-center">
             <div className="flex items-center">
               <MdSmartToy className="text-xl mr-2" />
-              <h3 className="font-semibold">Healthcare AI Assistant</h3>
+              <div>
+                <h3 className="font-semibold">Healthcare AI Assistant</h3>
+                <p className="text-xs text-blue-100">System Activities & Health Support</p>
+              </div>
             </div>
             <button
               onClick={() => setIsOpen(false)}
@@ -76,8 +79,17 @@ const handleSendMessage = async () => {
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center text-gray-500">
                 <FaRobot className="text-4xl mb-2 text-blue-400" />
-                <p>Hello! I'm your Healthcare AI Assistant.</p>
-                <p>How can I help you today?</p>
+                <p className="font-semibold text-gray-700 mb-2">Hello! I'm your Healthcare AI Assistant.</p>
+                <p className="text-sm mb-4">I can help you with healthcare system activities:</p>
+                <div className="text-xs space-y-1 text-left bg-gray-50 p-3 rounded-lg max-w-xs">
+                  <p>🔹 <strong>Appointments</strong>: Book, reschedule, cancel</p>
+                  <p>🔹 <strong>Medical Records</strong>: View and download</p>
+                  <p>🔹 <strong>Pharmacy</strong>: Order medicines</p>
+                  <p>🔹 <strong>Payments</strong>: Handle billing</p>
+                  <p>🔹 <strong>Doctors</strong>: Find specialists</p>
+                  <p>🔹 <strong>Health Info</strong>: Get medical advice</p>
+                </div>
+                <p className="text-xs mt-3">How can I assist you today?</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -109,7 +121,7 @@ const handleSendMessage = async () => {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyPress}
-                placeholder="Type your message..."
+                placeholder="Ask about appointments, records, pharmacy, payments..."
                 className="flex-1 p-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <button

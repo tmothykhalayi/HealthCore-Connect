@@ -75,25 +75,25 @@ function PatientOverview() {
       title: 'Pharmacy Orders',
       value: pharmacyOrdersCount,
       icon: FaShoppingCart,
-      color: 'bg-red-500',
+      color: 'bg-red-400',
     },
     {
       title: 'Doctors in System',
       value: doctors.length,
       icon: FaUserMd,
-      color: 'bg-green-500',
+      color: 'bg-green-400',
     },
     {
       title: 'Total Appointments',
       value: totalAppointments,
       icon: FaCalendarAlt,
-      color: 'bg-blue-500',
+      color: 'bg-blue-400',
     },
     {
       title: 'Medical Records',
       value: medicalRecordsData?.data?.length || 0,
       icon: FaFileMedical,
-      color: 'bg-purple-500',
+      color: 'bg-purple-400',
     },
   ]
 
@@ -103,49 +103,49 @@ function PatientOverview() {
       description: 'Schedule a new appointment with a doctor',
       icon: FaCalendarAlt,
       link: '/Dashboard/patient/create-appointment',
-      color: 'bg-blue-500 hover:bg-blue-600'
+      color: 'bg-blue-400 hover:bg-blue-500'
     },
     {
       title: 'Find Doctors',
       description: 'Browse available doctors and specialties',
       icon: FaUserMd,
       link: '/Dashboard/patient/doctors',
-      color: 'bg-green-500 hover:bg-green-600'
+      color: 'bg-green-400 hover:bg-green-500'
     },
     {
       title: 'Medical Records',
       description: 'View your medical history and records',
       icon: FaFileMedical,
       link: '/Dashboard/patient/medical-records',
-      color: 'bg-purple-500 hover:bg-purple-600'
+      color: 'bg-purple-400 hover:bg-purple-500'
     },
     {
       title: 'Orders',
       description: 'Track your medicine and pharmacy orders',
       icon: FaShoppingCart,
       link: '/Dashboard/patient/orders',
-      color: 'bg-red-500 hover:bg-red-600'
+      color: 'bg-red-400 hover:bg-red-500'
     },
     {
       title: 'Payments',
       description: 'View your payment history and manage payments',
       icon: FaCreditCard,
       link: '/Dashboard/patient/payments',
-      color: 'bg-indigo-500 hover:bg-indigo-600'
+      color: 'bg-indigo-400 hover:bg-indigo-500'
     },
     {
       title: 'Settings',
       description: 'Manage your profile and preferences',
       icon: FaCog,
       link: '/Dashboard/patient/settings',
-      color: 'bg-gray-500 hover:bg-gray-600'
+      color: 'bg-gray-400 hover:bg-gray-500'
     },
     {
       title: 'Join Zoom Meeting',
       description: 'Join your scheduled Zoom meeting',
       icon: SiZoom,
       link: 'https://zoom.us/j/your-meeting-id',
-      color: 'bg-blue-700 hover:bg-blue-800'
+      color: 'bg-blue-600 hover:bg-blue-700'
     }
   ]
 
@@ -202,9 +202,9 @@ function PatientOverview() {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Welcome Section */}
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-6 text-white">
+        <div className="bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg p-6 text-white">
           <h1 className="text-3xl font-bold mb-2">Welcome to your Health Dashboard!</h1>
-          <p className="text-blue-100">Manage your health, appointments, and medical records all in one place</p>
+          <p className="text-blue-50">Manage your health, appointments, and medical records all in one place</p>
         </div>
 
         {/* System Overview Section */}

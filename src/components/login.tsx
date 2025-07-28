@@ -118,8 +118,8 @@ export default function LoginForm() {
           router.navigate({ to: '/Dashboard/doctor/appointments' })
           break
         case 'patient':
-          console.log('Navigating to patient appointments')
-          router.navigate({ to: '/Dashboard/patient/appointments' })
+          console.log('Navigating to patient overview')
+          router.navigate({ to: '/Dashboard/patient/overview' })
           break
         case 'pharmacist':
           console.log('Navigating to pharmacist records')

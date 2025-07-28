@@ -130,11 +130,9 @@ function AppointmentForm({ doctorId, onSuccess, doctor }: AppointmentFormProps) 
       {/* Show doctor info if available */}
       {doctor && (
         <div className="flex items-center mb-4">
-          <img
-            src={doctor.img || 'https://i.pinimg.com/736x/8e/5b/6a/8e5b6a2191656c1ac5d4571577870170.jpg'}
-            alt={doctor.name}
-            className="w-12 h-12 rounded-full object-cover mr-3 border"
-          />
+          <div className="w-12 h-12 rounded-full bg-blue-100 border-2 border-blue-300 flex items-center justify-center mr-3">
+            <span className="text-blue-600 font-semibold text-xs">Doctor</span>
+          </div>
           <div>
             <div className="font-bold text-base text-gray-800">{doctor.name}</div>
             <div className="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-semibold mt-1">{doctor.specialization}</div>
