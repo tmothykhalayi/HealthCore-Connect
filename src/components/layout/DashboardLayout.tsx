@@ -6,6 +6,7 @@ import SideNav from '@/components/sideNav'
 import { getUserRoleHelper } from '@/lib/auth'
 //import ThemeToggle from '../ThemeToggle'
 import Chat from '@/components/chat'
+import { ModeToggle } from '@/components/mode-toggle'
 
 interface DashboardLayoutProps {
   children?: React.ReactNode
@@ -47,6 +48,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   <FaUserCircle size={24} className="text-gray-400" />
                   <span className="text-sm font-medium">{role}</span>
                 </div>
+                <ModeToggle />
               </div>
             </div>
           </div>

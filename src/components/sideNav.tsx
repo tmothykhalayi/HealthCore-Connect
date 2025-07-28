@@ -105,8 +105,12 @@ export default function SideNav({ role, onNavigate }: SideNavProps) {
       },
     ],
     patient: [
-      
-     {
+      {
+        icon: <MdDashboard size={20} />,
+        label: 'Overview',
+        to: '/Dashboard/patient/overview',
+      },
+      {
         icon: <FaCalendarAlt size={18} />,
         label: 'Appointments',
         to: '/Dashboard/patient/appointments',

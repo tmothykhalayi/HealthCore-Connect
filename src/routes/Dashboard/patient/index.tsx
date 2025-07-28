@@ -42,6 +42,7 @@ function PatientDashboard() {
         // Fetch pharmacy orders
         const fetchedOrders = await getPharmacyOrdersFn(patient.id)
         setOrders(fetchedOrders)
+        setPharmacyOrdersCount(fetchedOrders.length)
         // Fetch assigned doctors (filter by assignedDoctorId if available)
         const allDoctors = await getDoctorsFn()
         let assignedDoctors = allDoctors
@@ -68,28 +69,16 @@ function PatientDashboard() {
   // System Overview Cards
   const systemOverviewCards = [
     {
-      title: 'Total Appointments',
-      value: totalAppointments,
-      icon: FaCalendarAlt,
-      color: 'bg-blue-500',
-    },
-    {
-      title: 'Upcoming Appointments',
-      value: upcomingAppointments,
-      icon: FaUserMd,
-      color: 'bg-green-500',
-    },
-    {
-      title: 'Completed Appointments',
-      value: completedAppointments,
-      icon: FaFileMedical,
-      color: 'bg-purple-500',
-    },
-    {
       title: 'Pharmacy Orders',
       value: pharmacyOrdersCount,
       icon: FaShoppingCart,
       color: 'bg-red-500',
+    },
+    {
+      title: 'Doctors in System',
+      value: doctors.length,
+      icon: FaUserMd,
+      color: 'bg-green-500',
     },
   ]
 
@@ -194,24 +183,7 @@ function PatientDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {systemOverviewCards.map((card: any, index: number) => (
-            <div
-              key={index}
-              className={`bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow`}
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">{card.title}</p>
-                  <p className="text-2xl font-bold text-gray-900">{card.value}</p>
-                </div>
-                <div className={`p-3 rounded-full ${card.color} text-white`}>
-                  <card.icon size={24} />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Removed duplicate stats cards section */}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Recent Appointments */}

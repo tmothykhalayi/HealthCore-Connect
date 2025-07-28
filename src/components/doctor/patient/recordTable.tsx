@@ -73,7 +73,6 @@ export const MedicalRecordsTable = ({ doctorId }: MedicalRecordsTableProps) => {
       { header: 'Record ID', accessorKey: 'id', size: 80 },
       { header: 'Patient ID', accessorKey: 'patientId', size: 80 },
       { header: 'Doctor ID', accessorKey: 'doctorId', size: 80 },
-      { header: 'Appointment ID', accessorKey: 'appointmentId', size: 100 },
       { header: 'Type', accessorKey: 'recordType', size: 100 },
       { header: 'Title', accessorKey: 'title', size: 120 },
       { header: 'Description', accessorKey: 'description', cell: ({ row }) => (<div className="max-w-md line-clamp-2">{row.original.description}</div>) },
