@@ -143,26 +143,6 @@ function PharmacistDashboard() {
             <p className="text-green-100">
               {pharmacyDetails?.name ? `Managing ${pharmacyDetails.name}` : 'Manage your pharmacy operations'}
             </p>
-            {!paymentsLoading && (
-              <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white/10 rounded-lg p-3">
-                  <p className="text-sm text-green-100">Total Payments</p>
-                  <p className="text-xl font-bold">{totalPayments}</p>
-                </div>
-                <div className="bg-white/10 rounded-lg p-3">
-                  <p className="text-sm text-green-100">Completed</p>
-                  <p className="text-xl font-bold">{completedPayments}</p>
-                </div>
-                <div className="bg-white/10 rounded-lg p-3">
-                  <p className="text-sm text-green-100">Pending</p>
-                  <p className="text-xl font-bold">{pendingPayments}</p>
-                </div>
-                <div className="bg-white/10 rounded-lg p-3">
-                  <p className="text-sm text-green-100">Revenue</p>
-                  <p className="text-xl font-bold">${totalRevenue.toFixed(2)}</p>
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
