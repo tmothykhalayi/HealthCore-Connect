@@ -37,6 +37,12 @@ export const useGetPharmacistPaymentsQuery = () => {
     queryKey: ['pharmacist-payments'],
     queryFn: getPharmacistPaymentsFn,
     refetchInterval: 30000, // Refetch every 30 seconds
+    retry: 3, // Retry up to 3 times
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+    staleTime: 0, // Always consider data stale to force refresh
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
   })
 }
 

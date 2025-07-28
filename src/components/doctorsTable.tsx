@@ -47,41 +47,23 @@ export const DoctorsTable = () => {
     const { name, value } = e.target;
     setFormState({
       ...formState,
-      [name]: name === 'consultation_fee' ? Number(value) : value,
+      [name]: value,
     });
   }
 
   function handleFormSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (selectedDoctor) {
-      if (!formState.consultation_fee || formState.consultation_fee <= 0) {
-        alert('Consultation fee must be a positive number');
-        return;
-      }
-      // Map consultation_fee to consultationFee for backend
-      const doctorData = {
-        ...formState,
-        consultationFee: formState.consultation_fee,
-      };
-      delete doctorData.consultation_fee;
-
       updateDoctorMutation.mutate({
         doctorId: selectedDoctor.doctor_id,
-        doctorData,
+        doctorData: formState,
       }, {
         onSuccess: handleModalClose,
       });
     }
   }
 
-  // Format currency to Kenyan Shillings
-  const formatToKES = (amount: number) => {
-    return new Intl.NumberFormat('en-KE', {
-      style: 'currency',
-      currency: 'KES',
-      minimumFractionDigits: 2,
-    }).format(amount)
-  }
+
 
   const columns = useMemo<Array<ColumnDef<TDoctor>>>(
     () => [
@@ -104,10 +86,6 @@ export const DoctorsTable = () => {
       {
         header: 'License Number',
         accessorKey: 'license_number',
-      },
-      {
-        header: 'Consultation Fee',
-        cell: ({ row }) => formatToKES(row.original.consultation_fee),
       },
       {
         header: 'Availability',
@@ -343,15 +321,6 @@ export const DoctorsTable = () => {
             onChange={handleFormChange}
             placeholder="License Number"
             className="border p-2 rounded w-full"
-          />
-          <input
-            name="consultation_fee"
-            value={formState.consultation_fee || ''}
-            onChange={handleFormChange}
-            placeholder="Consultation Fee"
-            className="border p-2 rounded w-full"
-            type="number"
-            min="1"
           />
           <input
             name="availability"

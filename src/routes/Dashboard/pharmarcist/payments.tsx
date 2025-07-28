@@ -8,7 +8,18 @@ export const Route = createFileRoute('/Dashboard/pharmarcist/payments')({
 })
 
 function PharmacistPaymentsPage() {
-  const { data: paymentsData, isLoading, isError } = useGetPharmacistPaymentsQuery()
+  const { data: paymentsData, isLoading, isError, error } = useGetPharmacistPaymentsQuery()
+  
+  // Debug logging
+  console.log('PharmacistPaymentsPage Debug:', {
+    paymentsData,
+    isLoading,
+    isError,
+    error: error?.message,
+    dataType: typeof paymentsData,
+    isArray: Array.isArray(paymentsData),
+    dataLength: Array.isArray(paymentsData) ? paymentsData.length : 'not array'
+  })
   
   // Process payments data
   const payments = Array.isArray(paymentsData) ? paymentsData : []
@@ -85,7 +96,32 @@ function PharmacistPaymentsPage() {
       <DashboardLayout>
         <div className="bg-red-50 border border-red-200 rounded-lg p-6">
           <h2 className="text-lg font-semibold text-red-800 mb-4">Error Loading Payments</h2>
-          <p className="text-red-600">Failed to load payment data. Please try again later.</p>
+          <div className="space-y-2">
+            <p className="text-red-600 font-medium">Error Details:</p>
+            <p className="text-red-600 text-sm">{error?.message || 'Unknown error occurred'}</p>
+            {error && (
+              <details className="mt-4">
+                <summary className="text-red-700 cursor-pointer font-medium">Show Error Details</summary>
+                <pre className="mt-2 text-xs text-red-600 bg-red-100 p-2 rounded overflow-auto">
+                  {JSON.stringify(error, null, 2)}
+                </pre>
+              </details>
+            )}
+          </div>
+          <div className="mt-4 flex gap-2">
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+            >
+              Retry
+            </button>
+            <button
+              onClick={() => window.history.back()}
+              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              Go Back
+            </button>
+          </div>
         </div>
       </DashboardLayout>
     )
@@ -96,79 +132,27 @@ function PharmacistPaymentsPage() {
       <div className="bg-gray-50 min-h-screen py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Payment Management</h1>
-            <p className="mt-2 text-gray-600">
-              View and manage all payment transactions for your pharmacy.
-            </p>
-          </div>
-
-          {/* Statistics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <div className="flex items-center">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <FaClipboardList className="text-blue-600" size={20} />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Payments</p>
-                  <p className="text-2xl font-bold text-gray-900">{totalPayments}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <div className="flex items-center">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <FaCheckCircle className="text-green-600" size={20} />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Completed</p>
-                  <p className="text-2xl font-bold text-gray-900">{completedPayments}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <div className="flex items-center">
-                <div className="p-2 bg-yellow-100 rounded-lg">
-                  <FaClock className="text-yellow-600" size={20} />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Pending</p>
-                  <p className="text-2xl font-bold text-gray-900">{pendingPayments}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <div className="flex items-center">
-                <div className="p-2 bg-red-100 rounded-lg">
-                  <FaTimes className="text-red-600" size={20} />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Failed</p>
-                  <p className="text-2xl font-bold text-gray-900">{failedPayments}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <div className="flex items-center">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <FaDollarSign className="text-purple-600" size={20} />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                  <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalRevenue)}</p>
-                </div>
-              </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Payment Management</h1>
+              <p className="mt-2 text-gray-600">
+                View and manage all payment transactions for your pharmacy.
+              </p>
             </div>
           </div>
 
           {/* Payments Table */}
           <div className="bg-white rounded-lg shadow-sm">
-            <div className="px-6 py-4 border-b border-gray-200">
+            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
               <h2 className="text-lg font-semibold text-gray-800">Payment Transactions</h2>
+              <button
+                onClick={() => window.location.reload()}
+                className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Refresh
+              </button>
             </div>
             
             {payments.length > 0 ? (
@@ -186,9 +170,6 @@ function PharmacistPaymentsPage() {
                         Amount
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Method
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Status
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -203,16 +184,29 @@ function PharmacistPaymentsPage() {
                           #{payment.payment_id || payment.id}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                          {payment.user?.firstName && payment.user?.lastName 
-                            ? `${payment.user.firstName} ${payment.user.lastName}`
-                            : `Patient ${payment.patient_id || payment.userId}`
-                          }
+                          {(() => {
+                            // Try to get patient name from user relation
+                            if (payment.user?.firstName && payment.user?.lastName) {
+                              return `${payment.user.firstName} ${payment.user.lastName}`;
+                            }
+                            
+                            // Try to get patient name from fullName field
+                            if (payment.fullName) {
+                              return payment.fullName;
+                            }
+                            
+                            // Try to get patient ID from various fields
+                            const patientId = payment.patient_id || payment.userId || payment.user?.id;
+                            if (patientId) {
+                              return `Patient #${patientId}`;
+                            }
+                            
+                            // Fallback for unknown patient
+                            return 'Unknown Patient';
+                          })()}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
                           {formatCurrency(payment.amount)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                          {payment.payment_method || payment.paymentMethod}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
@@ -231,9 +225,26 @@ function PharmacistPaymentsPage() {
                 </table>
               </div>
             ) : (
-              <div className="text-center py-8">
-                <FaClipboardList className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                <p className="text-gray-500">No payment transactions found</p>
+              <div className="text-center py-12">
+                <FaClipboardList className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No payment transactions found</h3>
+                <p className="text-gray-500 mb-4">
+                  There are currently no payment transactions in the system.
+                </p>
+                <div className="text-sm text-gray-400">
+                  <p>This could mean:</p>
+                  <ul className="mt-2 space-y-1">
+                    <li>• No payments have been processed yet</li>
+                    <li>• Payments are being processed</li>
+                    <li>• There might be a connection issue</li>
+                  </ul>
+                </div>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Refresh Page
+                </button>
               </div>
             )}
           </div>

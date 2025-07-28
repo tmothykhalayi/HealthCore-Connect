@@ -44,7 +44,6 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
     orderDate: '',
     status: 'pending',
     totalAmount: '',
-    orderId: '',
   })
   const [effectivePatientId, setEffectivePatientId] = useState<number | null>(null)
   const toast = useToast()
@@ -111,7 +110,6 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
       orderDate: formData.orderDate ? new Date(formData.orderDate).toISOString() : new Date().toISOString(),
       status: formData.status,
       totalAmount: parseFloat(formData.totalAmount),
-      orderId: String(formData.orderId),
     }
 
     createMutation.mutate(orderData, {
@@ -125,7 +123,6 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
           orderDate: '',
           status: 'pending',
           totalAmount: '',
-          orderId: '',
         })
       },
     })
@@ -142,7 +139,6 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
       orderDate: formData.orderDate,
       status: formData.status, // <-- use status, not orderStatus
       totalAmount: parseFloat(formData.totalAmount),
-      orderId: String(formData.orderId),
     }
 
     updateMutation.mutate(
@@ -284,11 +280,6 @@ export const PharmacyOrdersTable = ({ patientId }: { patientId?: number }) => {
         header: 'Order ID',
         accessorKey: 'pharmacy_order_id',
         size: 100,
-      },
-      {
-        header: 'Custom Order ID',
-        accessorKey: 'order_id',
-        size: 120,
       },
       {
         header: 'Patient ID',

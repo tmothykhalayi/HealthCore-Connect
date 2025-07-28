@@ -232,7 +232,7 @@ function DoctorDashboard() {
         {/* Welcome Section */}
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-6 text-white">
           <h1 className="text-3xl font-bold mb-2">
-            Welcome back, Dr. {doctorProfile?.user?.firstName || 'Doctor'}!
+            Welcome back, {doctorProfile?.user?.firstName || 'Doctor'}!
           </h1>
           <p className="text-blue-100">
             Manage your patients, appointments, and medical records from your dashboard

@@ -112,51 +112,50 @@ export const getAllPaymentsFn = async (): Promise<Array<any>> => {
   return data.data || data || []
 }
 
-// Get payments for pharmacist (pharmacy-specific endpoint)
+// Get payments for pharmacist (fetch all payments from database)
 export const getPharmacistPaymentsFn = async (): Promise<Array<any>> => {
   const token = getAccessTokenHelper()
   
-  // First, get the current user's pharmacy details
+  if (!token) {
+    throw new Error('Authentication token not found')
+  }
+
   const userId = getUserIdHelper()
   if (!userId) {
     throw new Error('User not authenticated')
   }
 
-  // Get pharmacy details for the current user
-  const pharmacyResponse = await fetch(`${API_BASE_URL}/pharmacy/user/${userId}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
+  console.log('Fetching all payments for pharmacist, userId:', userId)
 
-  if (!pharmacyResponse.ok) {
-    throw new Error('Failed to fetch pharmacy details')
+  try {
+    // Fetch all payments from the database
+    const paymentsResponse = await fetch(`${API_BASE_URL}/payments/admin/all`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    if (!paymentsResponse.ok) {
+      console.error('Payments response not ok:', paymentsResponse.status, paymentsResponse.statusText)
+      const errorText = await paymentsResponse.text()
+      console.error('Payments error details:', errorText)
+      throw new Error(`Failed to fetch payments: ${paymentsResponse.status} ${paymentsResponse.statusText}`)
+    }
+
+    const data = await paymentsResponse.json()
+    console.log('All payments data received:', data)
+
+    // Return the data array, handling different response structures
+    const payments = data.data || data || []
+    console.log('Returning all payments:', payments.length)
+    return payments
+
+  } catch (error) {
+    console.error('Error in getPharmacistPaymentsFn:', error)
+    throw error
   }
-
-  const pharmacyData = await pharmacyResponse.json()
-  const pharmacyId = pharmacyData.id || pharmacyData.data?.id
-
-  if (!pharmacyId) {
-    throw new Error('Pharmacy ID not found')
-  }
-
-  // Now fetch payments for this specific pharmacy
-  const paymentsResponse = await fetch(`${API_BASE_URL}/payments/pharmacy/${pharmacyId}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
-
-  if (!paymentsResponse.ok) {
-    throw new Error('Failed to fetch pharmacist payments')
-  }
-
-  const data = await paymentsResponse.json()
-  return data.data || data || []
 }
 
 export const createPaymentFn = async (paymentData: CreatePaymentData): Promise<Payment> => {
