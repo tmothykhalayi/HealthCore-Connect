@@ -41,3 +41,39 @@ export const registerFn = async (userData: {
   const data = await response.json()
   return data
 }
+
+export const forgotPasswordFn = async (email: string) => {
+  const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email }),
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.message || 'Failed to send reset email')
+  }
+
+  const data = await response.json()
+  return data
+}
+
+export const resetPasswordFn = async (payload: { email: string; otp: string; newPassword: string }) => {
+  const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.message || 'Failed to reset password')
+  }
+
+  const data = await response.json()
+  return data
+}

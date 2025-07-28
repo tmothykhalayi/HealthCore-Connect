@@ -13,6 +13,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as PaymentVerifyRouteImport } from './routes/payment-verify'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactsRouteImport } from './routes/contacts'
 import { Route as AboutRouteImport } from './routes/about'
@@ -73,6 +74,11 @@ const LoginRoute = LoginRouteImport.update({
 const HomeRoute = HomeRouteImport.update({
   id: '/home',
   path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -311,6 +317,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/contacts': typeof ContactsRoute
   '/dashboard': typeof DashboardRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/payment-verify': typeof PaymentVerifyRoute
@@ -358,6 +365,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/contacts': typeof ContactsRoute
   '/dashboard': typeof DashboardRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/payment-verify': typeof PaymentVerifyRoute
@@ -406,6 +414,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/contacts': typeof ContactsRoute
   '/dashboard': typeof DashboardRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/payment-verify': typeof PaymentVerifyRoute
@@ -455,6 +464,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contacts'
     | '/dashboard'
+    | '/forgot-password'
     | '/home'
     | '/login'
     | '/payment-verify'
@@ -502,6 +512,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contacts'
     | '/dashboard'
+    | '/forgot-password'
     | '/home'
     | '/login'
     | '/payment-verify'
@@ -549,6 +560,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contacts'
     | '/dashboard'
+    | '/forgot-password'
     | '/home'
     | '/login'
     | '/payment-verify'
@@ -597,6 +609,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ContactsRoute: typeof ContactsRoute
   DashboardRoute: typeof DashboardRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
   PaymentVerifyRoute: typeof PaymentVerifyRoute
@@ -668,6 +681,13 @@ declare module '@tanstack/react-router' {
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -965,6 +985,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ContactsRoute: ContactsRoute,
   DashboardRoute: DashboardRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
   PaymentVerifyRoute: PaymentVerifyRoute,
