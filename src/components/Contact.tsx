@@ -1,5 +1,6 @@
 import { IoArrowForward, IoStar } from 'react-icons/io5'
 import { useToast } from './utils/toast-context'
+import { useState } from 'react'
 
 const patients = [
   { name: 'John Doe', url: '/assets/images/reviews/patient-1.jpg' },
@@ -9,12 +10,59 @@ const patients = [
 
 const Contact = () => {
   const toast = useToast()
+  const [formData, setFormData] = useState({
+    name: '',
+    surname: '',
+    email: '',
+    phone: '',
+    supportCategory: '',
+    urgency: '',
+    issueDescription: ''
+  })
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    // Validate required fields
+    const requiredFields = ['name', 'surname', 'email', 'phone', 'supportCategory', 'urgency', 'issueDescription']
+    const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData])
+    
+    if (missingFields.length > 0) {
+      toast?.open('Please fill in all required fields.')
+      return
+    }
+
+    // Here you would typically send the data to your backend
+    console.log('Support request submitted:', formData)
+    
+    // Show success message
+    toast?.open('Support request submitted successfully. We will get back to you within 24 hours.')
+    
+    // Reset form
+    setFormData({
+      name: '',
+      surname: '',
+      email: '',
+      phone: '',
+      supportCategory: '',
+      urgency: '',
+      issueDescription: ''
+    })
+  }
 
   return (
     <>
-      {/* Appointment form Section */}
+      {/* Support Request Form Section */}
       <section className="py-8 px-4 text-purple-900 text-center lg:px-16 lg:py-20">
-        <div className="flex flex-col items-center gap-8 lg:flex-row">
+        <form onSubmit={handleSubmit} className="flex flex-col items-center gap-8 lg:flex-row">
           <div className="w-full grid grid-cols-1 gap-2 lg:w-2/4 lg:grid-cols-2">
             <div className="flex flex-col gap-2">
               <label
@@ -27,6 +75,8 @@ const Contact = () => {
                 required
                 type="text"
                 name="name"
+                value={formData.name}
+                onChange={handleInputChange}
                 placeholder="Eg.: William"
                 className="mb-2 p-2 border border-purple-950 rounded-xl focus:outline-teal-400 placeholder:text-purple-400"
               />
@@ -43,6 +93,8 @@ const Contact = () => {
                 required
                 type="text"
                 name="surname"
+                value={formData.surname}
+                onChange={handleInputChange}
                 placeholder="Eg.: Smith"
                 className="mb-2 p-2 border border-purple-950 rounded-xl focus:outline-teal-400 placeholder:text-purple-400"
               />
@@ -59,7 +111,9 @@ const Contact = () => {
                 required
                 type="email"
                 name="email"
-                placeholder="Eg.: timothykhalayi@gmail.com"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="Eg.: william.smith@example.com"
                 className="mb-2 p-2 border border-purple-950 rounded-xl focus:outline-teal-400 placeholder:text-purple-400"
               />
             </div>
@@ -73,64 +127,86 @@ const Contact = () => {
               </label>
               <input
                 required
-                type="number"
+                type="tel"
                 name="phone"
-                placeholder="Eg.: 0795978606"
+                value={formData.phone}
+                onChange={handleInputChange}
+                placeholder="Eg.: +1234567890"
                 className="mb-2 p-2 border border-purple-950 rounded-xl focus:outline-teal-400 placeholder:text-purple-400"
               />
             </div>
 
             <div className="flex flex-col gap-2">
               <label
-                htmlFor="appointment"
+                htmlFor="supportCategory"
                 className="w-fit text-lg text-purple-950 font-bold"
               >
-                Appointment Date*
+                Support Category*
               </label>
-              <input
+              <select
                 required
-                type="date"
-                name="appointment"
-                className="mb-2 p-2 text-purple-400 border border-purple-950 rounded-xl focus:outline-teal-400"
-              />
+                name="supportCategory"
+                value={formData.supportCategory}
+                onChange={handleInputChange}
+                className="mb-2 p-2 border border-purple-950 rounded-xl focus:outline-teal-400 text-purple-900"
+              >
+                <option value="">Select Category</option>
+                <option value="technical">Technical Support</option>
+                <option value="billing">Billing & Payments</option>
+                <option value="appointment">Appointment Issues</option>
+                <option value="pharmacy">Pharmacy Services</option>
+                <option value="telemedicine">Telemedicine Support</option>
+                <option value="account">Account Issues</option>
+                <option value="general">General Inquiry</option>
+                <option value="other">Other</option>
+              </select>
             </div>
 
             <div className="flex flex-col gap-2 lg:col-span-2">
               <label
-                htmlFor="state"
+                htmlFor="urgency"
                 className="w-fit text-lg text-purple-950 font-bold"
               >
-                location
+                Urgency Level*
               </label>
-              <input
-                type="text"
-                name="state"
-                placeholder="Eg.: Kirinyaga, Kenya"
-                className="mb-2 p-2 border border-purple-950 rounded-xl focus:outline-teal-400 placeholder:text-purple-400"
-              />
+              <select
+                required
+                name="urgency"
+                value={formData.urgency}
+                onChange={handleInputChange}
+                className="mb-2 p-2 border border-purple-950 rounded-xl focus:outline-teal-400 text-purple-900"
+              >
+                <option value="">Select Urgency</option>
+                <option value="low">Low - General Question</option>
+                <option value="medium">Medium - Need Help Soon</option>
+                <option value="high">High - Urgent Issue</option>
+                <option value="critical">Critical - System Down</option>
+              </select>
             </div>
 
             <div className="mb-8 flex flex-col gap-2 lg:col-span-2">
               <label
-                htmlFor="note"
+                htmlFor="issueDescription"
                 className="w-fit text-lg text-purple-950 font-bold"
               >
-                Note*
+                Issue Description*
               </label>
               <textarea
                 required
-                name="note"
-                placeholder="Text"
+                name="issueDescription"
+                value={formData.issueDescription}
+                onChange={handleInputChange}
+                placeholder="Please describe your issue or request in detail..."
+                rows={6}
                 className="p-2 border border-purple-950 rounded-xl focus:outline-teal-400 placeholder:text-purple-400"
               ></textarea>
             </div>
 
             <button
               type="submit"
-              onClick={() => toast?.open('Appointment scheduled succesfully.')}
-              className="w-fit py-4 px-8 flex items-center gap-x-4 text-white text-xl bg-teal-500 rounded-xl lg:hover:bg-teal-600 ease-in-out duration-200 active:scale-95"
+              className="w-fit py-4 px-8 flex items-center gap-x-4 text-white text-xl bg-teal-500 rounded-xl lg:hover:bg-teal-600 ease-in-out duration-200 active:scale-95 cursor-pointer"
             >
-              Submit{' '}
+              Submit Support Request{' '}
               <span className="text-2xl">
                 <IoArrowForward />
               </span>
@@ -142,7 +218,7 @@ const Contact = () => {
             alt=""
             className="w-full h-96 object-cover rounded-2xl lg:w-2/4 lg:h-[600px]"
           />
-        </div>
+        </form>
       </section>
 
       {/* Reviews Section */}

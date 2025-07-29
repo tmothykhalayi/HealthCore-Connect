@@ -32,18 +32,18 @@ function PharmacistDashboard() {
     .filter((payment: any) => payment.status === 'completed')
     .reduce((sum: number, payment: any) => sum + (payment.amount || 0), 0)
   
-  // Debug logging
-  console.log('Pharmacist Dashboard Debug:', {
-    pharmacistProfile: pharmacistProfile ? 'Loaded' : 'null',
-    pharmacyDetails: pharmacyDetails ? 'Loaded' : 'null',
-    pharmacyId,
-    profileLoading,
-    pharmacyLoading,
-    profileError: profileError ? profileError.message : 'null',
-    pharmacyError: pharmacyError ? pharmacyError.message : 'null',
-    paymentsCount: payments.length,
-    totalRevenue
-  })
+  // // Debug logging
+  // console.log('Pharmacist Dashboard Debug:', {
+  //   pharmacistProfile: pharmacistProfile ? 'Loaded' : 'null',
+  //   pharmacyDetails: pharmacyDetails ? 'Loaded' : 'null',
+  //   pharmacyId,
+  //   profileLoading,
+  //   pharmacyLoading,
+  //   profileError: profileError ? profileError.message : 'null',
+  //   pharmacyError: pharmacyError ? pharmacyError.message : 'null',
+  //   paymentsCount: payments.length,
+  //   totalRevenue
+  // })
 
   // Additional debugging for pharmacy ID extraction
   console.log('Pharmacy ID Debug:', {

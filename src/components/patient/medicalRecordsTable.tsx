@@ -141,10 +141,10 @@ export const PatientMedicalRecordsTable = ({ patientId }: PatientMedicalRecordsT
           {records.length > 0 && (
             <button
               onClick={downloadCSV}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              className="flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              aria-label="Download CSV"
             >
-              <FaDownload className="w-4 h-4" />
-              Download CSV
+              <FaDownload className="w-5 h-5" />
             </button>
           )}
         </div>

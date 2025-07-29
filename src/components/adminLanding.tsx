@@ -1,8 +1,8 @@
 import {
   FiActivity,
   FiCalendar,
-  FiDollarSign,
-  FiFileText,
+ // FiDollarSign,
+  //FiFileText,
   //FiPieChart,
   FiPieChart as
   // FiPieChartAlt,
@@ -53,7 +53,7 @@ const AdminDashboard = () => {
     {
       title: 'Patients',
       icon: <FiUsers className="h-8 w-8" />,
-      color: 'bg-blue-200 text-blue-600',
+      color: 'bg-blue-00 text-blue-600',
       route: '/dashboard/admin/patients',
       description: 'Manage patient records and information',
       count: realStats.totalPatients,
@@ -141,7 +141,7 @@ const AdminDashboard = () => {
       <div className="min-h-screen bg-gray-50 p-6">
         <div className="mb-10 text-center">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            Welcome Admin
+           Dashboard Overview
           </h1>
           <p className="text-red-600">
             Error loading dashboard data. Please try again later.
@@ -156,7 +156,7 @@ const AdminDashboard = () => {
       {/* Welcome Header */}
       <div className="mb-10 text-center">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">
-          Welcome Admin
+         Dashboard Overview
         </h1>
         <p className="text-gray-600">
           Manage your healthcare system efficiently
@@ -181,7 +181,7 @@ const AdminDashboard = () => {
           <Link
             key={card.title}
             to={card.route}
-            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow flex flex-col items-center text-center hover:transform hover:-translate-y-1"
+            className="bg-blue-100 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow flex flex-col items-center text-center hover:transform hover:-translate-y-1"
           >
             <div className={`p-4 rounded-full ${card.color} mb-4`}>
               {card.icon}

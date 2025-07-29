@@ -81,14 +81,14 @@ const handleSendMessage = async () => {
                 <FaRobot className="text-4xl mb-2 text-blue-400" />
                 <p className="font-semibold text-gray-700 mb-2">Hello! I'm your Healthcare AI Assistant.</p>
                 <p className="text-sm mb-4">I can help you with healthcare system activities:</p>
-                <div className="text-xs space-y-1 text-left bg-gray-50 p-3 rounded-lg max-w-xs">
+                {/* <div className="text-xs space-y-1 text-left bg-gray-50 p-3 rounded-lg max-w-xs">
                   <p>🔹 <strong>Appointments</strong>: Book, reschedule, cancel</p>
                   <p>🔹 <strong>Medical Records</strong>: View and download</p>
                   <p>🔹 <strong>Pharmacy</strong>: Order medicines</p>
                   <p>🔹 <strong>Payments</strong>: Handle billing</p>
                   <p>🔹 <strong>Doctors</strong>: Find specialists</p>
                   <p>🔹 <strong>Health Info</strong>: Get medical advice</p>
-                </div>
+                </div> */}
                 <p className="text-xs mt-3">How can I assist you today?</p>
               </div>
             ) : (
